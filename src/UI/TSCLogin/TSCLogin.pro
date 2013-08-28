@@ -1,0 +1,28 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-08-10T14:56:08
+#
+#-------------------------------------------------
+
+TARGET = TSCLogin
+TEMPLATE = lib
+
+INCLUDEPATH += $$PWD/../../../include/
+
+DESTDIR = $$PWD/../../../lib/
+
+DEFINES += TSCLOGIN_LIBRARY
+
+SOURCES += login.cpp
+
+HEADERS += login.h\
+        tsclogin_global.h
+
+unix:!symbian {
+    maemo5 {
+        target.path = /opt/usr/lib
+    } else {
+        target.path = /usr/lib
+    }
+    INSTALLS += target
+}

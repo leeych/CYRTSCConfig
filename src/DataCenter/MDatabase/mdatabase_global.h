@@ -1,0 +1,12 @@
+#ifndef MDATABASE_GLOBAL_H
+#define MDATABASE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(MDATABASE_LIBRARY)
+#  define MDATABASESHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define MDATABASESHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // MDATABASE_GLOBAL_H

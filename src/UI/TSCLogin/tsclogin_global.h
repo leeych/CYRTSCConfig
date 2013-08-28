@@ -1,0 +1,12 @@
+#ifndef TSCLOGIN_GLOBAL_H
+#define TSCLOGIN_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(TSCLOGIN_LIBRARY)
+#  define TSCLOGINSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define TSCLOGINSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // TSCLOGIN_GLOBAL_H

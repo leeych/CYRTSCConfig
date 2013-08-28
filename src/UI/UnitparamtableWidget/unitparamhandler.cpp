@@ -1,0 +1,32 @@
+#include "unitparamhandler.h"
+
+UnitparamHandler::UnitparamHandler()
+{
+    db_ = MDatabase::GetInstance();
+}
+
+UnitparamHandler::~UnitparamHandler()
+{
+}
+
+void UnitparamHandler::init()
+{
+    unit_param_ = db_->get_unit_table();
+}
+
+bool UnitparamHandler::get_unitparam(Unit_t &unitparam)
+{
+    unitparam = unit_param_;
+    return true;
+}
+
+void UnitparamHandler::set_unitparam(const Unit_t &unitparam)
+{
+    unit_param_ = unitparam;
+}
+
+bool UnitparamHandler::save_data()
+{
+    db_->set_unit_table(unit_param_);
+    return true;
+}
