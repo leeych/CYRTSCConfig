@@ -15,6 +15,7 @@ class FILELISTWIDGETSHARED_EXPORT FileListWidget : public QWidget
 public:
     explicit FileListWidget(QWidget* parent = 0);
 	~FileListWidget();
+	void SaveDataFile();
 
 signals:
     void updateTabPageSignal();
@@ -35,6 +36,9 @@ private:
 
 private:
 	FileReaderWriter *reader_writer_;
+
+	QString open_file_name_;
+	QString new_file_name_;
 
 private:
     QListWidget* file_list_widget_;

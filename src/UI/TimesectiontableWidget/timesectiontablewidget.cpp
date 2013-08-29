@@ -123,23 +123,36 @@ void TimesectiontableWidget::OnEditActionClicked()
 
 void TimesectiontableWidget::OnDeleteActionClicked()
 {
-    QTreeWidgetItem* item = section_tree_widget_->currentItem();
-    if (item == NULL)
-    {
-        return;
-    }
-    int curr_row = section_tree_widget_->indexOfTopLevelItem(item);
-    unsigned char time_section_id = item->text(0).toInt();
-    unsigned char event_id = item->text(1).toInt();
-    if (event_id == 0)
-    {
-        handler_->remove_timesection(time_section_id);
-    }
-    section_tree_widget_->takeTopLevelItem(curr_row);
+	QTreeWidgetItem *item = section_tree_widget_->currentItem();
+	if (item == NULL)
+	{
+		return;
+	}
+
+	unsigned char id = item->text(0).toInt();
+	unsigned char event_id = item->text(1).toInt();
+	int curr_row = section_tree_widget_->indexOfTopLevelItem(item);
+	if (curr_row < 0)
+	{
+		QTreeWidgetItem *item_parent = item->parent();
+		if (item_parent == NULL)
+		{
+			return;
+		}
+		handler_->remove_timesection_event(id, event_id);
+		int index = item_parent->indexOfChild(item);
+		item_parent->takeChild(index);
+	}
+	else
+	{
+		handler_->remove_timesection(id);
+		section_tree_widget_->takeTopLevelItem(curr_row);
+	}
 }
 
 void TimesectiontableWidget::OnSaveActionClicked()
 {
+	handler_->save_data();
 }
 
 void TimesectiontableWidget::OnUpdateTreeSlot(unsigned char time_section_id)

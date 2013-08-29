@@ -80,8 +80,8 @@ public:
     QList<PhaseConflictParam> get_phase_conflict_table();
 
 private:
-    MDatabase(){}
-    ~MDatabase(){}
+    MDatabase();
+    ~MDatabase();
 
     QList<unsigned char> get_id_list_by_bits_op(unsigned int phase_ids);
 
@@ -91,22 +91,24 @@ private:
     static MDatabase* instance_;
 
 private:
-    TSCHeader_t     tsc_header_;        // 表头
-    Schedule_t      sched_table_;    // 调度计划表
-    Unit_t          unit_table_;        // 单元参数
-    TimeSection_t   timesection_table_; // 时段表
-    Pattern_t       pattern_table_;     // 配时方案表
-    TimeConfig_t    timeconfig_table_;  // 阶段配时表
-    Phase_t         phase_table_;       // 相位表
-    Channel_t       channel_table_;     // 通道表
+    TSCHeader_t     tsc_header_;
+    Schedule_t      sched_table_;
+    Unit_t          unit_table_;
+    TimeSection_t   timesection_table_;
+    Pattern_t       pattern_table_;
+    TimeConfig_t    timeconfig_table_;
+    Phase_t         phase_table_; 
+    Channel_t       channel_table_;
 	ChannelHint_t	channel_hint_table_;
     PhaseError_t    phase_conflict_table_;
-    Detector_t      detector_table_;    // 检测器表
+    Detector_t      detector_table_;
 
 private:
     QMap<unsigned char, unsigned short> cycle_time_map_;
     QMultiMap<unsigned char, unsigned char> channel_phase_map_; // for write to file
+
     QMultiMap<unsigned char, unsigned char> channel_phase_read_map_;    // for read from file
+	void init_channel_ctrl_src_phase();
 
 };
 

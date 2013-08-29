@@ -19,6 +19,9 @@ UnitparamtableWidget::UnitparamtableWidget(const QString& name, QWidget* parent)
     InitSignalSlots();
 
     UpdateUI();
+
+	flash_time_spinbox_->setValue(0);
+	all_red_time_spinbox_->setValue(0);
 }
 
 const QString &UnitparamtableWidget::widget_name()
@@ -28,14 +31,15 @@ const QString &UnitparamtableWidget::widget_name()
 
 void UnitparamtableWidget::OnOkButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Ok", STRING_OK);
-    return;
+	if (SaveData())
+	{
+		handler_->save_data();
+	}
 }
 
 void UnitparamtableWidget::OnCancelButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Cancel", STRING_OK);
-    return;
+	UpdateUI();
 }
 
 void UnitparamtableWidget::OnUpdateDataSlot()
@@ -58,6 +62,7 @@ void UnitparamtableWidget::InitPage()
     QRegExpValidator *pIpValidator = new QRegExpValidator(ipreg);
     //signal_ip_lineedit_->setValidator(pIpValidator);
     server_ip_lineedit_->setValidator(pIpValidator);
+    server_ip_lineedit_->setInputMask("000.000.000.000");
 
     server_port_lineedit_ = new QLineEdit;
     QIntValidator *int_validator = new QIntValidator(1025, 100000);

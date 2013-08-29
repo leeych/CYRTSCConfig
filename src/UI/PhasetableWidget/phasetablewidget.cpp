@@ -47,13 +47,13 @@ void PhasetableWidget::UpdateTree()
         item->setText(7, str);
         str.sprintf("%d", phase_list.at(i).phase_green_flash);
         item->setText(8, str);
-        str = STRING_UI_PHASE_FIX;
+        str = get_phase_type_desc(phase_list.at(i).phase_type);
         item->setText(9, str);
         str.sprintf("%d", phase_list.at(i).phase_spec_func);
         item->setText(10, str);
         str.sprintf("%d", phase_list.at(i).phase_reserved);
         item->setText(11, str);
-        str.sprintf("%d", rand() % 10);
+        str = get_phase_ctrled_channels_desc(phase_list.at(i).phase_channel);
         item->setText(12, str);
 
         for (int j = 0; j < 13; j++)
@@ -139,6 +139,7 @@ void PhasetableWidget::OnDeleteActionClicked()
 
 void PhasetableWidget::OnSaveActionClicked()
 {
+	handler_->save_data();
 }
 
 void PhasetableWidget::OnUpdateTreeItemSlot(unsigned char id)

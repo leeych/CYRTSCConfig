@@ -26,11 +26,9 @@ void PhasetimingeditDlg::Initialize(unsigned char phase_timing_id, PhasetimingHa
 
 void PhasetimingeditDlg::OnSaveButtonClicked()
 {
-    if (SaveData())
-    {
-        accept();
-        emit updatePhasetimingSignal(curr_timing_id_);
-    }
+	SaveData();
+    accept();
+    emit updatePhasetimingSignal(curr_timing_id_);
 }
 
 void PhasetimingeditDlg::OnResetButtonClicked()

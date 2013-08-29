@@ -158,7 +158,7 @@ bool PhaseHandler::save_data()
     std::list<PhaseParam> std_list = phase_list_.toStdList();
     std_list.sort();
     phase_list_.clear();
-    phase_list_ =  QList<PhaseParam>::fromStdList(std_list);
+    phase_list_ = QList<PhaseParam>::fromStdList(std_list);
     db_->set_phase_table(phase_list_);
     return true;
 }

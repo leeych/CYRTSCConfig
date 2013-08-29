@@ -300,14 +300,14 @@ void TimesectioneditDlg::UpdateSettingUI(unsigned char event_id)
     {
         time_section_id_list.append(i);
     }
-    QList<TimeSection> time_event_list = handler_->get_timesection_list();
-
     // time section id  &&  event_id
     QList<unsigned char> event_id_list;
     for (unsigned char i = 1; i <= MAX_EVENT_LINE; i++)
     {
         event_id_list.append(i);
     }
+
+	QList<TimeSection> time_event_list = handler_->get_timesection_list();
     for (int i = 0; i < time_event_list.size(); i++)
     {
 		if (curr_section_id_ != time_event_list.at(i).time_section_id)
@@ -710,11 +710,9 @@ int TimesectioneditDlg::index_of_tmp_timesection_list(const TimeSection &section
 
 void TimesectioneditDlg::OnSaveButtonClicked()
 {
-    if (SaveData())
-    {
-        accept();
-        emit updateTreeSignal(curr_section_id_);
-    }
+	SaveData();
+    accept();
+    emit updateTreeSignal(curr_section_id_);
 }
 
 void TimesectioneditDlg::OnResetButtonClicked()

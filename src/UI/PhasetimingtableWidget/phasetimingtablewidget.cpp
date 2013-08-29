@@ -114,18 +114,31 @@ void PhasetimingtableWidget::OnDeleteActionClicked()
     {
         return;
     }
-    int curr_row = tree_widget_->indexOfTopLevelItem(item);
-    unsigned char id = item->text(0).toInt();
-    unsigned char stage_id = item->text(1).toInt();
-    if (stage_id == 0)
-    {
-        handler_->remove_phasetiming(id);
-    }
-    tree_widget_->takeTopLevelItem(curr_row);
+
+	unsigned char id = item->text(0).toInt();
+	unsigned char stage_id = item->text(1).toInt();
+	int curr_row = tree_widget_->indexOfTopLevelItem(item);
+	if (curr_row < 0)
+	{
+		QTreeWidgetItem *item_parent = item->parent();
+		if (item_parent == NULL)
+		{
+			return;
+		}
+		handler_->remove_phasetiming_stage(id, stage_id);
+		int index = item_parent->indexOfChild(item);
+		item_parent->takeChild(index);
+	}
+	else
+	{
+		handler_->remove_phasetiming(id);
+		tree_widget_->takeTopLevelItem(curr_row);
+	}
 }
 
 void PhasetimingtableWidget::OnSaveActionClicked()
 {
+	handler_->save_data();
 }
 
 void PhasetimingtableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *item, int col)

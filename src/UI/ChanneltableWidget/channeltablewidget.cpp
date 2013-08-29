@@ -126,8 +126,7 @@ void ChanneltableWidget::OnDeleteActionClicked()
 
 void ChanneltableWidget::OnSaveActionClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save data success", STRING_OK);
-    return;
+	handler_->save_data();
 }
 
 void ChanneltableWidget::OnUpdateTableRowSlot(unsigned char channel_id)

@@ -170,10 +170,10 @@ void MDatabase::set_channel_table(const QList<ChannelParam> &channel_list)
             index++;
         }
         else
-        {
-            for (int j = 0; j < channel_phase_map_.size(); j++)
+		{
+			phase_id_list = channel_phase_map_.values(channel_list.at(i).channel_id);
+            for (int j = 0; j < phase_id_list.size(); j++)
             {
-                phase_id_list = channel_phase_map_.values(channel_list.at(i).channel_id);
                 channel_table_.ChannelList[index].ChannelCtrlSrc = phase_id_list.at(j);
                 channel_table_.ChannelList[index].ChannelId = channel_list.at(i).channel_id;
                 channel_table_.ChannelList[index].ChannelFlash = channel_list.at(i).channel_flash;
@@ -402,6 +402,7 @@ QList<PhaseParam> MDatabase::get_phase_table()
 {
     QList<PhaseParam> phase_list;
     QList<unsigned char> channel_id_list;
+	init_channel_ctrl_src_phase();
     for (int i = 0; i < phase_table_.FactPhaseNum; i++)
     {
         PhaseParam phase;
@@ -426,9 +427,8 @@ QList<PhaseParam> MDatabase::get_phase_table()
         else
         {
             unsigned int phase_channel = 0;
-            for (int j = 0; j <= 32; j++)
+            for (int j = 0; j < channel_id_list.size(); j++)
             {
-
                 phase_channel |= (0x01 << (channel_id_list.at(j) - 1));
             }
             phase.phase_channel = phase_channel;
@@ -473,17 +473,17 @@ QList<DetectorParam> MDatabase::get_detector_table()
         detector.detector_type = detector_table_.DetectorList[i].DetectorType;
         detector.detector_direction = detector_table_.DetectorList[i].DetectorDirect;
         detector.detector_delay = detector_table_.DetectorList[i].DetectorDelay;
-        detector.detector_spec_func = detector_table_.DetectorList[i].DetectorSpecFunc;
+        detector.detector_spec_func = (detector_table_.DetectorList[i].DetectorSpecFunc & 0x02);
         detector.detector_flow = detector_table_.DetectorList[i].DetectorFlow;
         detector.detector_occupy = detector_table_.DetectorList[i].DetectorOccupy;
+		detector.detector_effective_time = detector_table_.DetectorList[i].DetectorDelay;
+		detector.detector_failure_time = detector_table_.DetectorList[i].DetectorSpecFunc >> 2;
         // request failure time
 
         detector_list.append(detector);
     }
 	qSort(detector_list.begin(), detector_list.end(), detector_less_than);
     std::list<DetectorParam> std_detector_list = detector_list.toStdList();
-    //std_detector_list.sort();
-	//std::sort<std::list<DetectorParam> >(std_detector_list.begin(), std_detector_list.end());
 	std_detector_list.unique();
     detector_list.clear();
 	detector_list = QList<DetectorParam>::fromStdList(std_detector_list);
@@ -523,6 +523,25 @@ QList<PhaseConflictParam> MDatabase::get_phase_conflict_table()
     return conflict_list;
 }
 
+MDatabase::MDatabase()
+{
+    memset(&tsc_header_, 0x00, sizeof(tsc_header_));
+    memset(&sched_table_, 0x00, sizeof(sched_table_));
+    memset(&unit_table_, 0x00, sizeof(unit_table_));
+    memset(&timesection_table_, 0x00, sizeof(timesection_table_));
+    memset(&pattern_table_, 0x00, sizeof(pattern_table_));
+    memset(&timeconfig_table_, 0x00, sizeof(timeconfig_table_));
+    memset(&phase_table_, 0x00, sizeof(phase_table_));
+    memset(&phase_conflict_table_, 0x00, sizeof(phase_conflict_table_));
+    memset(&channel_table_, 0x00, sizeof(channel_table_));
+    memset(&channel_hint_table_, 0x00, sizeof(channel_hint_table_));
+    memset(&detector_table_, 0x00, sizeof(detector_table_));
+}
+
+MDatabase::~MDatabase()
+{
+}
+
 QList<unsigned char> MDatabase::get_id_list_by_bits_op(unsigned int phase_ids)
 {
     QList<unsigned char> phase_id_list;
@@ -550,5 +569,14 @@ bool MDatabase::detector_less_than( const DetectorParam &left, const DetectorPar
 	else 
 	{
 		return true;
+	}
+}
+
+void MDatabase::init_channel_ctrl_src_phase()
+{
+	channel_phase_read_map_.clear();
+	for (int i = 0; i < channel_table_.FactChannelNum; i++)
+	{
+		channel_phase_read_map_.insertMulti(channel_table_.ChannelList[i].ChannelId, channel_table_.ChannelList[i].ChannelCtrlSrc);
 	}
 }

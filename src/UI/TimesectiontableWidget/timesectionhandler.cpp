@@ -271,3 +271,9 @@ void TimesectionHandler::multimap_assign()
         time_section_map_.insertMulti(time_section_event_list_.at(i).time_section_id, time_section_event_list_.at(i));
     }
 }
+
+bool TimesectionHandler::save_data()
+{
+	db_->set_timesection_table(time_section_map_);
+	return true;
+}

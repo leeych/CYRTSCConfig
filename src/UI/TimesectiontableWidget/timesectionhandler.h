@@ -34,6 +34,8 @@ public:
 	QString get_ctrl_mode_desc(unsigned char ctrl_mode);
     unsigned char get_ctrl_mode_by_desc(const QString& str);
 
+	bool save_data();
+
 private:
 	void set_timesection(unsigned char time_section_id, const TimeSection& time_section);
 	static bool event_id_less_than(const TimeSection& pre, const TimeSection& next);

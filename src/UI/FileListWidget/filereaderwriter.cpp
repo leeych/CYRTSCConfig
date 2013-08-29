@@ -13,6 +13,7 @@ FileReaderWriter::~FileReaderWriter()
 
 bool FileReaderWriter::ReadFile(const char* file_path)
 {
+	open_file_path_ = std::string(file_path);
 	FILE *fp = fopen(file_path, "rb+");
 	if (fp == NULL)
 	{

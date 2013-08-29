@@ -88,8 +88,7 @@ void PhaseconflicttableWidget::OnEditActionClicked()
 
 void PhaseconflicttableWidget::OnSaveButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
-    return;
+	handler_->save_data();
 }
 
 void PhaseconflicttableWidget::OnCustomContextMenuRequested(QPoint)

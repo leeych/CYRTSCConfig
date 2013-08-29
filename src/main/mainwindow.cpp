@@ -50,9 +50,6 @@ void MainWindow::OnUpdateTabPageSlot()
 
     detector_tab_page_->OnUpdateDataSlot();
     detector_tab_page_->UpdateTable();
-
-    QMessageBox::information(NULL, STRING_TIP, "Update tab page", STRING_OK);
-    return;
 }
 
 void MainWindow::OnCommunicationToolButtonClicked()
@@ -75,8 +72,18 @@ void MainWindow::OnHelpToolButtonClicked()
 
 void MainWindow::OnSaveToolButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
-    return;
+	// make sure that all of the changes have already been saved to the disk
+	unitparam_tab_page_->OnOkButtonClicked();
+	schedule_tab_page_->OnSaveActionClicked();
+	time_section_tab_page_->OnSaveActionClicked();
+	timing_plan_tab_page_->OnSaveActionClicked();
+	phase_timing_tab_page_->OnSaveActionClicked();
+	phase_conflict_tab_page_->OnSaveButtonClicked();
+	phase_table_tab_page_->OnSaveActionClicked();
+	channel_tab_page_->OnSaveActionClicked();
+	detector_tab_page_->OnSaveActionClicked();
+
+	file_list_widget_->SaveDataFile();
 }
 
 void MainWindow::InitPage()

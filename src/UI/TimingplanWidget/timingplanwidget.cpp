@@ -115,8 +115,7 @@ void TimingplanWidget::OnDeleteActionClicked()
 
 void TimingplanWidget::OnSaveActionClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
-    return;
+	handler_->save_data();
 }
 
 void TimingplanWidget::OnCustomContextMenuRequested(QPoint)

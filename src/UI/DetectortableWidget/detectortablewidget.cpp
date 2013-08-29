@@ -149,8 +149,7 @@ void DetectortableWidget::OnDeleteActionClicked()
 
 void DetectortableWidget::OnSaveActionClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
-    return;
+	handler_->save_data();
 }
 
 void DetectortableWidget::OnUpdateTableRowSlot(unsigned char detector_id)

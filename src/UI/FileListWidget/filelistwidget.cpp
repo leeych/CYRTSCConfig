@@ -6,6 +6,7 @@
 
 #include "filelistwidget.h"
 #include "macrostring.h"
+#include "datainitializer.h"
 
 
 FileListWidget::FileListWidget(QWidget *parent)
@@ -18,41 +19,49 @@ FileListWidget::FileListWidget(QWidget *parent)
 
 void FileListWidget::OnAddFileAction()
 {
-    QString file_name = QFileDialog::getOpenFileName(0, STRING_UI_OPEN_FILE, "./", "Data(*.dat);;All File(*.*)");
-    if (file_name.isNull() || file_name.isEmpty())
+    open_file_name_ = QFileDialog::getOpenFileName(0, STRING_UI_OPEN_FILE, "./", "Data(*.dat);;All File(*.*)");
+    if (open_file_name_.isNull() || open_file_name_.isEmpty())
     {
         return;
     }
-    bool state = reader_writer_->ReadFile(file_name.toStdString().data());
+    bool state = reader_writer_->ReadFile(open_file_name_.toStdString().data());
     if (state)
     {
-        file_list_widget_->addItem(file_name);
+		int index = open_file_name_.lastIndexOf("/");
+        file_list_widget_->addItem(open_file_name_.right(open_file_name_.length() - index - 1));
         emit updateTabPageSignal();
     }
 }
 
 void FileListWidget::OnNewFileAction()
 {
-    QString file_name = QFileDialog::getSaveFileName(0, STRING_UI_NEW_FILE, "./", "Data(*.dat);;All File(*.*)");
-	if (file_name.isNull() || file_name.isEmpty())
+    new_file_name_ = QFileDialog::getSaveFileName(0, STRING_UI_NEW_FILE, "./", "Data(*.dat);;All File(*.*)");
+	if (new_file_name_.isNull() || new_file_name_.isEmpty())
 	{
 		return;
 	}
-    bool state = reader_writer_->WriteFile(file_name.toStdString().data());
+    bool state = reader_writer_->WriteFile(new_file_name_.toStdString().data());
     if (state)
     {
-        file_list_widget_->addItem(file_name);
+        file_list_widget_->addItem(new_file_name_);
+        emit updateTabPageSignal();
     }
 }
 
 void FileListWidget::OnRemoveFileAction()
 {
-    QListWidgetItem *item = file_list_widget_->currentItem();
-    if (item == NULL)
-    {
-        return;
-    }
-    file_list_widget_->removeItemWidget(item);
+	int row_cnt = file_list_widget_->count();
+	if (row_cnt == 1)
+	{
+		file_list_widget_->takeItem(0);
+		return;
+	}
+	int row = file_list_widget_->currentRow();
+	if (row < 0)
+	{
+		return;
+	}
+    file_list_widget_->takeItem(row);
     // TODO: if the .dat file is in display on the tab pages, clear them !
 }
 
@@ -83,6 +92,8 @@ void FileListWidget::OnClearListAction()
 {
     file_list_widget_->clear();
     // TODO: clear all the tab pages
+	DataInitializer data_reset;
+	data_reset.ResetDatabase();
 }
 
 void FileListWidget::InitPage()
@@ -146,4 +157,9 @@ void FileListWidget::InitSignalSlots()
 FileListWidget::~FileListWidget()
 {
     delete reader_writer_;
+}
+
+void FileListWidget::SaveDataFile()
+{
+	reader_writer_->WriteFile(open_file_name_.toStdString().c_str());
 }

@@ -121,8 +121,7 @@ void ScheduleTableWidget::OnDeleteActionClicked()
 
 void ScheduleTableWidget::OnSaveActionClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
-    return;
+	handler_->save_data();
 }
 
 void ScheduleTableWidget::OnTableCellDoubleClicked(int row, int col)
