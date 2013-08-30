@@ -34,6 +34,13 @@ void TimingeditDlg::OnCancelButtonClicked()
     close();
 }
 
+void TimingeditDlg::OnStageTimingIdSelected(QString str)
+{
+    unsigned char stage_timing_id = str.toInt();
+    unsigned char cycle_time = handler_->get_cycletime_by_stagetiming_id(stage_timing_id);
+    cycle_spinbox_->setValue(cycle_time);
+}
+
 void TimingeditDlg::InitPage()
 {
 	setWindowTitle(STRING_UI_TIMING_PLAN + "-" + STRING_UI_EDIT);
@@ -92,6 +99,8 @@ void TimingeditDlg::InitSignalSlots()
 {
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
     connect(cancel_button_, SIGNAL(clicked()), this, SLOT(OnCancelButtonClicked()));
+
+    connect(phase_timing_id_cmb_, SIGNAL(activated(QString)), this, SLOT(OnStageTimingIdSelected(QString)));
 }
 
 void TimingeditDlg::ResetUI()

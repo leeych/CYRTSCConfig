@@ -139,6 +139,7 @@ void PhasetimingtableWidget::OnDeleteActionClicked()
 void PhasetimingtableWidget::OnSaveActionClicked()
 {
 	handler_->save_data();
+    emit updateTimingCycleSignal();
 }
 
 void PhasetimingtableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *item, int col)

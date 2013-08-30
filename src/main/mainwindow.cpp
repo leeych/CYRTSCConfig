@@ -7,14 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     CreateTabPages();
-
     InitPage();
     InitSignalSlots();
 }
 
 MainWindow::~MainWindow()
 {
-    
 }
 
 void MainWindow::OnConfigoptSlot(const QString &page_name)
@@ -139,6 +137,8 @@ void MainWindow::InitSignalSlots()
     connect(config_widget_, SIGNAL(unitparamSignal(QString)), this, SLOT(OnConfigoptSlot(QString)));
 
     connect(file_list_widget_, SIGNAL(updateTabPageSignal()), this, SLOT(OnUpdateTabPageSlot()));
+    connect(phase_timing_tab_page_, SIGNAL(updateTimingCycleSignal()), timing_plan_tab_page_, SLOT(OnUpdateTimingCycleSlot()));
+    connect(phase_table_tab_page_, SIGNAL(updateChannelCtrlsrcSignal()), channel_tab_page_, SLOT(OnUpdateChannelCtrlsrcSlot()));
 }
 
 void MainWindow::CreateToolBar()

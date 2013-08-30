@@ -146,7 +146,11 @@ QList<TimeSection> TimesectionHandler::get_timesection_list(unsigned char timese
 
 QList<unsigned char> TimesectionHandler::get_timesection_id_list()
 {
-	return time_section_map_.keys();
+	std::list<unsigned char> std_list = time_section_map_.keys().toStdList();
+	std_list.sort();
+	std_list.unique();
+	QList<unsigned char> time_section_id_list = QList<unsigned char>::fromStdList(std_list);
+	return time_section_id_list;
 }
 
 QString TimesectionHandler::get_ctrl_mode_desc(unsigned char ctrl_mode)

@@ -70,6 +70,8 @@ private:
     QCheckBox* induction_id_chk_;
     QSpinBox* green_time_spinbox_, *yellow_time_spinbox_, *red_time_spinbox_;
     QSpinBox* delay_time_spinbox_;
+
+    QPushButton* add_button_, *edit_button_, *delete_button_;
     QPushButton* save_button_, *reset_button_;
     QPushButton* ok_button_, *cancel_button_;
 };

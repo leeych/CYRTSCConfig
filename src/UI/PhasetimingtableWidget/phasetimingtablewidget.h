@@ -21,6 +21,7 @@ public:
     void UpdateTree();
 
 signals:
+    void updateTimingCycleSignal();
 
 public slots:
     void OnAddActionClicked();

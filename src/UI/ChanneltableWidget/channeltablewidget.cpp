@@ -148,6 +148,11 @@ void ChanneltableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void ChanneltableWidget::OnUpdateChannelCtrlsrcSlot()
+{
+    // TODO: update channel ctrl src field
+}
+
 void ChanneltableWidget::InitPage()
 {
     InitTable();

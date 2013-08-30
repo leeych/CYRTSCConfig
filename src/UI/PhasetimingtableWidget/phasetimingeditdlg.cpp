@@ -131,17 +131,30 @@ void PhasetimingeditDlg::InitPage()
 
     QLabel* phase_timing_id_label = new QLabel(STRING_UI_PHASE_TIMING_ID);
     phase_timing_id_cmb_ = new QComboBox;
+
+    add_button_ = new QPushButton(STRING_UI_ADD);
+    edit_button_ = new QPushButton(STRING_UI_EDIT);
+    delete_button_ = new QPushButton(STRING_UI_DELETE);
+
     save_button_ = new QPushButton(STRING_UI_SAVE);
     reset_button_ = new QPushButton(STRING_UI_RESET);
     ok_button_ = new QPushButton(STRING_OK);
     cancel_button_ = new QPushButton(STRING_CANCEL);
+
     QHBoxLayout* fir_hlayout = new QHBoxLayout;
     fir_hlayout->addWidget(phase_timing_id_label);
     fir_hlayout->addWidget(phase_timing_id_cmb_);
     fir_hlayout->addStretch(3);
     QHBoxLayout* button_hlayout = new QHBoxLayout;
 	button_hlayout->addStretch(1);
+    button_hlayout->addWidget(add_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(edit_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(delete_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(save_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(reset_button_);
 	button_hlayout->addStretch(1);
 
@@ -245,8 +258,11 @@ void PhasetimingeditDlg::InitSignalSlots()
     connect(edit_action_, SIGNAL(triggered()), this, SLOT(OnEditActionClicked()));
     connect(delete_action_, SIGNAL(triggered()), this, SLOT(OnDeleteActionClicked()));
 
-    connect(tree_widget_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(OnCustomContextMenuRequested(QPoint)));
+    connect(add_button_, SIGNAL(clicked()), this, SLOT(OnAddActionClicked()));
+    connect(edit_button_, SIGNAL(clicked()), this, SLOT(OnEditActionClicked()));
+    connect(delete_button_, SIGNAL(clicked()), this, SLOT(OnDeleteActionClicked()));
 
+    connect(tree_widget_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(OnCustomContextMenuRequested(QPoint)));
     connect(tree_widget_, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(OnTreeCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect(tree_widget_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnTreeItemDoubleClicked(QTreeWidgetItem*,int)));
 }
@@ -370,7 +386,7 @@ void PhasetimingeditDlg::UpdateSettingUI(unsigned char stage_id)
 		{
 			phase_timing_id_list.removeAll(stage_timing_list.at(i).phase_timing_id);
 		}
-		if (stage_id != stage_timing_list.at(i).stage_id)
+		if (stage_id != stage_timing_list.at(i).stage_id && curr_timing_id_ == stage_timing_list.at(i).phase_timing_id)
 		{
 			stage_id_list.removeAll(stage_timing_list.at(i).stage_id);
 		}
@@ -578,5 +594,4 @@ int PhasetimingeditDlg::index_of_phasetiming_tmp_list(const PhaseTiming &plan)
 
 PhasetimingeditDlg::~PhasetimingeditDlg()
 {
-
 }

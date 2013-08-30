@@ -22,6 +22,8 @@ public slots:
     void OnOkButtonClicked();
     void OnCancelButtonClicked();
 
+    void OnStageTimingIdSelected(QString);
+
 private:
     void InitPage();
     void InitSignalSlots();

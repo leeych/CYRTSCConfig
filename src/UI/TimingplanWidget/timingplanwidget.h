@@ -31,8 +31,9 @@ public slots:
     void OnCustomContextMenuRequested(QPoint);
     void OnTableCellDoubleClicked(int row, int col);
     void OnUpdateTableRowSlot(unsigned char id);
-
     void OnUpdateDataSlot();
+
+    void OnUpdateTimingCycleSlot();
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -44,6 +45,8 @@ private:
     void InitTable();
     void InitTableHeader();
     void InitContextMenu();
+
+    void UpdateCycletime();
 
 private:
     TimingHandler* handler_;

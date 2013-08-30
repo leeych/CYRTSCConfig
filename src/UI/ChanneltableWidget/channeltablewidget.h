@@ -33,6 +33,8 @@ public slots:
 
     void OnUpdateDataSlot();
 
+    void OnUpdateChannelCtrlsrcSlot();
+
 private:
     void InitPage();
     void InitSignalSlots();

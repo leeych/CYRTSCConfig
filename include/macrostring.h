@@ -260,5 +260,11 @@
 #define STRING_UI_UNIT_SYSTEM_OPTIONAL      QObject::tr("System Optimization")
 #define STRING_UI_UNIT_INTERVENTION         QObject::tr("Intervention wire")
 
+#define STRING_UI_FILEMANAGER_NEW_FILE_FAILED      QObject::tr("Create new file failed.")
+#define STRING_UI_FILEMANAGER_ADD_FILE_FAILED      QObject::tr("Add file failed.")
+#define STRING_UI_FILEMANAGER_REMOVE_FILE_FAILED   QObject::tr("Remove file failed.")
+#define STRING_UI_FILEMANAGER_DELETE_FILE_FAILED   QObject::tr("Delete file failed.")
+#define STRING_UI_FILEMANAGER_CLEAR_FILE_FAILED    QObject::tr("Clear file list failed.")
+
 
 #endif // MACROSTRING_H

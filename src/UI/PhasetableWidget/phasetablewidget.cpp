@@ -140,6 +140,7 @@ void PhasetableWidget::OnDeleteActionClicked()
 void PhasetableWidget::OnSaveActionClicked()
 {
 	handler_->save_data();
+    emit updateChannelCtrlsrcSignal();
 }
 
 void PhasetableWidget::OnUpdateTreeItemSlot(unsigned char id)

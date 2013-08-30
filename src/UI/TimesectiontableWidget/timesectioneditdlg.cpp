@@ -168,13 +168,26 @@ void TimesectioneditDlg::InitPage()
     brightness_ctrl_chk_ = new QCheckBox(STRING_UI_TIMESECTION_BRIGHT);
 	brightness_ctrl_chk_->setEnabled(false);
 
+    add_button_ = new QPushButton(STRING_UI_ADD);
+    edit_button_ = new QPushButton(STRING_UI_EDIT);
+    delete_button_ = new QPushButton(STRING_UI_DELETE);
+
     save_button_ = new QPushButton(STRING_UI_SAVE);
     reset_button_ = new QPushButton(STRING_UI_RESET);
+
     QHBoxLayout* button_hlayout = new QHBoxLayout;
     button_hlayout->addStretch(1);
+    button_hlayout->addWidget(add_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(edit_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(delete_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(save_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(reset_button_);
     button_hlayout->addStretch(1);
+
     QVBoxLayout* tree_vlayout = new QVBoxLayout;
     tree_vlayout->addWidget(event_table_);
     tree_vlayout->addLayout(button_hlayout);
@@ -265,11 +278,15 @@ void TimesectioneditDlg::InitSignalSlots()
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
     connect(cancel_button_, SIGNAL(clicked()), this, SLOT(OnCancelButtonClicked()));
 
-    connect(event_table_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(OnCustomContextMenuRequested(QPoint)));
-
     connect(add_action_, SIGNAL(triggered()), this, SLOT(OnAddActionClicked()));
     connect(edit_action_, SIGNAL(triggered()), this, SLOT(OnEditActionClicked()));
     connect(delete_action_, SIGNAL(triggered()), this, SLOT(OnDeleteActionClicked()));
+
+    connect(add_button_, SIGNAL(clicked()), this, SLOT(OnAddActionClicked()));
+    connect(edit_button_, SIGNAL(clicked()), this, SLOT(OnEditActionClicked()));
+    connect(delete_button_, SIGNAL(clicked()), this, SLOT(OnDeleteActionClicked()));
+
+    connect(event_table_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(OnCustomContextMenuRequested(QPoint)));
     connect(event_table_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnTreeItemDoubleClicked(QTreeWidgetItem*,int)));
     connect(event_table_, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(OnTreeCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
@@ -314,7 +331,7 @@ void TimesectioneditDlg::UpdateSettingUI(unsigned char event_id)
 		{
 			time_section_id_list.removeAll(time_event_list.at(i).time_section_id);
 		}
-		if (event_id != time_event_list.at(i).event_id)
+		if (event_id != time_event_list.at(i).event_id && curr_section_id_ == time_event_list.at(i).time_section_id)
 		{
 			event_id_list.removeAll(time_event_list.at(i).event_id);
 		}

@@ -142,7 +142,9 @@ void MDatabase::set_phase_table(const QList<PhaseParam> &phase_list)
         phase_table_.PhaseList[i].PhaseType = phase_list.at(i).phase_type;
         phase_table_.PhaseList[i].PhaseSpecFunc = phase_list.at(i).phase_spec_func;
         phase_table_.PhaseList[i].PhaseReserved = phase_list.at(i).phase_reserved;
+
         channel_id_list = get_id_list_by_bits_op(phase_list.at(i).phase_channel);
+        channel_phase_map_.clear();
         for (int i = 0; i < channel_id_list.size(); i++)
         {
             channel_phase_map_.insertMulti(channel_id_list.at(i), phase_list.at(i).phase_id);

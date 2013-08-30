@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MDatabase", "E:/svn/CYTSC_git/src/DataCenter/MDatabase\MDatabase.vcproj", "{25F8AD22-D542-3110-9B23-96F454CE9B25}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MDatabase", "E:/svn/CYRTSCConfig/src/DataCenter/MDatabase\MDatabase.vcproj", "{21EC004B-D3D5-36C5-B094-F786B9264769}"
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
@@ -10,10 +10,10 @@ Global
 	GlobalSection(ProjectDependencies) = postSolution
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{25F8AD22-D542-3110-9B23-96F454CE9B25}.Debug|Win32.ActiveCfg = Debug|Win32
-		{25F8AD22-D542-3110-9B23-96F454CE9B25}.Debug|Win32.Build.0 = Debug|Win32
-		{25F8AD22-D542-3110-9B23-96F454CE9B25}.Release|Win32.ActiveCfg = Release|Win32
-		{25F8AD22-D542-3110-9B23-96F454CE9B25}.Release|Win32.Build.0 = Release|Win32
+		{21EC004B-D3D5-36C5-B094-F786B9264769}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21EC004B-D3D5-36C5-B094-F786B9264769}.Debug|Win32.Build.0 = Debug|Win32
+		{21EC004B-D3D5-36C5-B094-F786B9264769}.Release|Win32.ActiveCfg = Release|Win32
+		{21EC004B-D3D5-36C5-B094-F786B9264769}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

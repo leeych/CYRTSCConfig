@@ -2,7 +2,9 @@
 #define TIMINGHANDLER_H
 
 #include <QList>
+#include <QMap>
 #include "timingparam.h"
+#include "phasetiming.h"
 #include "mdatabase.h"
 
 class TimingHandler
@@ -24,13 +26,19 @@ public:
 	QList<unsigned char> get_phasetiming_id_list();
 
     bool save_data();
+    void update_cycle_time();
+
+    unsigned char get_cycletime_by_stagetiming_id(unsigned char stage_timing_id);
 
 private:
     unsigned char get_max_timing_id();
 
+    void cycle_time_assign();
+
 private:
     MDatabase* db_;
     QList<TimingParam> timing_list_;
+    QMap<unsigned char, unsigned char> stage_timing_cycle_map_;
 };
 
 #endif // TIMINGHANDLER_H

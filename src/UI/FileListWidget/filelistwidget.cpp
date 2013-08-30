@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFile>
+#include <QHeaderView>
 
 #include "filelistwidget.h"
 #include "macrostring.h"
@@ -13,6 +14,8 @@ FileListWidget::FileListWidget(QWidget *parent)
     : QWidget(parent)
 {
 	reader_writer_ = new FileReaderWriter;
+    data_resetter_ = new DataInitializer;
+	file_count_ = 0;
     InitPage();
     InitSignalSlots();
 }
@@ -28,7 +31,15 @@ void FileListWidget::OnAddFileAction()
     if (state)
     {
 		int index = open_file_name_.lastIndexOf("/");
-        file_list_widget_->addItem(open_file_name_.right(open_file_name_.length() - index - 1));
+        QString file_short_name = open_file_name_.right(open_file_name_.length() - index - 1);
+//        file_list_widget_->addItem(file_short_name);
+
+        AddTableItem(file_count_, 0, QString::number(file_count_));
+        AddTableItem(file_count_, 1, file_short_name);
+		file_count_++;
+        file_path_map_.insert(file_count_, open_file_name_);
+
+        curr_file_name_ = open_file_name_;
         emit updateTabPageSignal();
     }
 }
@@ -43,41 +54,74 @@ void FileListWidget::OnNewFileAction()
     bool state = reader_writer_->WriteFile(new_file_name_.toStdString().data());
     if (state)
     {
-        file_list_widget_->addItem(new_file_name_);
+        curr_file_name_ = new_file_name_;
+//        file_list_widget_->addItem(new_file_name_);
+        int index = new_file_name_.lastIndexOf("/");
+        QString file_short_name = new_file_name_.right(new_file_name_.length() - index - 1);
+        AddTableItem(file_count_, 0, QString::number(file_count_));
+        AddTableItem(file_count_, 1, file_short_name);
+		file_count_++;
         emit updateTabPageSignal();
+    }
+    else
+    {
+        QMessageBox::information(NULL, STRING_TIP, STRING_UI_FILEMANAGER_NEW_FILE_FAILED, STRING_OK);
+        return;
     }
 }
 
 void FileListWidget::OnRemoveFileAction()
 {
-	int row_cnt = file_list_widget_->count();
+    int row_cnt = file_table_->rowCount();
 	if (row_cnt == 1)
 	{
-		file_list_widget_->takeItem(0);
+//		file_list_widget_->takeItem(0);
+        delete file_table_->takeItem(0, 0);
+        delete file_table_->takeItem(0, 1);
+		file_path_map_.remove(file_count_);
+		file_count_--;
 		return;
 	}
-	int row = file_list_widget_->currentRow();
+    int row = file_table_->currentRow();
 	if (row < 0)
 	{
 		return;
 	}
-    file_list_widget_->takeItem(row);
-    // TODO: if the .dat file is in display on the tab pages, clear them !
+    QString file_name = file_table_->item(row, 1)->text().trimmed();
+    if (ResetDataDisp(file_name))
+    {
+        curr_file_name_ = "";
+//        delete file_list_widget_->takeItem(row);
+        file_table_->removeRow(row);
+		file_path_map_.remove(file_count_);
+		file_count_--;
+        emit updateTabPageSignal();
+    }
 }
 
 void FileListWidget::OnDeleteFileAction()
 {
-    QListWidgetItem *item = file_list_widget_->currentItem();
-    if (item == NULL)
+    int row = file_table_->currentRow();
+    if (row < 0)
     {
         return;
     }
-    QString file_name = item->text();
-    if (!file_name.isEmpty() && !QFile::exists(file_name))
+
+    int id = file_table_->item(row, 0)->text().toInt();
+    QString file_name = file_path_map_.value(id);
+    if (!file_name.isEmpty() && QFile::exists(file_name))
     {
         if (QFile::remove(file_name))
         {
-            file_list_widget_->removeItemWidget(item);
+            if (ResetDataDisp(file_name))
+            {
+                curr_file_name_ = "";
+//                delete file_list_widget_->takeItem(row);
+                file_table_->removeRow(row);
+				file_path_map_.remove(file_count_);
+				file_count_--;
+                emit updateTabPageSignal();
+            }
         }
         else
         {
@@ -85,21 +129,24 @@ void FileListWidget::OnDeleteFileAction()
             return;
         }
     }
-    // TODO: if the .dat file is in display on the tab pages, clear them !
 }
 
 void FileListWidget::OnClearListAction()
 {
-    file_list_widget_->clear();
-    // TODO: clear all the tab pages
-	DataInitializer data_reset;
-	data_reset.ResetDatabase();
+    curr_file_name_ = "";
+    data_resetter_->ResetDatabase();
+//    file_list_widget_->clear();
+    file_table_->clear();
+	file_path_map_.clear();
+	file_count_ = 0;
+    emit updateTabPageSignal();
 }
 
 void FileListWidget::InitPage()
 {
-    file_list_widget_ = new QListWidget;
-    file_list_widget_->setStyleSheet("background-color: #E9F6FE;");
+    InitFileTable();
+//    file_list_widget_ = new QListWidget;
+//    file_list_widget_->setStyleSheet("background-color: #E9F6FE;");
 
     read_file_button_ = new QToolButton;
     read_file_button_->setPopupMode(QToolButton::MenuButtonPopup);
@@ -131,7 +178,8 @@ void FileListWidget::InitPage()
     hlayout->addWidget(delete_file_button_);
 
     QVBoxLayout* vlayout = new QVBoxLayout;
-    vlayout->addWidget(file_list_widget_);
+//    vlayout->addWidget(file_list_widget_);
+    vlayout->addWidget(file_table_);
     vlayout->addLayout(hlayout);
     QFrame* frame = new QFrame;
     frame->setLayout(vlayout);
@@ -154,12 +202,50 @@ void FileListWidget::InitSignalSlots()
     connect(clear_list_action_, SIGNAL(triggered()), this, SLOT(OnClearListAction()));
 }
 
+void FileListWidget::InitFileTable()
+{
+    file_table_ = new QTableWidget;
+    file_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    file_table_->setSelectionBehavior(QTableWidget::SelectRows);
+    file_table_->setSelectionMode(QAbstractItemView::SingleSelection);
+    file_table_->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    file_table_->verticalHeader()->setHidden(true);
+	file_table_->horizontalHeader()->setHidden(true);
+	file_table_->horizontalHeader()->setStretchLastSection(true);
+
+    QPalette pal;
+    pal.setColor(QPalette::Base, QColor(233, 246, 254));
+    file_table_->setPalette(pal);
+    file_table_->setColumnCount(2);
+    file_table_->setColumnHidden(0, true);
+	file_table_->setColumnWidth(0, 1);
+	file_table_->resizeRowsToContents();
+}
+
 FileListWidget::~FileListWidget()
 {
     delete reader_writer_;
+    delete data_resetter_;
 }
 
 void FileListWidget::SaveDataFile()
 {
-	reader_writer_->WriteFile(open_file_name_.toStdString().c_str());
+    reader_writer_->WriteFile(curr_file_name_.toStdString().c_str());
+}
+
+bool FileListWidget::ResetDataDisp(const QString &file_name)
+{
+    if (curr_file_name_.contains(file_name))
+    {
+        return data_resetter_->ResetDatabase();
+    }
+    return false;
+}
+
+void FileListWidget::AddTableItem(int row, int col, const QString &str)
+{
+    file_table_->setRowCount(row + 1);
+    QTableWidgetItem *item = new QTableWidgetItem;
+    item->setText(str);
+    file_table_->setItem(row, col, item);
 }

@@ -146,35 +146,18 @@ void TimingplanWidget::OnUpdateTableRowSlot(unsigned char id)
         return;
     }
 	UpdateTable();
-    /*int row = timing_table_->currentRow();
-    if (row < 0)
-    {
-        return;
-    }
-    QString str;
-    QTableWidgetItem* item = NULL;
-
-    item = timing_table_->item(row, 0);
-    str.sprintf("%d", plan.PatternId);
-    item->setText(str);
-
-    str.sprintf("%d", plan.CycleTime);
-    item = timing_table_->item(row, 1);
-    item->setText(str);
-    str.sprintf("%d", plan.PhaseOffset);
-    item = timing_table_->item(row, 2);
-    item->setText(str);
-    str.sprintf("%d", plan.CoordPhase);
-    item = timing_table_->item(row, 3);
-    item->setText(str);
-    str.sprintf("%d", plan.TimeConfigId);
-    item = timing_table_->item(row, 4);
-    item->setText(str);*/
 }
 
 void TimingplanWidget::OnUpdateDataSlot()
 {
     handler_->init();
+}
+
+void TimingplanWidget::OnUpdateTimingCycleSlot()
+{
+    // TODO: update cycle time from mdatabase
+    handler_->update_cycle_time();
+    UpdateCycletime();
 }
 
 void TimingplanWidget::InitPage()
@@ -220,10 +203,8 @@ void TimingplanWidget::InitTable()
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));
     timing_table_->setPalette(pal);
-//    timing_table_->setStyleSheet("font:9px;");
     timing_table_->verticalHeader()->setHidden(true);
     timing_table_->clearFocus();
-    //timing_table_->setStyleSheet("border:0px;");
     timing_table_->setShowGrid(true);
     timing_table_->horizontalHeader()->setStretchLastSection(true);
 	timing_table_->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -264,6 +245,24 @@ void TimingplanWidget::InitContextMenu()
     context_menu_->addAction(edit_action_);
     context_menu_->addAction(delete_action_);
     context_menu_->addAction(save_action_);
+}
+
+void TimingplanWidget::UpdateCycletime()
+{
+    QTableWidgetItem *item_stage_id = NULL;
+    QTableWidgetItem *item_cycle_time = NULL;
+    unsigned char stage_id = 0;
+    unsigned char cycle_time = 0;
+
+    int table_row = timing_table_->rowCount();
+    for (int i = 0; i < table_row; i++)
+    {
+        item_stage_id = timing_table_->item(i, 4);
+        stage_id = item_stage_id->text().toInt();
+        cycle_time = handler_->get_cycletime_by_stagetiming_id(stage_id);
+        item_cycle_time = timing_table_->item(i, 1);
+        item_cycle_time->setText(QString::number(cycle_time));
+    }
 }
 
 void TimingplanWidget::resizeEvent(QResizeEvent *)

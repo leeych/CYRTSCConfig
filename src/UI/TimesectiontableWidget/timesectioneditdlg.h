@@ -68,8 +68,10 @@ private:
     QMenu* context_menu_;
     QAction* add_action_, *edit_action_, *delete_action_;
 
+    QPushButton *add_button_, *edit_button_, *delete_button_;
     QPushButton* save_button_, *reset_button_;
     QPushButton* ok_button_, *cancel_button_;
+
     QComboBox* timesection_id_cmb_;
     QTreeWidget* event_table_;
     QComboBox* section_event_id_cmb_;

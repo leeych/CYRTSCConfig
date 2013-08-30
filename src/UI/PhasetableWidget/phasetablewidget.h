@@ -20,6 +20,7 @@ public:
     void UpdateTree();
 
 signals:
+    void updateChannelCtrlsrcSignal();
 
 public slots:
     void OnTreeItemDoubleClicked(QTreeWidgetItem*,int);

@@ -12,6 +12,10 @@ TimingHandler::~TimingHandler()
 void TimingHandler::init()
 {
     timing_list_ = db_->get_timing_table();
+    for (int i = 0; i < timing_list_.size(); i++)
+    {
+        stage_timing_cycle_map_.insert(timing_list_.at(i).stage_timing_id, timing_list_.at(i).cycle_time);
+    }
 }
 
 bool TimingHandler::is_timing_plan_exists(unsigned char timing_id)
@@ -103,4 +107,44 @@ bool TimingHandler::save_data()
     timing_list_ = QList<TimingParam>::fromStdList(std_list);
     db_->set_timing_table(timing_list_);
     return true;
+}
+
+void TimingHandler::update_cycle_time()
+{
+    cycle_time_assign();
+    for (int i = 0; i < timing_list_.size(); i++)
+    {
+        if (stage_timing_cycle_map_.contains(timing_list_.at(i).stage_timing_id))
+        {
+            timing_list_[i].cycle_time = stage_timing_cycle_map_.value(timing_list_.at(i).stage_timing_id);
+        }
+    }
+}
+
+unsigned char TimingHandler::get_cycletime_by_stagetiming_id(unsigned char stage_timing_id)
+{
+    if (stage_timing_cycle_map_.contains(stage_timing_id))
+    {
+        return stage_timing_cycle_map_.value(stage_timing_id);
+    }
+    return 0;
+}
+
+void TimingHandler::cycle_time_assign()
+{
+    stage_timing_cycle_map_.clear();
+    unsigned char cycle_time = 0;
+    QList<PhaseTiming> plan_list = db_->get_timeconfig_table();
+    for (int i = 0; i < plan_list.size(); i++)
+    {
+        cycle_time = plan_list.at(i).green_time + plan_list.at(i).yellow_time + plan_list.at(i).red_time;
+		if (stage_timing_cycle_map_.contains(plan_list.at(i).phase_timing_id))
+		{
+			stage_timing_cycle_map_[plan_list.at(i).phase_timing_id] += cycle_time;
+		}
+        else
+		{
+			stage_timing_cycle_map_.insert(plan_list.at(i).phase_timing_id, cycle_time);
+		}
+    }
 }
