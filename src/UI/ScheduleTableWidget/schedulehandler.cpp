@@ -13,6 +13,7 @@ ScheduleHandler::~ScheduleHandler()
 void ScheduleHandler::init()
 {
     schedule_list_ = db_->get_schedule_table();
+	qSort(schedule_list_.begin(), schedule_list_.end(), schedule_less_than);
 }
 
 unsigned char ScheduleHandler::GetMaxScheduleId()
@@ -132,4 +133,20 @@ bool ScheduleHandler::remove_schedule( const unsigned char sched_id )
 		return true;
 	}
 	return false;
+}
+
+bool ScheduleHandler::schedule_less_than( const ScheduleParam &left, const ScheduleParam &right )
+{
+	if (left.schedule_id > right.schedule_id)
+	{
+		return false;
+	}
+	else if (left.time_section_id > right.time_section_id)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

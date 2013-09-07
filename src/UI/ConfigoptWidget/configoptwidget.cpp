@@ -8,49 +8,63 @@ ConfigoptWidget::ConfigoptWidget(QWidget *parent) :
     InitSignalSlots();
 }
 
-void ConfigoptWidget::OnScheduleplanButtonClicked()
+void ConfigoptWidget::OnScheduleplanButtonToggled(bool checked)
 {
     emit scheduleplanSignal(STRING_UI_SCHEDULE_PLAN);
 }
 
-void ConfigoptWidget::OnTimesectionButtonClicked()
+void ConfigoptWidget::OnTimesectionButtonToggled(bool checked)
 {
     emit timesectionSignal(STRING_UI_TIME_SECTION);
 }
 
-void ConfigoptWidget::OnTimingplanButtonClicked()
+void ConfigoptWidget::OnTimingplanButtonToggled(bool checked)
 {
     emit timingplanSignal(STRING_UI_TIMING_PLAN);
 }
 
-void ConfigoptWidget::OnPhasetimingButtonClicked()
+void ConfigoptWidget::OnPhasetimingButtonToggled(bool checked)
 {
     emit phasetimingSignal(STRING_UI_PHASE_TIMING);
 }
 
-void ConfigoptWidget::OnPhasetableButtonClicked()
+void ConfigoptWidget::OnPhasetableButtonToggled(bool checked)
 {
     emit phasetableSignal(STRING_UI_PHASE_TABLE);
 }
 
-void ConfigoptWidget::OnPhaseconflictButtonClicked()
+void ConfigoptWidget::OnPhaseconflictButtonToggled(bool checked)
 {
     emit phaseconflictSignal(STRING_UI_PHASE_CONFLICT);
 }
 
-void ConfigoptWidget::OnChannelButtonClicked()
+void ConfigoptWidget::OnChannelButtonToggled(bool checked)
 {
     emit channelSignal(STRING_UI_CHANNEL);
 }
 
-void ConfigoptWidget::OnDetectorButtonClicked()
+void ConfigoptWidget::OnDetectorButtonToggled(bool checked)
 {
-    emit detectorSignal(STRING_UI_DETECTOR);
+    if (checked)
+    {
+        emit detectorSignal(STRING_UI_DETECTOR);
+    }
+    else
+    {
+        ResetButtonStatus();
+    }
 }
 
-void ConfigoptWidget::OnUnitparamButtonClicked()
+void ConfigoptWidget::OnUnitparamButtonToggled(bool checked)
 {
-    emit unitparamSignal(STRING_UI_UNIT_TABLE);
+    if (checked)
+    {
+        emit unitparamSignal(STRING_UI_UNIT_TABLE);
+    }
+    else
+    {
+        ResetButtonStatus();
+    }
 }
 
 void ConfigoptWidget::InitPage()
@@ -90,13 +104,27 @@ void ConfigoptWidget::InitPage()
 
 void ConfigoptWidget::InitSignalSlots()
 {
-	connect(unit_param_button_, SIGNAL(clicked()), this, SLOT(OnUnitparamButtonClicked()));
-    connect(schedule_plan_button_, SIGNAL(clicked()), this, SLOT(OnScheduleplanButtonClicked()));
-    connect(time_table_button_, SIGNAL(clicked()), this, SLOT(OnTimesectionButtonClicked()));
-    connect(timing_plan_button_, SIGNAL(clicked()), this, SLOT(OnTimingplanButtonClicked()));
-    connect(phase_timing_button_, SIGNAL(clicked()), this, SLOT(OnPhasetimingButtonClicked()));
-    connect(phase_table_button_, SIGNAL(clicked()), this, SLOT(OnPhasetableButtonClicked()));
-    connect(phase_conflict_button_, SIGNAL(clicked()), this, SLOT(OnPhaseconflictButtonClicked()));
-    connect(channel_button_, SIGNAL(clicked()), this, SLOT(OnChannelButtonClicked()));
-    connect(detector_button_, SIGNAL(clicked()), this, SLOT(OnDetectorButtonClicked()));
+    connect(unit_param_button_, SIGNAL(toggled(bool)), this, SLOT(OnUnitparamButtonToggled(bool)));
+    connect(schedule_plan_button_, SIGNAL(toggled(bool)), this, SLOT(OnScheduleplanButtonToggled(bool)));
+    connect(time_table_button_, SIGNAL(toggled(bool)), this, SLOT(OnTimesectionButtonToggled(bool)));
+    connect(timing_plan_button_, SIGNAL(toggled(bool)), this, SLOT(OnTimingplanButtonToggled(bool)));
+    connect(phase_timing_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhasetimingButtonToggled(bool)));
+    connect(phase_table_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhasetableButtonToggled(bool)));
+    connect(phase_conflict_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhaseconflictButtonToggled(bool)));
+    connect(channel_button_, SIGNAL(toggled(bool)), this, SLOT(OnChannelButtonToggled(bool)));
+    connect(detector_button_, SIGNAL(toggled(bool)), this, SLOT(OnDetectorButtonToggled(bool)));
+}
+
+void ConfigoptWidget::ResetButtonStatus()
+{
+    schedule_plan_button_->setChecked(false);
+    time_table_button_->setChecked(false);
+    timing_plan_button_->setChecked(false);
+    phase_timing_button_->setChecked(false);
+    phase_table_button_->setChecked(false);
+    phase_table_button_->setChecked(false);
+    phase_conflict_button_->setChecked(false);
+    channel_button_->setChecked(false);
+    detector_button_->setChecked(false);
+    unit_param_button_->setChecked(false);
 }

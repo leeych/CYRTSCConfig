@@ -8,17 +8,29 @@
 #define STRING_NO                       QObject::tr("No")
 #define STRING_CANCEL                   QObject::tr("Cancel")
 #define STRING_OK                       QObject::tr("Ok")
+#define STRING_WARNING                  QObject::tr("Warning")
+
+#define STRING_FONT_SONGTI              QObject::tr("Song ti")
 
 #define STRING_UI_ADD                   QObject::tr("Add")
 #define STRING_UI_EDIT                  QObject::tr("Edit")
 #define STRING_UI_DELETE                QObject::tr("Delete")
 #define STRING_UI_SAVE                  QObject::tr("Save")
+#define STRING_UI_SAVEAS                QObject::tr("Save as")
 #define STRING_UI_RESET                 QObject::tr("Reset")
 #define STRING_UI_SETTING               QObject::tr("Setting")
+#define STRING_UI_ADVANCED              QObject::tr("Advanced")
+
+#define STRING_UI_NORMAL                QObject::tr("Normal")
+#define STRING_UI_ABNORMAL              QObject::tr("Abnormal")
 
 #define STRING_UI_LOGIN_USERNAME        QObject::tr("Username")
 #define STRING_UI_LOGIN_PASSWD          QObject::tr("Password")
 #define STRING_UI_LOGIN_LOGIN           QObject::tr("Log in")
+#define STRING_UI_LOGIN_TITLE           QObject::tr("ChaoYuan Traffic Signal Controller Configuration")
+#define STRING_UI_LOGIN_PASSWD_ERR      QObject::tr("Password invalid")
+#define STRING_UI_LOGIN_PASSWD_EMPTY    QObject::tr("Password can not be empty")
+#define STRING_UI_LOGIN_ERROR           QObject::tr("Inner error")
 
 #define STRING_UI_MONDAY                QObject::tr("Monday")
 #define STRING_UI_THUESDAY              QObject::tr("Thuesday")
@@ -40,6 +52,10 @@
 #define STRING_MAIN_HELP                QObject::tr("Help")
 #define STRING_MAIN_STATUS              QObject::tr("Status")
 #define STRING_MAIN_READY               QObject::tr("Ready")
+#define STRING_MAIN_INITIALIZE          QObject::tr("Init data status")
+
+#define STRING_MAIN_SAVE_FAILED			QObject::tr("Save .dat file failed.")
+#define STRING_MAIN_SAVE_SUCCESS		QObject::tr("Save .dat file succeeded.")
 
 #define STRING_UI_SIGNALER_STATUS       QObject::tr("Status")
 #define STRING_UI_SIGNALER_NAME         QObject::tr("Signaler name")
@@ -59,6 +75,7 @@
 #define STRING_UI_FILELIST_REMOVE       QObject::tr("Remove file")
 #define STRING_UI_FILELIST_DELETE       QObject::tr("Delete file")
 #define STRING_UI_FILELIST_CLEAR        QObject::tr("Clear list")
+#define STRING_UI_FILELIST_SAVEAS		QObject::tr("Save as ...")
 
 #define STRING_UI_SCHEDULE_PLAN         QObject::tr("Schedule Plan Table")
 #define STRING_UI_TIME_SECTION          QObject::tr("Time Section Table")
@@ -130,7 +147,13 @@
 #define STRING_UI_PHASE_DEMOTE          QObject::tr("Demote to timer control")
 #define STRING_UI_PHASE_DETECTOR_NUM    QObject::tr("Max detector num")
 
+#define STRING_UI_PHASE_MIN_LARGER_MAX  QObject::tr("Min green can not larger than max ")
 #define STRING_UI_PHASE_ENABLE          QObject::tr("Enable this phase or not")
+
+#define STRING_UI_PHASE_MOTOR           QObject::tr("Motor phase")
+#define STRING_UI_PHASE_BIKE            QObject::tr("Bike phase")
+#define STRING_UI_PHASE_WALKMAN         QObject::tr("Walkman phase")
+#define STRING_UI_PHASE_DELAY           QObject::tr("Delay phase")
 
 #define STRING_UI_PHASE_FIX             QObject::tr("Fixed phase")
 #define STRING_UI_PHASE_DETERMINED      QObject::tr("Determined phase")
@@ -260,11 +283,26 @@
 #define STRING_UI_UNIT_SYSTEM_OPTIONAL      QObject::tr("System Optimization")
 #define STRING_UI_UNIT_INTERVENTION         QObject::tr("Intervention wire")
 
+#define STRING_UI_UNIT_BUS_FIRST            QObject::tr("Bus first")
+#define STRING_UI_UNIT_TRAFFIC_CTRL         QObject::tr("Traffic control")
+#define STRING_UI_UNIT_MANUALLY_CTRL        QObject::tr("Manuall control")
+#define STRING_UI_UNIT_SYS_FAILURE_FLASH    QObject::tr("System failure yellow flash")
+
 #define STRING_UI_FILEMANAGER_NEW_FILE_FAILED      QObject::tr("Create new file failed.")
 #define STRING_UI_FILEMANAGER_ADD_FILE_FAILED      QObject::tr("Add file failed.")
 #define STRING_UI_FILEMANAGER_REMOVE_FILE_FAILED   QObject::tr("Remove file failed.")
 #define STRING_UI_FILEMANAGER_DELETE_FILE_FAILED   QObject::tr("Delete file failed.")
 #define STRING_UI_FILEMANAGER_CLEAR_FILE_FAILED    QObject::tr("Clear file list failed.")
 
+#define STRING_UI_SIGNALER_CONNECT          QObject::tr("Connect")
+#define STRING_UI_SIGNALER_READ_FILE        QObject::tr("Read setting file")
+#define STRING_UI_SIGNALER_UPDATE_FILE      QObject::tr("Update setting file")
+#define STRING_UI_SIGNALER_SEND_FILE        QObject::tr("Send setting file")
+#define STRING_UI_SIGNALER_MONITOR          QObject::tr("Real time monitor")
+#define STRING_UI_SIGNALER_LOG_READ         QObject::tr("Read log file")
+#define STRING_UI_SIGNALER_FLOW_READ        QObject::tr("Read flow")
+#define STRING_UI_SIGNALER_SETTING          QObject::tr("Settings")
+
+#define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
 
 #endif // MACROSTRING_H

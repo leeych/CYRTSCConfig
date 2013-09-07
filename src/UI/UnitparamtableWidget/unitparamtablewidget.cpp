@@ -1,5 +1,6 @@
 #include "unitparamtablewidget.h"
 #include "macrostring.h"
+#include "mutility.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -56,6 +57,13 @@ void UnitparamtableWidget::InitPage()
     QLabel* allred_time_label = new QLabel(STRING_UI_UNIT_ALL_RED + ":");
     QLabel* curr_status_label = new QLabel(STRING_UI_UNIT_SIGNALER_STATUS + ":");
 
+    QFont font(STRING_FONT_SONGTI, 11);
+	server_ip_label->setFont(font);
+	server_port_label->setFont(font);
+	flash_time_label->setFont(font);
+	allred_time_label->setFont(font);
+	curr_status_label->setFont(font);
+
     // signal_ip_lineedit_ = new QLineEdit;
     server_ip_lineedit_ = new QLineEdit;
     QRegExp ipreg("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-4]|[01]?\\d\\d?)");
@@ -63,12 +71,18 @@ void UnitparamtableWidget::InitPage()
     //signal_ip_lineedit_->setValidator(pIpValidator);
     server_ip_lineedit_->setValidator(pIpValidator);
     server_ip_lineedit_->setInputMask("000.000.000.000");
+    server_ip_lineedit_->setAlignment(Qt::AlignCenter);
 
     server_port_lineedit_ = new QLineEdit;
     QIntValidator *int_validator = new QIntValidator(1025, 100000);
     server_port_lineedit_->setValidator(int_validator);
+    server_port_lineedit_->setAlignment(Qt::AlignCenter);
+
     flash_time_spinbox_ = new QSpinBox;
     all_red_time_spinbox_ = new QSpinBox;
+	
+	flash_time_spinbox_->setMinimumWidth(120);
+	all_red_time_spinbox_->setMinimumWidth(120);
 
     flash_time_spinbox_->setRange(0, 255);
     all_red_time_spinbox_->setRange(0, 255);
@@ -96,10 +110,25 @@ void UnitparamtableWidget::InitPage()
     multi_period_timer_signal_rbt_ = new QRadioButton(STRING_UI_UNIT_MULTI_SIGNALER + ":");
     induction_signal_rbt_ = new QRadioButton(STRING_UI_UNIT_INDUCTION_SIGNALER + ":");
     other_signal_rbt_ = new QRadioButton(STRING_UI_UNIT_CENTRALIZE_SIGNALER + ":");
+
+	man_signal_rbt_->setFont(font);
+	multi_period_timer_signal_rbt_->setFont(font);
+	induction_signal_rbt_->setFont(font);
+	other_signal_rbt_->setFont(font);
+
 	other_signal_rbt_->setChecked(true);
+    man_signal_rbt_->setEnabled(false);
+    multi_period_timer_signal_rbt_->setEnabled(false);
+    induction_signal_rbt_->setEnabled(false);
+
     QLabel* man_schedule_label = new QLabel(STRING_UI_UNIT_MAN_SCHEDULE);
     QLabel* multi_period_schedule_label = new QLabel(STRING_UI_UNIT_MULTI_SCHEDULE);
     QLabel* induction_schedule_label = new QLabel(STRING_UI_UNIT_INDUCTION_SCHEDULE);
+
+	man_schedule_label->setFont(font);
+	multi_period_schedule_label->setFont(font);
+	induction_schedule_label->setFont(font);
+
     state1_cmb_ = new QComboBox;
     state2_cmb_ = new QComboBox;
     state3_cmb_ = new QComboBox;
@@ -138,27 +167,36 @@ void UnitparamtableWidget::InitPage()
         cmb_list.at(i)->addItem(STRING_UI_UNIT_CLOSE_LIGHTS);
         cmb_list.at(i)->addItem(STRING_UI_UNIT_FLASH);
         cmb_list.at(i)->addItem(STRING_UI_UNIT_ALLRED);
-//        cmb_list.at(i)->addItem(STRING_UI_UNIT_COORDINATE);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_COORDINATE);
         cmb_list.at(i)->addItem(STRING_UI_UNIT_INDUCTION);
-//        cmb_list.at(i)->addItem(STRING_UI_UNIT_MAIN_INDUCTION);
-//        cmb_list.at(i)->addItem(STRING_UI_UNIT_SECOND_INDUCTION);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_MAIN_INDUCTION);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_SECOND_INDUCTION);
         cmb_list.at(i)->addItem(STRING_UI_UNIT_SINGLE_OPTIONAL);
-//        cmb_list.at(i)->addItem(STRING_UI_UNIT_CROSS_STREET);
-//        cmb_list.at(i)->addItem(STRING_UI_UNIT_COORDINATE_INDUCTION);
-        cmb_list.at(i)->addItem(STRING_UI_UNIT_MASTER_SLAVE);
-        cmb_list.at(i)->addItem(STRING_UI_UNIT_SYSTEM_OPTIONAL);
-        cmb_list.at(i)->addItem(STRING_UI_UNIT_INTERVENTION);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_CROSS_STREET);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_COORDINATE_INDUCTION);
+
+//        cmb_list.at(i)->addItem(STRING_UI_UNIT_MASTER_SLAVE);
+//        cmb_list.at(i)->addItem(STRING_UI_UNIT_SYSTEM_OPTIONAL);
+//        cmb_list.at(i)->addItem(STRING_UI_UNIT_INTERVENTION);
+
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_BUS_FIRST);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_TRAFFIC_CTRL);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_MANUALLY_CTRL);
+        cmb_list.at(i)->addItem(STRING_UI_UNIT_SYS_FAILURE_FLASH);
     }
 
     QGroupBox* right_group = new QGroupBox(STRING_UI_UNIT_FAULT_GROUP);
+	right_group->setFont(font);
     right_group->setLayout(grlayout);
 
     ok_button_ = new QPushButton(STRING_OK);
     cancel_button_ = new QPushButton(STRING_CANCEL);
     QHBoxLayout* bottom_hlayout = new QHBoxLayout;
-    bottom_hlayout->addStretch(5);
+    bottom_hlayout->addStretch(2);
     bottom_hlayout->addWidget(ok_button_);
+    bottom_hlayout->addStretch(1);
     bottom_hlayout->addWidget(cancel_button_);
+    bottom_hlayout->addStretch(2);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(left_group);
@@ -169,6 +207,10 @@ void UnitparamtableWidget::InitPage()
     setLayout(vlayout);
     vlayout->setMargin(0);
     vlayout->setSpacing(0);
+
+	QString qss;
+	MUtility::getStyleSheetDir(qss);
+	setStyleSheet(MUtility::fetchQrc(qss + "mainwindow.qss"));
 //    setStyleSheet("background-color: RGB(233,246,254);");
 }
 
@@ -203,4 +245,8 @@ bool UnitparamtableWidget::SaveData()
 UnitparamtableWidget::~UnitparamtableWidget()
 {
     delete handler_;
+}
+
+void UnitparamtableWidget::PageFontSetting( const QFont &font )
+{
 }

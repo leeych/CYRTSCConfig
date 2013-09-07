@@ -19,6 +19,9 @@ public:
     bool WriteFile(const char* file_path);
 
 private:
+	void ResetParam();
+
+private:
     MDatabase *db_;
     TSCParam tsc_param_;
 

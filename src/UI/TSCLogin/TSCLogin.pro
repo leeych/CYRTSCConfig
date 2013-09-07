@@ -9,6 +9,8 @@ TEMPLATE = lib
 
 INCLUDEPATH += $$PWD/../../../include/
 
+LIBS += -L$$PWD/../../../lib/ -lUtility
+
 DESTDIR = $$PWD/../../../lib/
 
 DEFINES += TSCLOGIN_LIBRARY

@@ -16,6 +16,7 @@ ChannelHandler::~ChannelHandler()
 void ChannelHandler::init()
 {
     channel_list_ = db_->get_channel_table();
+	qSort(channel_list_.begin(), channel_list_.end(), channel_less_than);
 }
 
 unsigned char ChannelHandler::get_current_channel_id()
@@ -106,8 +107,8 @@ QList<ChannelParam> &ChannelHandler::get_channel_list()
 
 bool ChannelHandler::save_data()
 {
+	qSort(channel_list_.begin(), channel_list_.end(), channel_less_than);
     std::list<ChannelParam> std_channel_list = channel_list_.toStdList();
-    std_channel_list.sort();
     channel_list_.clear();
     channel_list_ = QList<ChannelParam>::fromStdList(std_channel_list);
     db_->set_channel_table(channel_list_);
@@ -125,4 +126,20 @@ unsigned char ChannelHandler::get_max_channel_id()
         }
     }
     return id;
+}
+
+bool ChannelHandler::channel_less_than( const ChannelParam &left, const ChannelParam &right )
+{
+	if (left.channel_id > right.channel_id)
+	{
+		return false;
+	}
+	else if (left.channel_ctrl_src > right.channel_ctrl_src)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

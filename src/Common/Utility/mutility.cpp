@@ -8,16 +8,22 @@ void MUtility::getMainDir(QString &strDir)
     strDir += "/";
 }
 
+void MUtility::getLanguageDir(QString &strDir)
+{
+    strDir = ":";
+    strDir += "/language/";
+}
+
 void MUtility::getImageDir(QString &strImageDir)
 {
-    strImageDir = ":";
+	strImageDir = ":";//QCoreApplication::applicationDirPath();
     strImageDir += "/images/";
 }
 
-void MUtility::getCssDir(QString &strCssDir)
+void MUtility::getStyleSheetDir(QString &strCssDir)
 {
-    strCssDir = QCoreApplication::applicationDirPath();
-    strCssDir += "/css/";
+    strCssDir = ":";/*QCoreApplication::applicationDirPath();*/
+    strCssDir += "/qstylesheet/";
 }
 
 void MUtility::getCurIconDir(QString &strCurIconDir)

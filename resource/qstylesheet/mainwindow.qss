@@ -93,7 +93,7 @@ QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal
 
 QScrollBar::add-line:horizontal 
 {
-    image:url(:/images/gd_4.png);
+    image:url(:/images/right.png);
     background: #eff6fc;
     width: 16px;
     subcontrol-position: right;
@@ -102,7 +102,7 @@ QScrollBar::add-line:horizontal
 
 QScrollBar::sub-line:horizontal 
 {
-    image:url(:/images/gd_3.png);
+    image:url(:/images/left.png);
     background: #eff6fc;
     width: 16px;
     subcontrol-position: left;
@@ -126,7 +126,7 @@ QScrollBar::handle:vertical
 
 QScrollBar::add-line:vertical 
 {
-    image:url(:/images/gd_2.png);
+    image:url(:/images/down.png);
     background: #eff6fc;
     height: 16px;
     subcontrol-position: bottom;
@@ -135,7 +135,7 @@ QScrollBar::add-line:vertical
 
 QScrollBar::sub-line:vertical 
 {
-    image:url(:/images/gd_1.png);
+    image:url(:/images/up.png);
     background: #eff6fc;
     height: 16px;
     subcontrol-position: top;

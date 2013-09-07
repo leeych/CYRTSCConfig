@@ -9,7 +9,7 @@
 ScheduleTableWidget::ScheduleTableWidget(const QString &name, QWidget *parent)
     : QWidget(parent), name_(name)
 {
-    schedule_dlg_ = new ScheduleDlg;
+    schedule_dlg_ = new ScheduleDlg(this);
     handler_ = new ScheduleHandler;
     InitPage();
     InitSignalSlots();
@@ -72,7 +72,7 @@ void ScheduleTableWidget::OnAddActionClicked()
     int table_row = schedule_table_->rowCount();
 	if (table_row >= MAX_SCHEDULE_LINE)
 	{
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_SCHEDULE_TOP_LIMITED + QString::number(MAX_SCHEDULE_LINE) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SCHEDULE_TOP_LIMITED + QString::number(MAX_SCHEDULE_LINE) + " !", STRING_OK);
 		return;
 	}
     schedule_table_->setRowCount(table_row + 1);
@@ -258,14 +258,21 @@ QString ScheduleTableWidget::GetWeekDisp(unsigned char week)
 {
     QString str;
     QString tmp;
-    for (int i = 1; i <= 7; i++)
+	QList<int> weekday_list;
+	unsigned char week_bak = week;
+	week_bak = (week_bak >> 1);
+    for (int i = 1; i <= 6; i++)
     {
-        week = (week >> 1);
-        if ((week & 0x01) == 0x01)
+        week_bak = (week_bak >> 1);
+        if ((week_bak & 0x01) == 0x01)
         {
             tmp += (str.sprintf("%d", i) + "/");
         }
     }
+	if ((week & 0x02) == 0x02)
+	{
+		tmp += (QString::number(7) + "/");
+	}
     return tmp.left(tmp.size() - 1);
 }
 

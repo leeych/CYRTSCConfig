@@ -24,19 +24,21 @@ signals:
     void unitparamSignal(const QString& page_name);
 
 public slots:
-    void OnScheduleplanButtonClicked();
-    void OnTimesectionButtonClicked();
-    void OnTimingplanButtonClicked();
-    void OnPhasetimingButtonClicked();
-    void OnPhasetableButtonClicked();
-    void OnPhaseconflictButtonClicked();
-    void OnChannelButtonClicked();
-    void OnDetectorButtonClicked();
-    void OnUnitparamButtonClicked();
+    void OnScheduleplanButtonToggled(bool checked);
+    void OnTimesectionButtonToggled(bool checked);
+    void OnTimingplanButtonToggled(bool checked);
+    void OnPhasetimingButtonToggled(bool checked);
+    void OnPhasetableButtonToggled(bool checked);
+    void OnPhaseconflictButtonToggled(bool checked);
+    void OnChannelButtonToggled(bool checked);
+    void OnDetectorButtonToggled(bool checked);
+    void OnUnitparamButtonToggled(bool checked);
 
 private:
     void InitPage();
     void InitSignalSlots();
+
+    void ResetButtonStatus();
 
 private:
     QFrame *frame_;

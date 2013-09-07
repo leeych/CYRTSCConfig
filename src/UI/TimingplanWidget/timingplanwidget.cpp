@@ -8,7 +8,7 @@
 TimingplanWidget::TimingplanWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    timing_edit_dlg_ = new TimingeditDlg;
+    timing_edit_dlg_ = new TimingeditDlg(this);
     handler_ = new TimingHandler;
     InitPage();
     InitSignalSlots();
@@ -68,7 +68,7 @@ void TimingplanWidget::OnAddActionClicked()
     int table_row = timing_table_->rowCount();
 	if (table_row >= MAX_PATTERN_LINE)
 	{
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_TIMING_TOP_LIMITED + QString::number(MAX_PATTERN_LINE) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_TIMING_TOP_LIMITED + QString::number(MAX_PATTERN_LINE) + " !", STRING_OK);
 		return;
 	}
 
@@ -142,7 +142,7 @@ void TimingplanWidget::OnUpdateTableRowSlot(unsigned char id)
     TimingParam plan;
     if (!handler_->get_timing_plan(id, plan))
     {
-        QMessageBox::information(NULL, STRING_TIP, "Do not exists this plan", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, "Do not exists this plan", STRING_OK);
         return;
     }
 	UpdateTable();

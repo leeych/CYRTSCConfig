@@ -28,7 +28,7 @@ INCLUDEPATH += $$PWD/../../include \
                $$PWD/../UI/PhasetimingtableWidget \
                $$PWD/../UI/PhaseconflicttableWidget \
                $$PWD/../UI/UnitparamtableWidget \
-               $$PWD/../Common/Utility \
+               $$PWD/../Common/Utility
 #               $$PWD/../Common/FileReaderWriter
 
 SOURCES += main.cpp\
@@ -46,4 +46,9 @@ LIBS += -L$$PWD/../../lib -lTSCLogin -lBottomButtonsWidget -lSignalerStatusWidge
 
 DESTDIR = $$PWD/../../lib/
 
-TRANSLATIONS = $$PWD/../../resource/CYTSC.ts
+TRANSLATIONS = $$PWD/../../resource/language/CYTSC.ts
+
+RESOURCES += \
+    ../../resource/Cytsc.qrc
+
+RC_FILE = ../../resource/app.rc

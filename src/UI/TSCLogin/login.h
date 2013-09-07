@@ -14,12 +14,13 @@ class TSCLOGINSHARED_EXPORT Login : public QDialog
 public:
     explicit Login(QWidget* parent = 0);
     ~Login();
-    void Initialize();
+    int Initialize();
 
 signals:
 
 public slots:
     void OnLoginButtonClicked();
+    void OnPasswdEditedSlot(QString);
 
 private:
     void InitPage();
@@ -28,8 +29,11 @@ private:
     void UpdateUI();
 
 private:
+    QString passwd_str_;
+
+private:
     QLabel* bg_label_;
-    QLabel* username_label_, *passwd_label_;
+    QLabel* username_label_, *passwd_label_, *err_label_;
     QLineEdit* username_lineedit_, *passwd_lineedit_;
     QPushButton* login_button_;
 };

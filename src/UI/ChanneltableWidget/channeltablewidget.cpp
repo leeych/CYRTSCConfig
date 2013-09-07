@@ -9,7 +9,7 @@
 ChanneltableWidget::ChanneltableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    channel_edit_dlg_ = new ChanneleditDlg;
+    channel_edit_dlg_ = new ChanneleditDlg(this);
     handler_ = new ChannelHandler;
     InitPage();
     InitSignalSlots();
@@ -83,7 +83,7 @@ void ChanneltableWidget::OnAddActionClicked()
     int table_row = channel_table_->rowCount();
 	if (table_row >= MAX_CHANNEL)
 	{
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_CHANNEL_TOP_LIMITED + QString::number(MAX_CHANNEL) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_CHANNEL_TOP_LIMITED + QString::number(MAX_CHANNEL) + " !", STRING_OK);
 		return;
 	}
 	QString str;

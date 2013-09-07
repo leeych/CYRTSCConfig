@@ -29,6 +29,9 @@ public:
     bool save_data();
 
 private:
+	static bool detector_less_than(const DetectorParam &left, const DetectorParam &right);
+
+private:
     MDatabase* db_;
     QList<DetectorParam> detector_list_;
     QMap<int, QString> detector_type_map_;

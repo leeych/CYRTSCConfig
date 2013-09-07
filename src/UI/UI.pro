@@ -15,4 +15,5 @@ SUBDIRS += \
     PhasetimingtableWidget \
     UnitparamtableWidget \
     SignalerStatusWidget \
-    TSCLogin
+    TSCLogin \
+    SignalerOnlineSettingDlg

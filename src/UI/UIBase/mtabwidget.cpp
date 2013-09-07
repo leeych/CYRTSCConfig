@@ -8,9 +8,11 @@ MTabWidget::MTabWidget(QWidget *parent) :
 {
     tabBar = new MTabBar;
     tabBar->setFocusPolicy(Qt::NoFocus);
+	QFont font("ËÎÌו", 12);
+	tabBar->setFont(font);
     setTabBar(tabBar);
     QString dir;
-    MUtility::getMainDir(dir);
+    MUtility::getStyleSheetDir(dir);
     setStyleSheet(QLatin1String(MUtility::fetchQrc(dir + "tabwidget.qss")));
 //    setStyleSheet("background-color:RGB(233, 246, 254);");
     connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));

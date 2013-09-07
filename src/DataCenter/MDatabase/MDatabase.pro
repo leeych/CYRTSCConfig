@@ -24,7 +24,8 @@ SOURCES += mdatabase.cpp \
     timingparam.cpp \
     scheduleparam.cpp \
     phaseconflictparam.cpp \
-    tscparam.cpp
+    tscparam.cpp \
+    signalerparam.cpp
 
 HEADERS += mdatabase_global.h \
     mdatabase.h \
@@ -36,7 +37,8 @@ HEADERS += mdatabase_global.h \
     timingparam.h \
     scheduleparam.h \
     phaseconflictparam.h \
-    tscparam.h
+    tscparam.h \
+    signalerparam.h
 
 unix:!symbian {
     maemo5 {

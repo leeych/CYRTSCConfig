@@ -143,21 +143,27 @@ void TimesectioneditDlg::InitPage()
     start_minute_spinbox_->setRange(0, 59);
 
     ctrl_mode_cmb_ = new QComboBox;
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INVALID);
+//    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INVALID);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_AUTO_CONTORL);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_CLOSE_LIGHTS);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_FLASH);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_ALLRED);
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_COORDINATE);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_COORDINATE);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INDUCTION);
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_MAIN_INDUCTION);
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SECOND_INDUCTION);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_MAIN_INDUCTION);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SECOND_INDUCTION);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SINGLE_OPTIONAL);
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_CROSS_STREET);
-    //ctrl_mode_cmb_->addItem(STRING_UI_UNIT_COORDINATE_INDUCTION);
-    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_MASTER_SLAVE);
-    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SYSTEM_OPTIONAL);
-    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INTERVENTION);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_CROSS_STREET);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_COORDINATE_INDUCTION);
+
+//    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_MASTER_SLAVE);
+//    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SYSTEM_OPTIONAL);
+//    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INTERVENTION);
+
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_BUS_FIRST);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_TRAFFIC_CTRL);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_MANUALLY_CTRL);
+    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_SYS_FAILURE_FLASH);
 
     timing_id_cmb_ = new QComboBox;
 	//for (int i = 1; i <= 32; i++)
@@ -635,7 +641,6 @@ unsigned char TimesectioneditDlg::get_start_minute(const QString &str)
 
 unsigned char TimesectioneditDlg::get_ctrl_mode(const QString &str)
 {
-    qDebug() << str;
     if (str == STRING_UI_UNIT_AUTO_CONTORL)
     {
         return 0;
@@ -652,27 +657,64 @@ unsigned char TimesectioneditDlg::get_ctrl_mode(const QString &str)
     {
         return 3;
     }
+    else if (str == STRING_UI_UNIT_COORDINATE)
+    {
+        return 4;
+    }
     else if (str == STRING_UI_UNIT_INDUCTION)
     {
+        return 5;
+    }
+    else if (str == STRING_UI_UNIT_MAIN_INDUCTION)
+    {
         return 6;
+    }
+    else if (str == STRING_UI_UNIT_SECOND_INDUCTION)
+    {
+        return 7;
     }
     else if (str == STRING_UI_UNIT_SINGLE_OPTIONAL)
     {
         return 8;
     }
-    else if (str == STRING_UI_UNIT_MASTER_SLAVE)
+    else if (str == STRING_UI_UNIT_CROSS_STREET)
     {
-        return 11;
+        return 9;
     }
-    else if (str == STRING_UI_UNIT_SYSTEM_OPTIONAL)
+    else if (str == STRING_UI_UNIT_COORDINATE_INDUCTION)
     {
-        return 12;
+        return 10;
     }
-    else if (str == STRING_UI_UNIT_INTERVENTION)
+//    else if (str == STRING_UI_UNIT_MASTER_SLAVE)
+//    {
+//        return 11;
+//    }
+//    else if (str == STRING_UI_UNIT_SYSTEM_OPTIONAL)
+//    {
+//        return 12;
+//    }
+//    else if (str == STRING_UI_UNIT_INTERVENTION)
+//    {
+//        return 13;
+//    }
+//    return 14;
+    else if (str == STRING_UI_UNIT_BUS_FIRST)
     {
-        return 13;
+        return 27;
     }
-    return 14;
+    else if (str == STRING_UI_UNIT_TRAFFIC_CTRL)
+    {
+        return 28;
+    }
+    else if (str == STRING_UI_UNIT_MANUALLY_CTRL)
+    {
+        return 29;
+    }
+    else if (str == STRING_UI_UNIT_SYS_FAILURE_FLASH)
+    {
+        return 30;
+    }
+    return 31;
 }
 
 int TimesectioneditDlg::get_ctrl_mode_current_index(const unsigned char mode)

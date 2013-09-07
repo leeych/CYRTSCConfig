@@ -17,6 +17,12 @@ public:
 	~PhaseeditDlg();
     void Initialize(unsigned char phase_id, PhaseHandler* handler);
 
+    enum PhaseErr
+    {
+        MinLargerThanMax1,
+        None
+    };
+
 signals:
     void updateTreeItemSignal(unsigned char id);
     
@@ -30,7 +36,9 @@ private:
     void InitSignalSlots();
     void UpdateUI();
     void ResetUI();
+    void UpdatePhaseType(unsigned char phase_type);
 
+    PhaseErr ValidateUI();
     bool SaveData();
 
 	unsigned int get_channels();

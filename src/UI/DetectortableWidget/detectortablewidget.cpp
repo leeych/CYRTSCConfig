@@ -9,7 +9,7 @@
 DetectortableWidget::DetectortableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    detector_edit_dlg_ = new DetectoreditDlg;
+    detector_edit_dlg_ = new DetectoreditDlg(this);
     handler_ = new DetectorHandler;
     InitPage();
     InitSignalSlots();
@@ -110,7 +110,7 @@ void DetectortableWidget::OnAddActionClicked()
 	int table_row = detector_table_->rowCount();
 	if (table_row >= MAX_DETECTOR)
 	{
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_DETECTOR_TOP_LIMITED + QString::number(MAX_DETECTOR) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_DETECTOR_TOP_LIMITED + QString::number(MAX_DETECTOR) + " !", STRING_OK);
 		return;
 	}
     AddTableRow();

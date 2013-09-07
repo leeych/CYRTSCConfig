@@ -1,6 +1,7 @@
 QTabWidget::pane 
 {
     border: 1px solid rgb(164,209,251);
+	font-size: 20px;
 }
 
 QTabBar::tab

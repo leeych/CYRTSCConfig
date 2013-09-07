@@ -7,18 +7,24 @@
 TARGET = SignalerStatusWidget
 TEMPLATE = lib
 
-INCLUDEPATH == $$PWD/../../../include/
+INCLUDEPATH += $$PWD/../../../include/ \
+               $$PWD/../../DataCenter/MDatabase/ \
+               $$PWD/../SignalerOnlineSettingDlg/
+
+LIBS += -L$$PWD/../../../lib/ -lMDatabase -lSignalerOnlineSettingDlg
 
 DESTDIR = $$PWD/../../../lib/
 
 DEFINES += SIGNALERSTATUSWIDGET_LIBRARY
 
 SOURCES += signalerstatuswidget.cpp \
-    signalerbasiceditdlg.cpp
+    signalerbasiceditdlg.cpp \
+    signalerhandler.cpp
 
 HEADERS += signalerstatuswidget.h\
         signalerstatuswidget_global.h \
-    signalerbasiceditdlg.h
+    signalerbasiceditdlg.h \
+    signalerhandler.h
 
 unix:!symbian {
     maemo5 {

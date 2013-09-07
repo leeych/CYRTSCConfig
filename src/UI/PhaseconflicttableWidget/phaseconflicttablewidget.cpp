@@ -10,7 +10,7 @@
 PhaseconflicttableWidget::PhaseconflicttableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    phase_edit_dlg_ = new PhaseconflicteditDlg;
+    phase_edit_dlg_ = new PhaseconflicteditDlg(this);
     handler_ = new PhaseconflictHandler;
     InitPage();
     InitSignalSlots();

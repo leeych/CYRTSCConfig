@@ -34,7 +34,7 @@ private:
     bool SaveData();
 
 	void update_detector_phase_ids(unsigned int phase_ids);
-	unsigned char get_detector_phase_ids();
+	unsigned int get_detector_phase_ids();
     void update_detector_type(unsigned char detector_type);
     unsigned char get_detector_type();
     void update_detector_direction(unsigned char detector_direction);

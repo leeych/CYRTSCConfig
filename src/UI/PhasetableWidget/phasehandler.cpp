@@ -1,4 +1,5 @@
 #include "phasehandler.h"
+#include "macrostring.h"
 #include <QDebug>
 
 PhaseHandler::PhaseHandler()
@@ -13,6 +14,7 @@ PhaseHandler::~PhaseHandler()
 void PhaseHandler::init()
 {
     phase_list_ = db_->get_phase_table();
+	qSort(phase_list_.begin(), phase_list_.end(), phase_less_than);
 }
 
 void PhaseHandler::set_phase(unsigned char phase_id, const PhaseParam &phase)
@@ -150,7 +152,84 @@ QString PhaseHandler::get_phase_ctrled_channels_desc( unsigned int channel_ids )
 		}
 		channel_ids = channel_ids >> 1;
 	}
+	if (str.isEmpty())
+	{
+		return "-";
+	}
     return str.left(str.size() - 1);
+}
+
+unsigned char PhaseHandler::get_phase_type_by_desc(const QString &desc)
+{
+    if (desc == STRING_UI_PHASE_MOTOR)
+    {
+        return 0x01;
+    }
+    else if (desc == STRING_UI_PHASE_BIKE)
+    {
+        return 0x02;
+    }
+    else if (desc == STRING_UI_PHASE_WALKMAN)
+    {
+        return 0x04;
+    }
+    else if (desc == STRING_UI_PHASE_DELAY)
+    {
+        return 0x08;
+    }
+    else if (desc == STRING_UI_PHASE_CRUTIAL)
+    {
+        return 0x010;
+    }
+    else if (desc == STRING_UI_PHASE_ELASTICITY)
+    {
+        return 0x020;
+    }
+    else if (desc == STRING_UI_PHASE_DETERMINED)
+    {
+        return 0x04;
+    }
+    else if (desc == STRING_UI_PHASE_FIX)
+    {
+        return 0x080;
+    }
+    return 0;
+}
+
+QString PhaseHandler::get_phase_type_desc(unsigned char phase_type)
+{
+    QString str;
+    switch (phase_type)
+    {
+    case 0x01:
+        str = STRING_UI_PHASE_MOTOR;
+        break;
+    case 0x02:
+        str = STRING_UI_PHASE_BIKE;
+        break;
+    case 0x04:
+        str = STRING_UI_PHASE_WALKMAN;
+        break;
+    case 0x08:
+        str = STRING_UI_PHASE_DELAY;
+        break;
+    case 0x010:
+        str = STRING_UI_PHASE_CRUTIAL;
+        break;
+    case 0x020:
+        str = STRING_UI_PHASE_ELASTICITY;
+        break;
+    case 0x040:
+        str = STRING_UI_PHASE_DETERMINED;
+        break;
+    case 0x080:
+        str = STRING_UI_PHASE_FIX;
+        break;
+    default:
+        str = "-";
+        break;
+    }
+    return str;
 }
 
 bool PhaseHandler::save_data()
@@ -161,4 +240,20 @@ bool PhaseHandler::save_data()
     phase_list_ = QList<PhaseParam>::fromStdList(std_list);
     db_->set_phase_table(phase_list_);
     return true;
+}
+
+bool PhaseHandler::phase_less_than( const PhaseParam &left, const PhaseParam &right )
+{
+	if (left.phase_id > right.phase_id)
+	{
+		return false;
+	}
+	else if (left.phase_channel > right.phase_channel)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

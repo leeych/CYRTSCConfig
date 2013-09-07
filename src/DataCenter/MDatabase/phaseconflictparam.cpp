@@ -35,16 +35,9 @@ bool PhaseConflictParam::operator ==(const PhaseConflictParam &rhs)
 
 bool PhaseConflictParam::operator <(const PhaseConflictParam &rhs)
 {
-    if (this->phase_id > rhs.phase_id)
-    {
-        return false;
-    }
-    else if (this->conflict_phase_id > rhs.conflict_phase_id)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+	if (this->phase_id <= rhs.phase_id)
+	{
+		return true;
+	}
+	return false;
 }

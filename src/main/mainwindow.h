@@ -34,6 +34,7 @@ public:
 
 public slots:
     void OnConfigoptSlot(const QString& page_name);
+    void OnUpdateStatusBarSlot(const QString &file_name);
 
 private slots:
     void OnUpdateTabPageSlot();

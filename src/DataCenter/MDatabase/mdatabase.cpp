@@ -2,7 +2,6 @@
 #include <list>
 #include <algorithm>
 
-
 //MDatabase *MDatabase::GetInstance()
 //{
 //    if (instance_ != NULL)
@@ -43,33 +42,56 @@ void MDatabase::set_schedule_table(const QList<ScheduleParam> &sched_list)
 
 void MDatabase::set_schedule_table(const Schedule_t &schedule)
 {
-    memcpy(&sched_table_, &schedule, sizeof(schedule));
+//    memcpy(&sched_table_, &schedule, sizeof(schedule));
+    sched_table_.FactScheduleNum = schedule.FactScheduleNum;
+    for (int i = 0; i < schedule.FactScheduleNum; i++)
+    {
+        memcpy(&sched_table_.ScheduleList[i], &schedule.ScheduleList[i], sizeof(schedule.ScheduleList[i]));
+    }
 }
 
 void MDatabase::set_timesection_table(const QMultiMap<unsigned char, TimeSection> &time_section_map)
 {
-    QList<unsigned char> map_key_list = time_section_map.keys();
+	std::list<unsigned char> std_key_list = time_section_map.keys().toStdList();
+	std_key_list.sort();
+	std_key_list.unique();
+	QList<unsigned char> map_key_list = QList<unsigned char>::fromStdList(std_key_list);
     QList<TimeSection> map_value_list;
+	unsigned char max_event_count = 0;
     for (int i = 0, j = 0; i < map_key_list.size(); i++)
     {
         map_value_list = time_section_map.values(map_key_list.at(i));
+		qSort(map_value_list.begin(), map_value_list.end(), timesection_less_than);
+
         for (j = 0; j < map_value_list.size(); j++)
         {
-            timesection_table_.TimeSectionList[i][j].TimeSectionId = map_value_list.at(i).time_section_id;
-            timesection_table_.TimeSectionList[i][j].EventId = map_value_list.at(i).event_id;
-            timesection_table_.TimeSectionList[i][j].StartHour = map_value_list.at(i).start_hour;
-            timesection_table_.TimeSectionList[i][j].StartMinute = map_value_list.at(i).start_minute;
-            timesection_table_.TimeSectionList[i][j].ControlMode = map_value_list.at(i).ctrl_mode;
-            timesection_table_.TimeSectionList[i][j].PatternId = map_value_list.at(i).pattern_id;
-            timesection_table_.TimeSectionList[i][j].AuxFunc = map_value_list.at(i).aux_func;
-            timesection_table_.TimeSectionList[i][j].SpecFunc = map_value_list.at(i).spec_func;
+            timesection_table_.TimeSectionList[i][j].TimeSectionId = map_value_list.at(j).time_section_id;
+            timesection_table_.TimeSectionList[i][j].EventId = map_value_list.at(j).event_id;
+            timesection_table_.TimeSectionList[i][j].StartHour = map_value_list.at(j).start_hour;
+            timesection_table_.TimeSectionList[i][j].StartMinute = map_value_list.at(j).start_minute;
+            timesection_table_.TimeSectionList[i][j].ControlMode = map_value_list.at(j).ctrl_mode;
+            timesection_table_.TimeSectionList[i][j].PatternId = map_value_list.at(j).pattern_id;
+            timesection_table_.TimeSectionList[i][j].AuxFunc = map_value_list.at(j).aux_func;
+            timesection_table_.TimeSectionList[i][j].SpecFunc = map_value_list.at(j).spec_func;
         }
+		max_event_count = std::max<unsigned char>(j, max_event_count);
     }
+	timesection_table_.FactTimeSectionNum = map_key_list.size();
+	timesection_table_.FactEventNum = max_event_count;
 }
 
 void MDatabase::set_timesection_table(const TimeSection_t &timesection)
 {
-    memcpy(&timesection_table_, &timesection, sizeof(timesection));
+//    memcpy(&timesection_table_, &timesection, sizeof(timesection));
+    timesection_table_.FactTimeSectionNum = timesection.FactTimeSectionNum;
+    timesection_table_.FactEventNum = timesection.FactEventNum;
+    for (int i = 0; i < timesection.FactTimeSectionNum; i++)
+    {
+        for (int j = 0; j < timesection.FactEventNum; j++)
+        {
+            memcpy(&timesection_table_.TimeSectionList[i][j], &timesection.TimeSectionList[i][j], sizeof(timesection.TimeSectionList[i][j]));
+        }
+    }
 }
 
 void MDatabase::set_timing_table(const QList<TimingParam> &tp_list)
@@ -78,34 +100,47 @@ void MDatabase::set_timing_table(const QList<TimingParam> &tp_list)
     for (int i = 0; i < tp_list.size(); i++)
     {
         pattern_table_.PatternList[i].PatternId = tp_list.at(i).timing_id;
-        pattern_table_.PatternList[i].CycleTime = tp_list.at(i).cycle_time;
+        pattern_table_.PatternList[i].CycleTime = tp_list.at(i).cycle_time;	// cycle_time
         pattern_table_.PatternList[i].PhaseOffset = tp_list.at(i).phase_offset;
         pattern_table_.PatternList[i].CoordPhase = tp_list.at(i).coor_phase;
         pattern_table_.PatternList[i].TimeConfigId = tp_list.at(i).stage_timing_id;
-        pattern_table_.PatternList[i].CycleTime = cycle_time_map_[tp_list.at(i).stage_timing_id];
+        pattern_table_.PatternList[i].CycleTime = cycle_time_map_.value(tp_list.at(i).stage_timing_id);
     }
 }
 
 void MDatabase::set_timing_table(const Pattern_t &plan)
 {
-    memcpy(&pattern_table_, &plan, sizeof(plan));
+//    memcpy(&pattern_table_, &plan, sizeof(plan));
+    pattern_table_.FactPatternNum = plan.FactPatternNum;
+    for (int i = 0; i < plan.FactPatternNum; i++)
+    {
+        memcpy(&pattern_table_.PatternList[i], &plan.PatternList[i], sizeof(plan.PatternList[i]));
+    }
 }
 
 void MDatabase::set_phasetiming_table(const QMultiMap<unsigned char, PhaseTiming> &stage_timing_plan)
 {
     QList<unsigned char> map_key_list = stage_timing_plan.keys();
+	std::list<unsigned char> std_key_list = map_key_list.toStdList();
+	std_key_list.sort();
+	std_key_list.unique();
+	map_key_list.clear();
+	map_key_list = QList<unsigned char>::fromStdList(std_key_list);
     QList<PhaseTiming> map_value_list;
     unsigned short cycle_time = 0;
     unsigned char idx = 0;
-    for (int i = 0; i < map_key_list.size(); i++)
+	unsigned char max_col_width = 0;
+    for (size_t i = 0; i < std_key_list.size(); i++)
     {
         map_value_list = stage_timing_plan.values(map_key_list.at(i));
+		qSort(map_value_list.begin(), map_value_list.end(), phasetiming_less_than);
+
         cycle_time = 0;
         for (int j = 0; j < map_value_list.size(); j++)
         {
             timeconfig_table_.TimeConfigList[i][j].TimeConfigId = map_value_list.at(j).phase_timing_id;
             timeconfig_table_.TimeConfigList[i][j].StageId = map_value_list.at(j).stage_id;
-            timeconfig_table_.TimeConfigList[i][j].PhaseId = map_value_list.at(j).phase_id;     // single phase
+			timeconfig_table_.TimeConfigList[i][j].PhaseId = (map_value_list.at(j).phase_id > 0) ? (0x01 << (map_value_list.at(j).phase_id - 1)) : 0;     // single phase
             timeconfig_table_.TimeConfigList[i][j].GreenTime = map_value_list.at(j).green_time;
             timeconfig_table_.TimeConfigList[i][j].RedTime = map_value_list.at(j).red_time;
             timeconfig_table_.TimeConfigList[i][j].YellowTime = map_value_list.at(j).yellow_time;
@@ -114,20 +149,33 @@ void MDatabase::set_phasetiming_table(const QMultiMap<unsigned char, PhaseTiming
 
             cycle_time += (map_value_list.at(j).green_time + map_value_list.at(j).yellow_time + map_value_list.at(j).red_time);
             idx = j;
+			max_col_width = std::max<unsigned char>(idx + 1, max_col_width);
         }
         cycle_time_map_.insert(timeconfig_table_.TimeConfigList[i][idx].TimeConfigId, cycle_time);
     }
+	timeconfig_table_.FactTimeConfigNum = std_key_list.size();
+	timeconfig_table_.FactStageNum = max_col_width;
 }
 
 void MDatabase::set_phasetiming_table(const TimeConfig_t &timeconfig)
 {
-    memcpy(&timeconfig_table_, &timeconfig, sizeof(timeconfig));
+//    memcpy(&timeconfig_table_, &timeconfig, sizeof(timeconfig));
+    timeconfig_table_.FactTimeConfigNum = timeconfig.FactTimeConfigNum;
+    timeconfig_table_.FactStageNum = timeconfig.FactStageNum;
+    for (int i = 0; i < timeconfig.FactTimeConfigNum; i++)
+    {
+        for (int j = 0; j < timeconfig.FactStageNum; j++)
+        {
+            memcpy(&timeconfig_table_.TimeConfigList[i][j], &timeconfig.TimeConfigList[i][j], sizeof(timeconfig.TimeConfigList[i][j]));
+        }
+    }
 }
 
 void MDatabase::set_phase_table(const QList<PhaseParam> &phase_list)
 {
     phase_table_.FactPhaseNum = phase_list.size();
     QList<unsigned char> channel_id_list;
+	channel_phase_map_.clear();
     for (int i = 0; i < phase_list.size(); i++)
     {
         phase_table_.PhaseList[i].PhaseId = phase_list.at(i).phase_id;
@@ -144,17 +192,21 @@ void MDatabase::set_phase_table(const QList<PhaseParam> &phase_list)
         phase_table_.PhaseList[i].PhaseReserved = phase_list.at(i).phase_reserved;
 
         channel_id_list = get_id_list_by_bits_op(phase_list.at(i).phase_channel);
-        channel_phase_map_.clear();
-        for (int i = 0; i < channel_id_list.size(); i++)
+        for (int j = 0; j < channel_id_list.size(); j++)
         {
-            channel_phase_map_.insertMulti(channel_id_list.at(i), phase_list.at(i).phase_id);
+            channel_phase_map_.insertMulti(channel_id_list.at(j), phase_list.at(i).phase_id);
         }
     }
 }
 
 void MDatabase::set_phase_table(const Phase_t &phase)
 {
-    memcpy(&phase_table_, &phase, sizeof(phase));
+//    memcpy(&phase_table_, &phase, sizeof(phase));
+    phase_table_.FactPhaseNum = phase.FactPhaseNum;
+    for (int i = 0; i < phase.FactPhaseNum; i++)
+    {
+        memcpy(&phase_table_.PhaseList[i], &phase.PhaseList[i], sizeof(phase.PhaseList[i]));
+    }
 }
 
 void MDatabase::set_channel_table(const QList<ChannelParam> &channel_list)
@@ -194,12 +246,22 @@ void MDatabase::set_channel_table(const QList<ChannelParam> &channel_list)
 
 void MDatabase::set_channel_table(const Channel_t &channel)
 {
-    memcpy(&channel_table_, &channel, sizeof(channel));
+//    memcpy(&channel_table_, &channel, sizeof(channel));
+    channel_table_.FactChannelNum = channel.FactChannelNum;
+    for (int i = 0; i < channel.FactChannelNum; i++)
+    {
+        memcpy(&channel_table_.ChannelList[i], &channel.ChannelList[i], sizeof(channel.ChannelList[i]));
+    }
 }
 
 void MDatabase::set_channel_hint_table(const ChannelHint_t &channel_hint)
 {
-    memcpy(&channel_hint_table_, &channel_hint, sizeof(channel_hint));
+//    memcpy(&channel_hint_table_, &channel_hint, sizeof(channel_hint));
+    channel_hint_table_.FactChannelHintNum = channel_hint.FactChannelHintNum;
+    for (int i = 0; i < channel_hint.FactChannelHintNum; i++)
+    {
+        memcpy(&channel_hint_table_.ChannelHintList[i], &channel_hint.ChannelHintList[i], sizeof(channel_hint.ChannelHintList[i]));
+    }
 }
 
 void MDatabase::set_phase_conflict_table(const QList<PhaseConflictParam> &conflict_list)
@@ -214,7 +276,12 @@ void MDatabase::set_phase_conflict_table(const QList<PhaseConflictParam> &confli
 
 void MDatabase::set_phase_conflict_table(const PhaseError_t &phase_err)
 {
-    memcpy(&phase_conflict_table_, &phase_err, sizeof(phase_err));
+//    memcpy(&phase_conflict_table_, &phase_err, sizeof(phase_err));
+    phase_conflict_table_.FactPhaseErrorNum = phase_err.FactPhaseErrorNum;
+    for (int i = 0; i < phase_err.FactPhaseErrorNum; i++)
+    {
+        memcpy(&phase_conflict_table_.PhaseErrorList[i], &phase_err.PhaseErrorList[i], sizeof(phase_err.PhaseErrorList[i]));
+    }
 }
 
 void MDatabase::set_detector_table(const QList<DetectorParam> &detector_list)
@@ -259,7 +326,24 @@ void MDatabase::set_detector_table(const QList<DetectorParam> &detector_list)
 
 void MDatabase::set_detector_table(const Detector_t &detector)
 {
-    memcpy(&detector_table_, &detector, sizeof(detector));
+//    memcpy(&detector_table_, &detector, sizeof(detector));
+    detector_table_.FactDetectorNum = detector.FactDetectorNum;
+    for (int i = 0; i < detector.FactDetectorNum; i++)
+    {
+        memcpy(&detector_table_.DetectorList[i], &detector.DetectorList[i], sizeof(detector.DetectorList[i]));
+    }
+}
+
+void MDatabase::set_signaler(const SignalerMap &signaler)
+{
+//    signaler_map_ = signaler;
+    signaler_map_.clear();
+    SignalerMap::iterator iter = signaler.begin();
+    while (iter != signaler.end())
+    {
+        signaler_map_.insert(iter.key(), iter.value());
+        ++iter;
+    }
 }
 
 TSCHeader_t &MDatabase::get_tsc_header()
@@ -341,6 +425,10 @@ QList<TimeSection> MDatabase::get_timesection_table()
     {
         for (int j = 0; j < timesection_table_.FactEventNum; j++)
         {
+			if (timesection_table_.TimeSectionList[i][j].TimeSectionId == 0)
+			{
+				continue;
+			}
             TimeSection section;
             section.time_section_id = timesection_table_.TimeSectionList[i][j].TimeSectionId;
             section.event_id = timesection_table_.TimeSectionList[i][j].EventId;
@@ -382,9 +470,14 @@ QList<PhaseTiming> MDatabase::get_timeconfig_table()
     {
         for (int j = 0; j < timeconfig_table_.FactStageNum; j++)
         {
+			if (timeconfig_table_.TimeConfigList[i][j].TimeConfigId == 0)
+			{
+				continue;
+			}
             PhaseTiming phase_timing;
             phase_timing.phase_timing_id = timeconfig_table_.TimeConfigList[i][j].TimeConfigId;
-            phase_timing.phase_id = timeconfig_table_.TimeConfigList[i][j].PhaseId;
+            //phase_timing.phase_id = timeconfig_table_.TimeConfigList[i][j].PhaseId;	// stored by bits
+			phase_timing.phase_id = get_phasetiming_phase_id(timeconfig_table_.TimeConfigList[i][j].PhaseId);
             phase_timing.stage_id = timeconfig_table_.TimeConfigList[i][j].StageId;
             phase_timing.green_time = timeconfig_table_.TimeConfigList[i][j].GreenTime;
             phase_timing.yellow_time = timeconfig_table_.TimeConfigList[i][j].YellowTime;
@@ -443,21 +536,25 @@ QList<PhaseParam> MDatabase::get_phase_table()
 QList<ChannelParam> MDatabase::get_channel_table()
 {
     QList<ChannelParam> channel_list;
+	int index = -1;
     for (int i = 0; i < channel_table_.FactChannelNum; i++)
     {
         ChannelParam channel;
         channel.channel_id = channel_table_.ChannelList[i].ChannelId;
         channel.channel_flash = channel_table_.ChannelList[i].ChannelFlash;
         channel.channel_type = channel_table_.ChannelList[i].ChannelType;
-        channel.channel_direction = channel_hint_table_.ChannelHintList[i].ChannelDirect;
-        channel.channel_road = channel_hint_table_.ChannelHintList[i].ChannelRoad;
+		if ((index = index_of_channel_hint_table(channel.channel_id)) != -1)
+		{
+			channel.channel_direction = channel_hint_table_.ChannelHintList[index].ChannelDirect;
+			channel.channel_road = channel_hint_table_.ChannelHintList[index].ChannelRoad;
+		}
 
         channel_list.append(channel);
-    }
+	}
+
+	qSort(channel_list.begin(), channel_list.end(), channel_less_than);
     std::list<ChannelParam> std_channel_list = channel_list.toStdList();
-    std_channel_list.sort();
-    std::list<ChannelParam>::iterator iter = unique(std_channel_list.begin(), std_channel_list.end());
-    std_channel_list.erase(iter, std_channel_list.end());
+	std_channel_list.unique();
     channel_list.clear();
     channel_list = QList<ChannelParam>::fromStdList(std_channel_list);
 
@@ -471,7 +568,6 @@ QList<DetectorParam> MDatabase::get_detector_table()
     {
         DetectorParam detector;
         detector.detector_id = detector_table_.DetectorList[i].DetectorId;
-//        detector.detector_phase_ids = detector_table_.DetectorList[i].DetectorPhase;
         detector.detector_type = detector_table_.DetectorList[i].DetectorType;
         detector.detector_direction = detector_table_.DetectorList[i].DetectorDirect;
         detector.detector_delay = detector_table_.DetectorList[i].DetectorDelay;
@@ -495,13 +591,15 @@ QList<DetectorParam> MDatabase::get_detector_table()
     for (int i = 0; i < detector_table_.FactDetectorNum; i++)
     {
         detector_tmp.detector_id = detector_table_.DetectorList[i].DetectorId;
-//        detector_tmp.detector_phase_ids = detector_table_.DetectorList[i].DetectorPhase;
         detector_tmp.detector_type = detector_table_.DetectorList[i].DetectorType;
         detector_tmp.detector_direction = detector_table_.DetectorList[i].DetectorDirect;
         detector_tmp.detector_delay = detector_table_.DetectorList[i].DetectorDelay;
-        detector_tmp.detector_spec_func = detector_table_.DetectorList[i].DetectorSpecFunc;
+        detector_tmp.detector_spec_func = (detector_table_.DetectorList[i].DetectorSpecFunc & 0x02);
         detector_tmp.detector_flow = detector_table_.DetectorList[i].DetectorFlow;
         detector_tmp.detector_occupy = detector_table_.DetectorList[i].DetectorOccupy;
+		detector_tmp.detector_effective_time = detector_table_.DetectorList[i].DetectorDelay;
+		detector_tmp.detector_failure_time = detector_table_.DetectorList[i].DetectorSpecFunc >> 2;
+
         index = detector_list.indexOf(detector_tmp);
         if (index != -1)
         {
@@ -525,9 +623,21 @@ QList<PhaseConflictParam> MDatabase::get_phase_conflict_table()
     return conflict_list;
 }
 
+SignalerMap &MDatabase::get_signaler_map()
+{
+    return signaler_map_;
+}
+
 MDatabase::MDatabase()
 {
     memset(&tsc_header_, 0x00, sizeof(tsc_header_));
+	char company_name[9]={'C','H','A','O','Y','U','A','N','\0'};
+	char product_name[4]={'T','S','M','\0'}; //Traffic Signal Machine
+	char product_version[6]={'1','.','0','.','0','\0'};
+	memcpy(&tsc_header_.CompanyName, &company_name, sizeof(company_name));
+	memcpy(&tsc_header_.ProductName, &product_name, sizeof(product_name));
+	memcpy(&tsc_header_.ProductId, &product_version, sizeof(product_version));
+
     memset(&sched_table_, 0x00, sizeof(sched_table_));
     memset(&unit_table_, 0x00, sizeof(unit_table_));
     memset(&timesection_table_, 0x00, sizeof(timesection_table_));
@@ -581,4 +691,79 @@ void MDatabase::init_channel_ctrl_src_phase()
 	{
 		channel_phase_read_map_.insertMulti(channel_table_.ChannelList[i].ChannelId, channel_table_.ChannelList[i].ChannelCtrlSrc);
 	}
+}
+
+bool MDatabase::channel_less_than( const ChannelParam &left, const ChannelParam &right )
+{
+	if (left.channel_id > right.channel_id)
+	{
+		return false;
+	}
+	else if (left.channel_ctrl_src > right.channel_ctrl_src)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+int MDatabase::index_of_channel_hint_table( unsigned char channel_id )
+{
+	int index = -1;
+	for (int i = 0; i < channel_hint_table_.FactChannelHintNum; i++)
+	{
+		if (channel_hint_table_.ChannelHintList[i].ChannelId == channel_id)
+		{
+			index = i;
+			return index;
+		}
+	}
+	return index;
+}
+
+bool MDatabase::phasetiming_less_than( const PhaseTiming &left, const PhaseTiming &right )
+{
+	if (left.phase_timing_id > right.phase_timing_id)
+	{
+		return false;
+	}
+	else if (left.stage_id > right.stage_id)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+bool MDatabase::timesection_less_than( const TimeSection &left, const TimeSection &right )
+{
+	if (left.time_section_id > right.time_section_id)
+	{
+		return false;
+	}
+	else if (left.event_id > right.event_id)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+unsigned char MDatabase::get_phasetiming_phase_id( unsigned int phase_id_bits )
+{
+	for (int i = 1; i <= 32; i++)
+	{
+		if ((phase_id_bits & 0x01) == 0x01)
+		{
+			return i;
+		}
+		phase_id_bits = phase_id_bits >> 1;
+	}
+	return 0;
 }

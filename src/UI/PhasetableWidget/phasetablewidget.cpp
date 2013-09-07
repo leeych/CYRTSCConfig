@@ -7,7 +7,7 @@
 PhasetableWidget::PhasetableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    phase_edit_dlg_ = new PhaseeditDlg;
+    phase_edit_dlg_ = new PhaseeditDlg(this);
     handler_ = new PhaseHandler;
     InitPage();
     InitSignalSlots();
@@ -47,7 +47,8 @@ void PhasetableWidget::UpdateTree()
         item->setText(7, str);
         str.sprintf("%d", phase_list.at(i).phase_green_flash);
         item->setText(8, str);
-        str = get_phase_type_desc(phase_list.at(i).phase_type);
+//        str = get_phase_type_desc(phase_list.at(i).phase_type);
+        str = handler_->get_phase_type_desc(phase_list.at(i).phase_type);
         item->setText(9, str);
         str.sprintf("%d", phase_list.at(i).phase_spec_func);
         item->setText(10, str);
@@ -80,7 +81,7 @@ void PhasetableWidget::OnAddActionClicked()
     /*
     if (!handler_->addNewPhase())
     {
-        QMessageBox::information(NULL, STRING_TIP, "Already to limited.", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, "Already to limited.", STRING_OK);
         return;
     }
     UpdateTree();
@@ -89,7 +90,7 @@ void PhasetableWidget::OnAddActionClicked()
 	int row_cnt = tree_widget_->topLevelItemCount();
 	if (row_cnt >= MAX_CHANNEL)
 	{
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_PHASE_TOP_LIMITED + QString::number(MAX_CHANNEL) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_PHASE_TOP_LIMITED + QString::number(MAX_CHANNEL) + " !", STRING_OK);
 		return;
 	}
 //	UpdateTree();
@@ -167,7 +168,8 @@ void PhasetableWidget::OnUpdateTreeItemSlot(unsigned char id)
     item->setText(7, str);
     str.sprintf("%d", phase.phase_green_flash);
     item->setText(8, str);
-	str = get_phase_type_desc(phase.phase_type);
+//	str = get_phase_type_desc(phase.phase_type);
+    str = handler_->get_phase_type_desc(phase.phase_type);
 	item->setText(9, str);
     str.sprintf("%d", phase.phase_spec_func);
     item->setText(10, str);
@@ -265,23 +267,7 @@ void PhasetableWidget::InitContextMenu()
 
 QString PhasetableWidget::get_phase_type_desc( unsigned char phase_type )
 {
-	QString str;
-	if ((phase_type & 0x080) == 0x080)
-	{
-		str = STRING_UI_PHASE_FIX;
-	}
-	else if ((phase_type & 0x040) == 0x040)
-	{
-		str = STRING_UI_PHASE_DETERMINED;
-	}
-	else if ((phase_type & 0x020) == 0x020)
-	{
-		str = STRING_UI_PHASE_ELASTICITY;
-	}
-	else if ((phase_type & 0x010) == 0x010)
-	{
-		str = STRING_UI_PHASE_CRUTIAL;
-	}
+    QString str = handler_->get_phase_type_desc(phase_type);
 	return str;
 }
 
@@ -295,6 +281,10 @@ QString PhasetableWidget::get_phase_ctrled_channels_desc( unsigned int channel_i
 			str += QString::number(i) + "/";
 		}
 		channel_ids = channel_ids >> 1;
+	}
+	if (str.isEmpty())
+	{
+		return "-";
 	}
 	return str.left(str.size() - 1);
 }

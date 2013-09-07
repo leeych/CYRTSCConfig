@@ -32,6 +32,7 @@ public:
     bool save_data();
 
 private:
+	static bool schedule_less_than(const ScheduleParam &left, const ScheduleParam &right);
 
 private:
     MDatabase* db_;

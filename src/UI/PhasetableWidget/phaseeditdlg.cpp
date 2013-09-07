@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QGridLayout>
+#include <QMessageBox>
 
 PhaseeditDlg::PhaseeditDlg(QWidget *parent) :
     QDialog(parent)
@@ -21,6 +22,12 @@ void PhaseeditDlg::Initialize(unsigned char phase_id, PhaseHandler *handler)
 
 void PhaseeditDlg::OnOkButtonClicked()
 {
+    if (ValidateUI() == MinLargerThanMax1)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_MIN_LARGER_MAX + QString::number(1) + " !", STRING_OK);
+        return;
+    }
+
     if (SaveData())
     {
         accept();
@@ -71,6 +78,13 @@ void PhaseeditDlg::InitPage()
     green_flash_time_spinbox_->setRange(0, 255);
 
     phase_mode_cmb_ = new QComboBox;
+
+    // additional phases
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_MOTOR);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_BIKE);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_WALKMAN);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_DELAY);
+
     phase_mode_cmb_->addItem(STRING_UI_PHASE_FIX);
     phase_mode_cmb_->addItem(STRING_UI_PHASE_DETERMINED);
     phase_mode_cmb_->addItem(STRING_UI_PHASE_ELASTICITY);
@@ -202,29 +216,26 @@ void PhaseeditDlg::UpdateUI()
     man_green_time_spinbox_->setValue(phase.phase_walk_green);
     man_clear_time_spinbox_->setValue(phase.phase_walk_clear);
     min_green_time_spinbox_->setValue(phase.phase_min_green);
-    delay_green_time_spinbox_->setValue(phase.phase_green_delay);
+    if (phase.phase_green_delay == 0)
+    {
+        delay_green_time_spinbox_->setValue(3);
+    }
+    else
+    {
+        delay_green_time_spinbox_->setValue(phase.phase_green_delay);
+    }
     max1_green_time_spinbox_->setValue(phase.phase_max_green1);
     max2_green_time_spinbox_->setValue(phase.phase_max_green2);
     fix_green_time_spinbox_->setValue(phase.phase_fix_green);
-    green_flash_time_spinbox_->setValue(phase.phase_green_flash);
-
-    if ((phase.phase_type & 0x00000010) == 0x00000080)
+    if (phase.phase_green_flash == 0)
     {
-        phase_mode_cmb_->setCurrentIndex(0);
+        green_flash_time_spinbox_->setValue(3);
     }
-    else if ((phase.phase_type & 0x00000040))
+    else
     {
-        phase_mode_cmb_->setCurrentIndex(1);
+        green_flash_time_spinbox_->setValue(phase.phase_green_flash);
     }
-    else if ((phase.phase_type & 0x00000020) == 0x00000020)
-    {
-        phase_mode_cmb_->setCurrentIndex(2);
-		detector_num_spinbox_->setEnabled(true);
-    }
-    else if ((phase.phase_type & 0x00000010))
-    {
-        phase_mode_cmb_->setCurrentIndex(3);
-    }
+    UpdatePhaseType(phase.phase_type);
 
 	unsigned int channel_ids = phase.phase_channel;
 	for (int i = 0; i < channel_list_.size(); i++)
@@ -267,7 +278,55 @@ void PhaseeditDlg::ResetUI()
     {
         channel_list_.at(i)->setChecked(false);
     }
-	detector_num_spinbox_->setEnabled(false);
+    detector_num_spinbox_->setEnabled(false);
+}
+
+void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
+{
+    if ((phase_type & 0x080) == 0x080)
+    {
+        phase_mode_cmb_->setCurrentIndex(0);
+    }
+    else if ((phase_type & 0x040) == 0x040)
+    {
+        phase_mode_cmb_->setCurrentIndex(1);
+    }
+    else if ((phase_type & 0x020) == 0x020)
+    {
+        phase_mode_cmb_->setCurrentIndex(2);
+    }
+    else if ((phase_type & 0x010) == 0x010)
+    {
+        phase_mode_cmb_->setCurrentIndex(3);
+    }
+    else if ((phase_type & 0x08) == 0x08)
+    {
+        phase_mode_cmb_->setCurrentIndex(4);
+    }
+    else if ((phase_type & 0x04) == 0x04)
+    {
+        phase_mode_cmb_->setCurrentIndex(5);
+    }
+    else if ((phase_type & 0x02) == 0x02)
+    {
+        phase_mode_cmb_->setCurrentIndex(6);
+        detector_num_spinbox_->setEnabled(true);
+    }
+    else if ((phase_type & 0x01) == 0x01)
+    {
+        phase_mode_cmb_->setCurrentIndex(7);
+    }
+}
+
+PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
+{
+    int min_green = min_green_time_spinbox_->value();
+    int max_green1 = max1_green_time_spinbox_->value();
+    if (min_green >= max_green1)
+    {
+        return MinLargerThanMax1;
+    }
+    return None;
 }
 
 bool PhaseeditDlg::SaveData()
@@ -284,23 +343,7 @@ bool PhaseeditDlg::SaveData()
     phase.phase_max_green2 = max2_green_time_spinbox_->value();
 	phase.phase_spec_func = 0x01;
 	phase.phase_channel = get_channels();
-    switch(phase_mode_cmb_->currentIndex())
-    {
-    case 0:
-        phase.phase_type = 0x00000080;
-        break;
-    case 1:
-        phase.phase_type = 0x00000040;
-        break;
-    case 2:
-        phase.phase_type = 0x00000020;
-        break;
-    case 3:
-        phase.phase_type = 0x00000010;
-        break;
-    default:
-        break;
-    }
+    phase.phase_type = handler_->get_phase_type_by_desc(phase_mode_cmb_->currentText().trimmed());
     // channels to be determined
 	handler_->set_phase(curr_phase_id_, phase);
 	curr_phase_id_ = phase.phase_id;

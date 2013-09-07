@@ -8,6 +8,11 @@ BottomButtonsWidget::BottomButtonsWidget(QWidget *parent)
     : QWidget(parent)
 {
     InitPage();
+
+    add_button_->setBackgroundRole(QPalette::Button);
+    edit_button_->setBackgroundRole(QPalette::Button);
+    delete_button_->setBackgroundRole(QPalette::Button);
+    save_button_->setBackgroundRole(QPalette::Button);
 }
 
 QPushButton *BottomButtonsWidget::addButtonPtr()
@@ -32,25 +37,25 @@ QPushButton *BottomButtonsWidget::saveButtonPtr()
 
 void BottomButtonsWidget::OnAddButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Add", STRING_OK);
+    QMessageBox::information(this, STRING_TIP, "Add", STRING_OK);
     return;
 }
 
 void BottomButtonsWidget::OnEditButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Edit", STRING_OK);
+    QMessageBox::information(this, STRING_TIP, "Edit", STRING_OK);
     return;
 }
 
 void BottomButtonsWidget::OnDeleteButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Delete", STRING_OK);
+    QMessageBox::information(this, STRING_TIP, "Delete", STRING_OK);
     return;
 }
 
 void BottomButtonsWidget::OnSaveButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Save", STRING_OK);
+    QMessageBox::information(this, STRING_TIP, "Save", STRING_OK);
     return;
 }
 

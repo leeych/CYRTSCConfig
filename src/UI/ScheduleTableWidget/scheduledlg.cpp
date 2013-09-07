@@ -1,5 +1,6 @@
 #include "scheduledlg.h"
 #include "macrostring.h"
+#include "mutility.h"
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -192,13 +193,14 @@ void ScheduleDlg::InitPage()
     fri_chk_ = new QCheckBox(STRING_UI_FRIDAY);
     sat_chk_ = new QCheckBox(STRING_UI_SATURDAY);
     sun_chk_ = new QCheckBox(STRING_UI_SUNDAY);
+
+	weekday_list_.append(sun_chk_);
     weekday_list_.append(mon_chk_);
     weekday_list_.append(thue_chk_);
     weekday_list_.append(wed_chk_);
     weekday_list_.append(thur_chk_);
     weekday_list_.append(fri_chk_);
     weekday_list_.append(sat_chk_);
-    weekday_list_.append(sun_chk_);
 
     QHBoxLayout* weekrbt_hlayout = new QHBoxLayout;
     weekrbt_hlayout->addWidget(weekday_schedule_label);

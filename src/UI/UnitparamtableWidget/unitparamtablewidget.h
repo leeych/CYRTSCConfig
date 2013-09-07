@@ -33,6 +33,7 @@ private:
     void InitSignalSlots();
 
     bool SaveData();
+	void PageFontSetting(const QFont &font);
 
 private:
     UnitparamHandler *handler_;

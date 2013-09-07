@@ -29,6 +29,7 @@ public:
 
 private:
     unsigned char get_max_channel_id();
+	static bool channel_less_than(const ChannelParam &left, const ChannelParam &right);
 
 private:
     unsigned char current_channel_id_;

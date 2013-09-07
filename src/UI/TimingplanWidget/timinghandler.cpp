@@ -12,10 +12,7 @@ TimingHandler::~TimingHandler()
 void TimingHandler::init()
 {
     timing_list_ = db_->get_timing_table();
-    for (int i = 0; i < timing_list_.size(); i++)
-    {
-        stage_timing_cycle_map_.insert(timing_list_.at(i).stage_timing_id, timing_list_.at(i).cycle_time);
-    }
+	update_cycle_time();
 }
 
 bool TimingHandler::is_timing_plan_exists(unsigned char timing_id)
@@ -123,6 +120,7 @@ void TimingHandler::update_cycle_time()
 
 unsigned char TimingHandler::get_cycletime_by_stagetiming_id(unsigned char stage_timing_id)
 {
+	cycle_time_assign();
     if (stage_timing_cycle_map_.contains(stage_timing_id))
     {
         return stage_timing_cycle_map_.value(stage_timing_id);

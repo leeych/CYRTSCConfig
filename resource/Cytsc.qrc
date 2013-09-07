@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/icon.png</file>
+        <file>language/CYTSC.qm</file>
+        <file>images/icon/save.png</file>
+        <file>images/icon/help.png</file>
+        <file>images/icon/network.png</file>
+        <file>images/icon/setting.png</file>
+        <file>images/splash.png</file>
+        <file>images/touch_enter.png</file>
+        <file>images/bottom_img.png</file>
+        <file>images/edit_img.png</file>
+        <file>images/enter_cur.png</file>
+        <file>images/enter_hover.png</file>
+        <file>images/login_bg.png</file>
+        <file>images/left.png</file>
+        <file>images/right.png</file>
+        <file>images/up.png</file>
+        <file>images/down.png</file>
+        <file>qstylesheet/tabwidget.qss</file>
+        <file>qstylesheet/mainwindow.qss</file>
+        <file>images/login_icon.png</file>
+        <file>images/app.ico</file>
+    </qresource>
+</RCC>

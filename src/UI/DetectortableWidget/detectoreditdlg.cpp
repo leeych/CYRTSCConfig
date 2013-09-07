@@ -254,6 +254,7 @@ bool DetectoreditDlg::SaveData()
     detector.detector_occupy = share_spinbox_->value();
 	detector.detector_phase_ids = get_detector_phase_ids();
 	detector.detector_spec_func = get_detector_spec_func();
+	detector.detector_delay = eff_time_spinbox_->value();
 
     // other fields left to be done
     curr_detector_id_ = detector.detector_id;
@@ -419,7 +420,7 @@ void DetectoreditDlg::update_detector_phase_ids( unsigned int phase_ids )
 	}
 }
 
-unsigned char DetectoreditDlg::get_detector_phase_ids()
+unsigned int DetectoreditDlg::get_detector_phase_ids()
 {
 	unsigned int phase_ids = 0;
 	for (int i = phase_chk_list_.size() - 1; i >= 0; i--)

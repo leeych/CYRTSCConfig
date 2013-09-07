@@ -7,7 +7,7 @@
 PhasetimingtableWidget::PhasetimingtableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    phase_timing_edit_dlg_ = new PhasetimingeditDlg;
+    phase_timing_edit_dlg_ = new PhasetimingeditDlg(this);
     handler_ = new PhasetimingHandler;
     InitPage();
     InitSignalSlots();
@@ -86,7 +86,7 @@ void PhasetimingtableWidget::OnAddActionClicked()
 {
     if (tree_widget_->topLevelItemCount() >= MAX_TIMECONFIG_LINE)
     {
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_PHASE_TIMING_TOP_LIMITED + QString::number(MAX_TIMECONFIG_LINE) + " !" , STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_PHASE_TIMING_TOP_LIMITED + QString::number(MAX_TIMECONFIG_LINE) + " !" , STRING_OK);
         return;
     }
     QString str("-");

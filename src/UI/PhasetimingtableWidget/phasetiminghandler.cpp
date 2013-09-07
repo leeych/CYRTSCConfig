@@ -13,6 +13,7 @@ PhasetimingHandler::~PhasetimingHandler()
 void PhasetimingHandler::init()
 {
     timing_list_ = db_->get_timeconfig_table();
+	qSort(timing_list_.begin(), timing_list_.end(), stage_less_than);
     multimap_assign();
 }
 

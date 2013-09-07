@@ -26,12 +26,16 @@ public:
     QList<PhaseParam> &get_phase_list();
 	unsigned char get_phase_channel_id(unsigned char phase_id);
 	QString get_phase_ctrled_channels_desc(unsigned int channel_ids);
+    unsigned char get_phase_type_by_desc(const QString &desc);
+    QString get_phase_type_desc(unsigned char phase_type);
 
     bool save_data();
 
 private:
     unsigned char get_max_phase_id();
     void dump_list();
+
+	static bool phase_less_than(const PhaseParam &left, const PhaseParam &right);
 
 private:
     MDatabase* db_;

@@ -7,8 +7,9 @@ class MUtility
 {
 public:
     static void getMainDir(QString& strDir);
+    static void getLanguageDir(QString &strDir);
     static void getImageDir(QString& strImageDir);
-    static void getCssDir(QString& strCssDir);
+    static void getStyleSheetDir(QString& strCssDir);
     static void getCurIconDir(QString& strCurIconDir);
     static void getCurseIconDir(QString& strCurseIconDir);
     static void getClickIconDir(QString& strClickIconDir);

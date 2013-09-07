@@ -36,12 +36,14 @@ void FileListWidget::OnAddFileAction()
 
         AddTableItem(file_count_, 0, QString::number(file_count_));
         AddTableItem(file_count_, 1, file_short_name);
-		file_count_++;
         file_path_map_.insert(file_count_, open_file_name_);
+		file_count_++;
 
         curr_file_name_ = open_file_name_;
         emit updateTabPageSignal();
+        emit updateFilePathSignal(curr_file_name_);
     }
+    UpdateUI();
 }
 
 void FileListWidget::OnNewFileAction()
@@ -60,86 +62,124 @@ void FileListWidget::OnNewFileAction()
         QString file_short_name = new_file_name_.right(new_file_name_.length() - index - 1);
         AddTableItem(file_count_, 0, QString::number(file_count_));
         AddTableItem(file_count_, 1, file_short_name);
+		file_path_map_.insert(file_count_, new_file_name_);
 		file_count_++;
+		UpdateUI();
         emit updateTabPageSignal();
+		emit updateFilePathSignal("");
     }
     else
     {
-        QMessageBox::information(NULL, STRING_TIP, STRING_UI_FILEMANAGER_NEW_FILE_FAILED, STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_FILEMANAGER_NEW_FILE_FAILED, STRING_OK);
+        return;
+    }
+}
+
+void FileListWidget::OnSaveAsFileAction()
+{
+    QString file_name = QFileDialog::getSaveFileName(NULL, STRING_UI_SAVEAS, "./", "Data(*.dat);;All File(*.*)");
+    if (file_name.isNull() || file_name.isEmpty())
+    {
+        return;
+    }
+    bool status = reader_writer_->WriteFile(file_name.toStdString().c_str());
+    UpdateUI();
+    if (!status)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_MAIN_SAVE_FAILED, STRING_OK);
         return;
     }
 }
 
 void FileListWidget::OnRemoveFileAction()
 {
-    int row_cnt = file_table_->rowCount();
-	if (row_cnt == 1)
-	{
-//		file_list_widget_->takeItem(0);
-        delete file_table_->takeItem(0, 0);
-        delete file_table_->takeItem(0, 1);
-		file_path_map_.remove(file_count_);
-		file_count_--;
-		return;
-	}
     int row = file_table_->currentRow();
 	if (row < 0)
 	{
 		return;
 	}
-    QString file_name = file_table_->item(row, 1)->text().trimmed();
+	int id = file_table_->item(row, 0)->text().toUInt();
+    QString file_name = file_path_map_.value(id);
     if (ResetDataDisp(file_name))
     {
         curr_file_name_ = "";
 //        delete file_list_widget_->takeItem(row);
         file_table_->removeRow(row);
-		file_path_map_.remove(file_count_);
 		file_count_--;
+		file_path_map_.remove(file_count_);
+		
         emit updateTabPageSignal();
+		emit updateFilePathSignal("");
     }
+    UpdateUI();
 }
 
 void FileListWidget::OnDeleteFileAction()
 {
+	int row_cnt = file_table_->rowCount();
+	if (row_cnt == 1)
+	{
+		int id = file_table_->item(0, 0)->text().toUInt();
+		QString file_name = file_path_map_.value(id);
+		if (DeleteFile(file_name))
+		{
+			file_table_->removeRow(0);
+		}
+		return;
+	}
+
     int row = file_table_->currentRow();
     if (row < 0)
     {
         return;
     }
-
     int id = file_table_->item(row, 0)->text().toInt();
     QString file_name = file_path_map_.value(id);
-    if (!file_name.isEmpty() && QFile::exists(file_name))
-    {
-        if (QFile::remove(file_name))
-        {
-            if (ResetDataDisp(file_name))
-            {
-                curr_file_name_ = "";
-//                delete file_list_widget_->takeItem(row);
-                file_table_->removeRow(row);
-				file_path_map_.remove(file_count_);
-				file_count_--;
-                emit updateTabPageSignal();
-            }
-        }
-        else
-        {
-            QMessageBox::information(NULL, STRING_TIP, STRING_UI_DELETE_FILE, STRING_OK);
-            return;
-        }
-    }
+	if (DeleteFile(file_name))
+	{
+		file_table_->removeRow(row);
+	}
 }
 
 void FileListWidget::OnClearListAction()
 {
     curr_file_name_ = "";
     data_resetter_->ResetDatabase();
-//    file_list_widget_->clear();
+
+	int table_row = file_table_->rowCount();
+	for (int i = 0; i < table_row; i++)
+	{
+		file_table_->removeRow(i);
+	}
     file_table_->clear();
 	file_path_map_.clear();
 	file_count_ = 0;
     emit updateTabPageSignal();
+	emit updateFilePathSignal("");
+    UpdateUI();
+}
+
+void FileListWidget::OnFileTableItemDoubleClicked(int row, int col)
+{
+    Q_UNUSED(col);
+    if (row < 0)
+    {
+        return;
+    }
+    int id = file_table_->item(row, 0)->text().toInt();
+    QString file_name = file_path_map_.value(id);
+    if (!(file_name != curr_file_name_ && !file_name.isEmpty() && QFile::exists(file_name)))
+    {
+        return;
+    }
+
+    bool status = reader_writer_->ReadFile(file_name.toStdString().c_str());
+    if (status)
+    {
+        curr_file_name_ = file_name;
+        emit updateTabPageSignal();
+        emit updateFilePathSignal(curr_file_name_);
+    }
 }
 
 void FileListWidget::InitPage()
@@ -153,8 +193,10 @@ void FileListWidget::InitPage()
     QMenu* menu_add = new QMenu;
     add_file_action_ = new QAction(STRING_UI_FILELIST_ADD, menu_add);
     create_file_action_ = new QAction(STRING_UI_FILELIST_CREATE, menu_add);
+    save_as_action_ = new QAction(STRING_UI_SAVEAS, menu_add);
     menu_add->addAction(add_file_action_);
     menu_add->addAction(create_file_action_);
+    menu_add->addAction(save_as_action_);
 //    menu_add->setDefaultAction(add_file_action_);
     read_file_button_->setMenu(menu_add);
     read_file_button_->setDefaultAction(add_file_action_);
@@ -191,15 +233,20 @@ void FileListWidget::InitPage()
     QString frame_qss =
        "QFrame{border-width:1px;border-style:solid;border-color:LightSkyBlue;margin-top:1px;}";
     setStyleSheet(frame_qss);
+	UpdateUI();
 }
 
 void FileListWidget::InitSignalSlots()
 {
     connect(add_file_action_, SIGNAL(triggered()), this, SLOT(OnAddFileAction()));
     connect(create_file_action_, SIGNAL(triggered()), this, SLOT(OnNewFileAction()));
+    connect(save_as_action_, SIGNAL(triggered()), this, SLOT(OnSaveAsFileAction()));
+
     connect(remove_file_action_, SIGNAL(triggered()), this, SLOT(OnRemoveFileAction()));
     connect(delete_file_action_, SIGNAL(triggered()), this, SLOT(OnDeleteFileAction()));
     connect(clear_list_action_, SIGNAL(triggered()), this, SLOT(OnClearListAction()));
+
+    connect(file_table_, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(OnFileTableItemDoubleClicked(int,int)));
 }
 
 void FileListWidget::InitFileTable()
@@ -219,7 +266,17 @@ void FileListWidget::InitFileTable()
     file_table_->setColumnCount(2);
     file_table_->setColumnHidden(0, true);
 	file_table_->setColumnWidth(0, 1);
-	file_table_->resizeRowsToContents();
+    file_table_->resizeRowsToContents();
+}
+
+void FileListWidget::UpdateUI()
+{
+    bool status = !file_path_map_.isEmpty();
+
+    save_as_action_->setEnabled(status);
+    remove_file_action_->setEnabled(status);
+    delete_file_action_->setEnabled(status);
+    clear_list_action_->setEnabled(status);
 }
 
 FileListWidget::~FileListWidget()
@@ -228,9 +285,32 @@ FileListWidget::~FileListWidget()
     delete data_resetter_;
 }
 
-void FileListWidget::SaveDataFile()
+bool FileListWidget::SaveDataFile()
 {
-    reader_writer_->WriteFile(curr_file_name_.toStdString().c_str());
+	if (curr_file_name_.isEmpty())
+	{
+		QString file_name = QFileDialog::getSaveFileName(NULL, STRING_UI_SAVE, "./", "Data(*.dat);;All File(*.*)");
+		if (file_name.isNull() || file_name.isEmpty())
+		{
+			return false;
+		}
+		int index = file_name.lastIndexOf("/");
+		QString file_short_name = file_name.right(file_name.length() - index - 1);
+		//        file_list_widget_->addItem(file_short_name);
+
+		AddTableItem(file_count_, 0, QString::number(file_count_));
+		AddTableItem(file_count_, 1, file_short_name);
+		file_path_map_.insert(file_count_, open_file_name_);
+		file_count_++;
+
+		curr_file_name_ = file_name;
+		open_file_name_ = file_name;
+		emit updateTabPageSignal();
+		emit updateFilePathSignal(curr_file_name_);
+		UpdateUI();
+		return reader_writer_->WriteFile(file_name.toStdString().c_str());
+	}
+    return reader_writer_->WriteFile(curr_file_name_.toStdString().c_str());
 }
 
 bool FileListWidget::ResetDataDisp(const QString &file_name)
@@ -248,4 +328,34 @@ void FileListWidget::AddTableItem(int row, int col, const QString &str)
     QTableWidgetItem *item = new QTableWidgetItem;
     item->setText(str);
     file_table_->setItem(row, col, item);
+}
+
+bool FileListWidget::DeleteFile( const QString &file_name )
+{
+	if (!file_name.isEmpty() && QFile::exists(file_name))
+	{
+		if (QFile::remove(file_name))
+		{
+			if (ResetDataDisp(file_name))
+			{
+				UpdateUI();
+				curr_file_name_ = "";
+				//                delete file_list_widget_->takeItem(row);
+				//file_table_->removeRow(row);
+				file_count_--;
+				file_path_map_.remove(file_count_);
+				
+				emit updateTabPageSignal();
+				emit updateFilePathSignal("");
+				UpdateUI();
+				return true;
+			}
+		}
+		else
+		{
+            QMessageBox::information(this, STRING_TIP, STRING_UI_DELETE_FILE, STRING_OK);
+			return false;
+		}
+	}
+	return false;
 }

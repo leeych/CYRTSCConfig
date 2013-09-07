@@ -8,6 +8,8 @@
 #include <QAction>
 #include "signalerstatuswidget_global.h"
 #include "signalerbasiceditdlg.h"
+#include "signalerhandler.h"
+#include "signaleronlinesettingdlg.h"
 
 class SIGNALERSTATUSWIDGETSHARED_EXPORT SignalerStatusWidget : public QWidget
 {
@@ -28,7 +30,11 @@ public slots:
     void OnAddActionClicked();
     void OnEditActionClicked();
     void OnDeleteActionClicked();
+    void OnAdvancedActionClicked();
     void OnCustomContextMenuRequested(QPoint);
+    void OnTableCellDoubleClicked(int, int);
+
+    void OnTableRowUpdateSlot();
 
 private:
     void InitPage();
@@ -36,16 +42,21 @@ private:
 
     void InitTable();
     void InitTableHeader();
-
+    void AddTableRow(int index, const SignalerParam &signaler);
     void InitContextMenu();
+
+    QString get_status_desc(SignalerParam::SignalerStatus status);
+    QColor get_status_text_color(SignalerParam::SignalerStatus status);
 
 private:
     QString widget_name_;
+    SignalerHandler *handler_;
 
 private:
     SignalerbasiceditDlg* signaler_edit_dlg_;
+    SignalerOnlineSettingDlg *signaler_online_dlg_;
     QMenu* context_menu_;
-    QAction* add_action_, *edit_action_, *delete_action_;
+    QAction* add_action_, *edit_action_, *delete_action_, *advanced_button_;
 
     QTableWidget* signaler_table_;
     QPushButton* ok_button_, *cancel_button_;

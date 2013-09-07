@@ -19,18 +19,22 @@ class FILELISTWIDGETSHARED_EXPORT FileListWidget : public QWidget
 public:
     explicit FileListWidget(QWidget* parent = 0);
 	~FileListWidget();
-	void SaveDataFile();
+	bool SaveDataFile();
 
 signals:
     void updateTabPageSignal();
+    void updateFilePathSignal(const QString &file_name);
 
 public slots:
     void OnAddFileAction();
     void OnNewFileAction();
+	void OnSaveAsFileAction();
 
     void OnRemoveFileAction();
     void OnDeleteFileAction();
-    void OnClearListAction();
+	void OnClearListAction();
+
+    void OnFileTableItemDoubleClicked(int row, int col);
 
 private:
     void InitPage();
@@ -39,6 +43,7 @@ private:
     void InitFileTable();
     void UpdateUI();
 
+	bool DeleteFile(const QString &file_name);
 	bool ResetDataDisp(const QString &file_name);
     void AddTableItem(int row, int col, const QString &str);
 
@@ -58,7 +63,7 @@ private:
     QToolButton* read_file_button_;
     QToolButton* delete_file_button_;
 
-    QAction* add_file_action_, *create_file_action_;
+    QAction* add_file_action_, *create_file_action_, *save_as_action_;
     QAction* remove_file_action_, *delete_file_action_, *clear_list_action_;
 };
 

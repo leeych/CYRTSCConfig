@@ -31,6 +31,7 @@ DetectorHandler::~DetectorHandler()
 void DetectorHandler::init()
 {
     detector_list_ = db_->get_detector_table();
+	qSort(detector_list_.begin(), detector_list_.end(), detector_less_than);
 }
 
 bool DetectorHandler::add_detector(const DetectorParam &detector)
@@ -59,7 +60,16 @@ void DetectorHandler::set_detector(unsigned char detector_id, const DetectorPara
     int idx = index_of_detector_list(detector_id);
     if (idx != -1)
     {
-		detector_list_[idx] = detector;
+		detector_list_[idx].detector_id = detector.detector_id;
+		detector_list_[idx].detector_phase_ids = detector.detector_phase_ids;
+		detector_list_[idx].detector_delay = detector.detector_delay;
+		detector_list_[idx].detector_direction = detector.detector_direction;
+		detector_list_[idx].detector_effective_time = detector.detector_effective_time;
+		detector_list_[idx].detector_failure_time = detector.detector_failure_time;
+		detector_list_[idx].detector_type = detector.detector_type;
+		detector_list_[idx].detector_flow = detector.detector_flow;
+		detector_list_[idx].detector_occupy = detector.detector_occupy;
+		detector_list_[idx].detector_spec_func = detector.detector_spec_func;
         return;
     }
     detector_list_.append(detector);
@@ -120,4 +130,20 @@ bool DetectorHandler::save_data()
     db_->set_detector_table(detector_list_);
 
     return true;
+}
+
+bool DetectorHandler::detector_less_than( const DetectorParam &left, const DetectorParam &right )
+{
+	if (left.detector_id > right.detector_id)
+	{
+		return false;
+	}
+	else if (left.detector_phase_ids > right.detector_phase_ids)
+	{
+		return false;
+	}
+	else 
+	{
+		return true;
+	}
 }

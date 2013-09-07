@@ -137,7 +137,7 @@ void ChanneleditDlg::UpdateUI()
         }
     }
     ChannelParam channel;
-    handler_->get_channel(handler_->get_current_channel_id(), channel);
+    handler_->get_channel(curr_channel_id_, channel);
     switch (channel.channel_type)
     {
     case 1:

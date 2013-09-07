@@ -12,6 +12,7 @@ PhaseconflictHandler::~PhaseconflictHandler()
 void PhaseconflictHandler::init()
 {
     phase_conflict_list_ = db_->get_phase_conflict_table();
+	qSort(phase_conflict_list_.begin(), phase_conflict_list_.end(), phase_conflict_less_than);
 }
 
 void PhaseconflictHandler::set_phase_conflict(unsigned char phase_id, unsigned int conflict_ids)
@@ -25,6 +26,7 @@ void PhaseconflictHandler::set_phase_conflict(unsigned char phase_id, unsigned i
     {
         phase_conflict_list_[idx].phase_id = phase_id;
         phase_conflict_list_[idx].conflict_phase_id = conflict_ids;
+		return;
     }
     PhaseConflictParam phase_err;
     phase_err.conflict_phase_id = conflict_ids;
@@ -75,4 +77,20 @@ bool PhaseconflictHandler::save_data()
     phase_conflict_list_ = QList<PhaseConflictParam>::fromStdList(std_list);
     db_->set_phase_conflict_table(phase_conflict_list_);
     return true;
+}
+
+bool PhaseconflictHandler::phase_conflict_less_than( const PhaseConflictParam &left, const PhaseConflictParam &right )
+{
+	if (left.phase_id > right.phase_id)
+	{
+		return false;
+	}
+	else if (left.conflict_phase_id > right.conflict_phase_id)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

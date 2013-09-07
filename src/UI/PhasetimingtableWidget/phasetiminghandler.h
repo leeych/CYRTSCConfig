@@ -36,7 +36,6 @@ private:
 	unsigned char get_max_map_key();
 	void set_phasetiming(unsigned char phase_timing_id, const PhaseTiming& plan);
 	static bool stage_less_than(const PhaseTiming& pre, const PhaseTiming& next);
-
     void multimap_assign();
 
 private:

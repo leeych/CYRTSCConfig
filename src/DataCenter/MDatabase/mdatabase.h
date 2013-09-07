@@ -10,10 +10,14 @@
 #include "scheduleparam.h"
 #include "phaseconflictparam.h"
 
+#include "signalerparam.h"
+
 #include "tsc.h"
 #include <stddef.h>
 #include <QList>
 #include <QMultiMap>
+
+typedef QMap<int, SignalerParam> SignalerMap;
 
 class MDatabase
 {
@@ -58,6 +62,8 @@ public:
     void set_detector_table(const QList<DetectorParam> &detector_list);
     void set_detector_table(const Detector_t &detector);
 
+    void set_signaler(const SignalerMap &signaler);
+
     TSCHeader_t &get_tsc_header();
     Unit_t &get_unit_table();
     Schedule_t &get_schedule();
@@ -79,12 +85,18 @@ public:
     QList<DetectorParam> get_detector_table();
     QList<PhaseConflictParam> get_phase_conflict_table();
 
+    SignalerMap &get_signaler_map();
+
 private:
     MDatabase();
     ~MDatabase();
 
+	unsigned char get_phasetiming_phase_id(unsigned int phase_id_bits);
     QList<unsigned char> get_id_list_by_bits_op(unsigned int phase_ids);
-
+	int index_of_channel_hint_table(unsigned char channel_id);
+	static bool phasetiming_less_than(const PhaseTiming &left, const PhaseTiming &right);
+	static bool timesection_less_than(const TimeSection &left, const TimeSection &right);
+	static bool channel_less_than(const ChannelParam &left, const ChannelParam &right);
 	static bool detector_less_than(const DetectorParam &left, const DetectorParam &right);
 
 private:
@@ -102,6 +114,8 @@ private:
 	ChannelHint_t	channel_hint_table_;
     PhaseError_t    phase_conflict_table_;
     Detector_t      detector_table_;
+
+    SignalerMap     signaler_map_;
 
 private:
     QMap<unsigned char, unsigned short> cycle_time_map_;

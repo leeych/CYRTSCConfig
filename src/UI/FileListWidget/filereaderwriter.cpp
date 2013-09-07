@@ -14,11 +14,12 @@ FileReaderWriter::~FileReaderWriter()
 bool FileReaderWriter::ReadFile(const char* file_path)
 {
 	open_file_path_ = std::string(file_path);
-	FILE *fp = fopen(file_path, "rb+");
+	FILE *fp = fopen(file_path, "rb");
 	if (fp == NULL)
 	{
 		return false;
 	}
+	ResetParam();
 	fseek(fp, 0, SEEK_SET);
 	fread(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
 	fread(&tsc_param_.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
@@ -63,18 +64,46 @@ bool FileReaderWriter::WriteFile(const char* file_path)
     memcpy(&tsc_param_.channel_hint_table_, &db_->get_channel_hint(), sizeof(tsc_param_.channel_hint_table_));
     memcpy(&tsc_param_.detector_table_, &db_->get_detector(), sizeof(tsc_param_.detector_table_));
 
-    fwrite(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
-    fwrite(&tsc_param_.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
-    fwrite(&tsc_param_.sched_table_, sizeof(tsc_param_.sched_table_), 1, fp);
-    fwrite(&tsc_param_.time_section_table_, sizeof(tsc_param_.time_section_table_), 1, fp);
-    fwrite(&tsc_param_.timing_plan_table_, sizeof(tsc_param_.timing_plan_table_), 1, fp);
-    fwrite(&tsc_param_.stage_timing_table_, sizeof(tsc_param_.stage_timing_table_), 1, fp);
-    fwrite(&tsc_param_.phase_table_, sizeof(tsc_param_.phase_table_), 1, fp);
-    fwrite(&tsc_param_.phase_conflict_table_, sizeof(tsc_param_.phase_conflict_table_), 1, fp);
-    fwrite(&tsc_param_.channel_table_, sizeof(tsc_param_.channel_table_), 1, fp);
-    fwrite(&tsc_param_.channel_hint_table_, sizeof(tsc_param_.channel_hint_table_), 1, fp);
-    fwrite(&tsc_param_.detector_table_, sizeof(tsc_param_.detector_table_), 1, fp);
+    size_t header = fwrite(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
+    size_t unit = fwrite(&tsc_param_.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
+    size_t sched = fwrite(&tsc_param_.sched_table_, sizeof(tsc_param_.sched_table_), 1, fp);
+    size_t time_section = fwrite(&tsc_param_.time_section_table_, sizeof(tsc_param_.time_section_table_), 1, fp);
+    size_t timing = fwrite(&tsc_param_.timing_plan_table_, sizeof(tsc_param_.timing_plan_table_), 1, fp);
+    size_t stage_timing = fwrite(&tsc_param_.stage_timing_table_, sizeof(tsc_param_.stage_timing_table_), 1, fp);
+    size_t phase_table = fwrite(&tsc_param_.phase_table_, sizeof(tsc_param_.phase_table_), 1, fp);
+    size_t phase_conflict = fwrite(&tsc_param_.phase_conflict_table_, sizeof(tsc_param_.phase_conflict_table_), 1, fp);
+    size_t channel_table = fwrite(&tsc_param_.channel_table_, sizeof(tsc_param_.channel_table_), 1, fp);
+    size_t channel_hint = fwrite(&tsc_param_.channel_hint_table_, sizeof(tsc_param_.channel_hint_table_), 1, fp);
+    size_t detector = fwrite(&tsc_param_.detector_table_, sizeof(tsc_param_.detector_table_), 1, fp);
+	//fflush(fp);
+	fclose(fp);
 
-    fclose(fp);
+	if (header == 0 || unit == 0 || sched == 0 || time_section == 0 || timing == 0 || stage_timing == 0
+		|| phase_table == 0 || phase_conflict == 0 || channel_table == 0 || channel_hint == 0 || detector == 0)
+	{
+		return false;
+	}
     return true;
+}
+
+void FileReaderWriter::ResetParam()
+{
+	memset(&tsc_param_.tsc_header_, 0x00, sizeof(tsc_param_.tsc_header_));
+	char company_name[9]={'C','H','A','O','Y','U','A','N','\0'};
+	char product_name[4]={'T','S','M','\0'}; //Traffic Signal Machine
+	char product_version[6]={'1','.','0','.','0','\0'};
+	memcpy(&tsc_param_.tsc_header_.CompanyName, &company_name, sizeof(company_name));
+	memcpy(&tsc_param_.tsc_header_.ProductName, &product_name, sizeof(product_name));
+	memcpy(&tsc_param_.tsc_header_.ProductId, &product_version, sizeof(product_version));
+
+	memset(&tsc_param_.unit_param_, 0x00, sizeof(tsc_param_.unit_param_));
+	memset(&tsc_param_.sched_table_, 0x00, sizeof(tsc_param_.sched_table_));
+	memset(&tsc_param_.time_section_table_, 0x00, sizeof(tsc_param_.time_section_table_));
+	memset(&tsc_param_.timing_plan_table_, 0x00, sizeof(tsc_param_.timing_plan_table_));
+	memset(&tsc_param_.stage_timing_table_, 0x00, sizeof(tsc_param_.stage_timing_table_));
+	memset(&tsc_param_.phase_table_, 0x00, sizeof(tsc_param_.phase_table_));
+	memset(&tsc_param_.phase_conflict_table_, 0x00, sizeof(tsc_param_.phase_conflict_table_));
+	memset(&tsc_param_.channel_table_, 0x00, sizeof(tsc_param_.channel_table_));
+	memset(&tsc_param_.channel_hint_table_, 0x00, sizeof(tsc_param_.channel_hint_table_));
+	memset(&tsc_param_.detector_table_, 0x00, sizeof(tsc_param_.detector_table_));
 }

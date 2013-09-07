@@ -12,8 +12,10 @@ SignalerbasiceditDlg::SignalerbasiceditDlg(QWidget *parent) :
     InitSignalSlots();
 }
 
-void SignalerbasiceditDlg::Initialize()
+void SignalerbasiceditDlg::Initialize(int signaler_id, SignalerHandler *handler)
 {
+    curr_signaler_id_ = signaler_id;
+    handler_ = handler;
     UpdateUI();
     exec();
 }

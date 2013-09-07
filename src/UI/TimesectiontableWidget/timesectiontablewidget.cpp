@@ -25,7 +25,7 @@ void TimesectiontableWidget::UpdateTree()
     QString str;
     QList<unsigned char> section_id_list = handler_->get_timesection_id_list();
     int tree_level = section_id_list.size();
-    QList<QTreeWidgetItem* > tree_widgetitem_list;
+//    QList<QTreeWidgetItem* > tree_widgetitem_list;
     QList<TimeSection> section_list;
     for (int i = 0; i < tree_level; i++)
     {
@@ -57,7 +57,8 @@ void TimesectiontableWidget::UpdateTree()
                 item_sub->setText(2, str);
                 item_sub->setTextAlignment(2, Qt::AlignCenter);
 
-                str = get_ctrl_mode_desc(section_list.at(k).ctrl_mode);
+//                str = get_ctrl_mode_desc(section_list.at(k).ctrl_mode);
+                str = handler_->get_ctrl_mode_desc(section_list.at(k).ctrl_mode);
                 item_sub->setText(3, str);
                 item_sub->setTextAlignment(3, Qt::AlignCenter);
 
@@ -100,7 +101,7 @@ void TimesectiontableWidget::OnAddActionClicked()
 {
     if (section_tree_widget_->topLevelItemCount() >= MAX_TIMESECTION_LINE)
     {
-		QMessageBox::information(NULL, STRING_TIP, STRING_UI_TIMESECTION_TOP_LIMITED + QString::number(MAX_TIMESECTION_LINE) + " !", STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_TIMESECTION_TOP_LIMITED + QString::number(MAX_TIMESECTION_LINE) + " !", STRING_OK);
         return;
     }
     QString str = "-";
@@ -279,7 +280,8 @@ void TimesectiontableWidget::AddChild(QTreeWidgetItem* item, unsigned char time_
         item_sub->setText(2, str);
         item_sub->setTextAlignment(2, Qt::AlignCenter);
 
-        str = get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);
+//        str = get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);
+        str = handler_->get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);
         item_sub->setText(3, str);
         item_sub->setTextAlignment(3, Qt::AlignCenter);
 
@@ -318,22 +320,52 @@ QString TimesectiontableWidget::get_ctrl_mode_desc(unsigned char ctrl_mode)
     case 3:
         str = STRING_UI_UNIT_ALLRED;
         break;
-    case 6:
+    case 4:
+        str = STRING_UI_UNIT_COORDINATE;
+        break;
+    case 5:
         str = STRING_UI_UNIT_INDUCTION;
+        break;
+    case 6:
+        str = STRING_UI_UNIT_MAIN_INDUCTION;
+        break;
+    case 7:
+        str = STRING_UI_UNIT_SECOND_INDUCTION;
         break;
     case 8:
         str = STRING_UI_UNIT_SINGLE_OPTIONAL;
         break;
-    case 11:
-        str = STRING_UI_UNIT_MASTER_SLAVE;
+    case 9:
+        str = STRING_UI_UNIT_CROSS_STREET;
         break;
-    case 12:
-        str = STRING_UI_UNIT_SYSTEM_OPTIONAL;
+    case 10:
+        str = STRING_UI_UNIT_COORDINATE_INDUCTION;
         break;
-    case 13:
-        str = STRING_UI_UNIT_INTERVENTION;
+
+//    case 11:
+//        str = STRING_UI_UNIT_MASTER_SLAVE;
+//        break;
+//    case 12:
+//        str = STRING_UI_UNIT_SYSTEM_OPTIONAL;
+//        break;
+//    case 13:
+//        str = STRING_UI_UNIT_INTERVENTION;
+//        break;
+    // addtional selections
+    case 27:
+        str = STRING_UI_UNIT_BUS_FIRST;
+        break;
+    case 28:
+        str = STRING_UI_UNIT_TRAFFIC_CTRL;
+        break;
+    case 29:
+        str = STRING_UI_UNIT_MANUALLY_CTRL;
+        break;
+    case 30:
+        str = STRING_UI_UNIT_SYS_FAILURE_FLASH;
         break;
     default:
+        str = "-";
         break;
     }
     return str;

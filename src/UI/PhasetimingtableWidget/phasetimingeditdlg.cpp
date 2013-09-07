@@ -163,7 +163,7 @@ void PhasetimingeditDlg::InitPage()
     phase_id_cmb_ = new QComboBox;
     QLabel* opt_param_label = new QLabel(STRING_UI_PHASE_TIMING_OPT);
     induction_id_chk_ = new QCheckBox(STRING_UI_PHASE_TIMING_INDUCTION);
-	//induction_id_chk_->setEnabled(false);
+    induction_id_chk_->setEnabled(false);
 
     QString str;
     for (int i = 1; i <=32; i++)
@@ -487,7 +487,7 @@ void PhasetimingeditDlg::EnableSettingUI(bool enable)
     ok_button_->setEnabled(enable);
     cancel_button_->setEnabled(enable);
 
-    induction_id_chk_->setEnabled(enable);
+//    induction_id_chk_->setEnabled(enable);
     phase_id_cmb_->setEnabled(enable);
     green_time_spinbox_->setEnabled(enable);
     yellow_time_spinbox_->setEnabled(enable);

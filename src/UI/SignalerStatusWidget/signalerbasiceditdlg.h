@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QPushButton>
+#include "signalerhandler.h"
 
 class SignalerbasiceditDlg : public QDialog
 {
@@ -14,7 +15,7 @@ class SignalerbasiceditDlg : public QDialog
 public:
     explicit SignalerbasiceditDlg(QWidget *parent = 0);
 	~SignalerbasiceditDlg();
-    void Initialize();
+    void Initialize(int signaler_id, SignalerHandler *handler);
     
 signals:
     
@@ -24,6 +25,10 @@ private:
     void InitPage();
     void InitSignalSlots();
     void UpdateUI();
+
+private:
+    int curr_signaler_id_;
+    SignalerHandler *handler_;
 
 private:
     QLabel* id_label_;

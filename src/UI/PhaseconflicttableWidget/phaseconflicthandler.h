@@ -21,6 +21,9 @@ public:
     bool save_data();
 
 private:
+	static bool phase_conflict_less_than(const PhaseConflictParam &left, const PhaseConflictParam &right);
+
+private:
     MDatabase* db_;
     QList<PhaseConflictParam> phase_conflict_list_;
 };

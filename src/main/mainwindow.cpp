@@ -20,6 +20,11 @@ void MainWindow::OnConfigoptSlot(const QString &page_name)
     ChangeTabPage(page_name);
 }
 
+void MainWindow::OnUpdateStatusBarSlot(const QString &file_name)
+{
+    tip_->setText(file_name);
+}
+
 void MainWindow::OnUpdateTabPageSlot()
 {
     unitparam_tab_page_->OnUpdateDataSlot();
@@ -64,7 +69,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 
 void MainWindow::OnHelpToolButtonClicked()
 {
-    QMessageBox::information(NULL, STRING_TIP, "Help", STRING_OK);
+    QMessageBox::information(this, STRING_TIP, "Help", STRING_OK);
     return;
 }
 
@@ -74,14 +79,24 @@ void MainWindow::OnSaveToolButtonClicked()
 	unitparam_tab_page_->OnOkButtonClicked();
 	schedule_tab_page_->OnSaveActionClicked();
 	time_section_tab_page_->OnSaveActionClicked();
-	timing_plan_tab_page_->OnSaveActionClicked();
 	phase_timing_tab_page_->OnSaveActionClicked();
+	timing_plan_tab_page_->OnSaveActionClicked();
 	phase_conflict_tab_page_->OnSaveButtonClicked();
 	phase_table_tab_page_->OnSaveActionClicked();
 	channel_tab_page_->OnSaveActionClicked();
 	detector_tab_page_->OnSaveActionClicked();
 
-	file_list_widget_->SaveDataFile();
+	bool status = file_list_widget_->SaveDataFile();
+	if (!status)
+	{
+        QMessageBox::information(this, STRING_TIP, STRING_MAIN_SAVE_FAILED, STRING_OK);
+		return;
+	}
+	else
+	{
+        QMessageBox::information(this, STRING_TIP, STRING_MAIN_SAVE_SUCCESS, STRING_OK);
+		return;
+	}
 }
 
 void MainWindow::InitPage()
@@ -107,15 +122,14 @@ void MainWindow::InitPage()
 
     QList<int> listleft;
     int szleft = size().height();
-    listleft.append(szleft * 1/3);
     listleft.append(szleft * 2/3);
+    listleft.append(szleft * 1/3);
     left_splitter_->setSizes(listleft);
 
     setCentralWidget(main_splitter_);
 
     QString dir;
-    MUtility::getMainDir(dir);
-
+    MUtility::getStyleSheetDir(dir);
     setStyleSheet(QLatin1String(MUtility::fetchQrc(dir + "mainwindow.qss")));
 }
 
@@ -137,6 +151,7 @@ void MainWindow::InitSignalSlots()
     connect(config_widget_, SIGNAL(unitparamSignal(QString)), this, SLOT(OnConfigoptSlot(QString)));
 
     connect(file_list_widget_, SIGNAL(updateTabPageSignal()), this, SLOT(OnUpdateTabPageSlot()));
+    connect(file_list_widget_, SIGNAL(updateFilePathSignal(QString)), this, SLOT(OnUpdateStatusBarSlot(QString)));
     connect(phase_timing_tab_page_, SIGNAL(updateTimingCycleSignal()), timing_plan_tab_page_, SLOT(OnUpdateTimingCycleSlot()));
     connect(phase_table_tab_page_, SIGNAL(updateChannelCtrlsrcSignal()), channel_tab_page_, SLOT(OnUpdateChannelCtrlsrcSlot()));
 }
@@ -144,30 +159,31 @@ void MainWindow::InitSignalSlots()
 void MainWindow::CreateToolBar()
 {
     main_toolbar_ = new QToolBar(this);
-    main_toolbar_->setIconSize(QSize(32, 32));
+    main_toolbar_->setIconSize(QSize(48, 48));
 
     QString dir;
+    MUtility::getImageDir(dir);
     communication_button_ = new QToolButton;
     communication_button_->setStatusTip(STRING_MAIN_COMMUNICATION);
-    communication_button_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    communication_button_->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     communication_button_->setText(STRING_MAIN_COMMUNICATION);
-    communication_button_->setIcon(QIcon(dir + "/icon/comm.png"));
+    communication_button_->setIcon(QIcon(dir + "/icon/network.png"));
 
     config_button_ = new QToolButton;
     config_button_->setStatusTip(STRING_MAIN_CONFIGURATION);
-    config_button_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    config_button_->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     config_button_->setText(STRING_MAIN_CONFIGURATION);
-    config_button_->setIcon(QIcon(dir + "/icon/conf.png"));
+    config_button_->setIcon(QIcon(dir + "/icon/setting.png"));
 
     help_button_ = new QToolButton;
     help_button_->setStatusTip(STRING_MAIN_HELP);
-    help_button_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    help_button_->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     help_button_->setText(STRING_MAIN_HELP);
     help_button_->setIcon(QIcon(dir + "/icon/help.png"));
 
     save_button_ = new QToolButton;
     save_button_->setStatusTip(STRING_UI_SAVE);
-    save_button_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    save_button_->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     save_button_->setText(STRING_UI_SAVE);
     save_button_->setIcon(QIcon(dir + "/icon/save.png"));
 
@@ -233,7 +249,7 @@ void MainWindow::ChangeTabPage(const QString &page_name)
     main_tab_window_->removeTab(0);
     main_tab_window_->addTab(tab_page_map_[page_name], page_name);
     main_tab_window_->changeTab(page_name);
-    tip_->setText(page_name);
+    //tip_->setText(page_name);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *)
@@ -250,7 +266,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
     main_size.append(width * 4/5);
     main_splitter_->setSizes(main_size);
 
-    tip_->setText(main_tab_window_->currentTabName());
+    //tip_->setText(main_tab_window_->currentTabName());
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)

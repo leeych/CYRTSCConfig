@@ -170,22 +170,52 @@ QString TimesectionHandler::get_ctrl_mode_desc(unsigned char ctrl_mode)
     case 3:
         str = STRING_UI_UNIT_ALLRED;
         break;
-    case 6:
+    case 4:
+        str = STRING_UI_UNIT_COORDINATE;
+        break;
+    case 5:
         str = STRING_UI_UNIT_INDUCTION;
+        break;
+    case 6:
+        str = STRING_UI_UNIT_MAIN_INDUCTION;
+        break;
+    case 7:
+        str = STRING_UI_UNIT_SECOND_INDUCTION;
         break;
     case 8:
         str = STRING_UI_UNIT_SINGLE_OPTIONAL;
         break;
-    case 11:
-        str = STRING_UI_UNIT_MASTER_SLAVE;
+    case 9:
+        str = STRING_UI_UNIT_CROSS_STREET;
         break;
-    case 12:
-        str = STRING_UI_UNIT_SYSTEM_OPTIONAL;
+    case 10:
+        str = STRING_UI_UNIT_COORDINATE_INDUCTION;
         break;
-    case 13:
-        str = STRING_UI_UNIT_INTERVENTION;
+
+//    case 11:
+//        str = STRING_UI_UNIT_MASTER_SLAVE;
+//        break;
+//    case 12:
+//        str = STRING_UI_UNIT_SYSTEM_OPTIONAL;
+//        break;
+//    case 13:
+//        str = STRING_UI_UNIT_INTERVENTION;
+//        break;
+    // addtional selections
+    case 27:
+        str = STRING_UI_UNIT_BUS_FIRST;
+        break;
+    case 28:
+        str = STRING_UI_UNIT_TRAFFIC_CTRL;
+        break;
+    case 29:
+        str = STRING_UI_UNIT_MANUALLY_CTRL;
+        break;
+    case 30:
+        str = STRING_UI_UNIT_SYS_FAILURE_FLASH;
         break;
     default:
+        str = "-";
         break;
     }
     return str;
@@ -224,27 +254,64 @@ unsigned char TimesectionHandler::get_ctrl_mode_by_desc(const QString &str)
     {
         return 3;
     }
+    else if (str == STRING_UI_UNIT_COORDINATE)
+    {
+        return 4;
+    }
     else if (str == STRING_UI_UNIT_INDUCTION)
     {
+        return 5;
+    }
+    else if (str == STRING_UI_UNIT_MAIN_INDUCTION)
+    {
         return 6;
+    }
+    else if (str == STRING_UI_UNIT_SECOND_INDUCTION)
+    {
+        return 7;
     }
     else if (str == STRING_UI_UNIT_SINGLE_OPTIONAL)
     {
         return 8;
     }
-    else if (str == STRING_UI_UNIT_MASTER_SLAVE)
+    else if (str == STRING_UI_UNIT_CROSS_STREET)
     {
-        return 11;
+        return 9;
     }
-    else if (str == STRING_UI_UNIT_SYSTEM_OPTIONAL)
+    else if (str == STRING_UI_UNIT_COORDINATE_INDUCTION)
     {
-        return 12;
+        return 10;
     }
-    else if (str == STRING_UI_UNIT_INTERVENTION)
+//    else if (str == STRING_UI_UNIT_MASTER_SLAVE)
+//    {
+//        return 11;
+//    }
+//    else if (str == STRING_UI_UNIT_SYSTEM_OPTIONAL)
+//    {
+//        return 12;
+//    }
+//    else if (str == STRING_UI_UNIT_INTERVENTION)
+//    {
+//        return 13;
+//    }
+//    return 14;
+    else if (str == STRING_UI_UNIT_BUS_FIRST)
     {
-        return 13;
+        return 27;
     }
-    return 14;
+    else if (str == STRING_UI_UNIT_TRAFFIC_CTRL)
+    {
+        return 28;
+    }
+    else if (str == STRING_UI_UNIT_MANUALLY_CTRL)
+    {
+        return 29;
+    }
+    else if (str == STRING_UI_UNIT_SYS_FAILURE_FLASH)
+    {
+        return 30;
+    }
+    return 31;
 }
 
 bool TimesectionHandler::event_id_less_than( const TimeSection& pre, const TimeSection& next )
