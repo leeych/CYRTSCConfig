@@ -1,4 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    Utility
+    Utility \
+    XmlHelper \
+    SignalerManager \
+    Communication

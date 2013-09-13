@@ -334,17 +334,17 @@ void MDatabase::set_detector_table(const Detector_t &detector)
     }
 }
 
-void MDatabase::set_signaler(const SignalerMap &signaler)
-{
-//    signaler_map_ = signaler;
-    signaler_map_.clear();
-    SignalerMap::iterator iter = signaler.begin();
-    while (iter != signaler.end())
-    {
-        signaler_map_.insert(iter.key(), iter.value());
-        ++iter;
-    }
-}
+//void MDatabase::set_signaler(const SignalerMap &signaler)
+//{
+////    signaler_map_ = signaler;
+//    signaler_map_.clear();
+//    SignalerMap::ConstIterator iter = signaler.constBegin();
+//    while (iter != signaler.constEnd())
+//    {
+//        signaler_map_.insert(iter.key(), iter.value());
+//        ++iter;
+//    }
+//}
 
 TSCHeader_t &MDatabase::get_tsc_header()
 {
@@ -623,10 +623,10 @@ QList<PhaseConflictParam> MDatabase::get_phase_conflict_table()
     return conflict_list;
 }
 
-SignalerMap &MDatabase::get_signaler_map()
-{
-    return signaler_map_;
-}
+//SignalerMap &MDatabase::get_signaler_map()
+//{
+//    return signaler_map_;
+//}
 
 MDatabase::MDatabase()
 {

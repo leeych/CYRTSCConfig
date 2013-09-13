@@ -59,6 +59,7 @@ void MainWindow::OnCommunicationToolButtonClicked()
 {
     left_splitter_->setVisible(false);
     ChangeTabPage(STRING_UI_SIGNALER);
+    signaler_tab_page_->Initialize();
 }
 
 void MainWindow::OnConfigurationToolButtonClicked()
@@ -108,11 +109,14 @@ void MainWindow::InitPage()
     config_widget_ = new ConfigoptWidget;
     file_list_widget_ = new FileListWidget;
     main_tab_window_ = new MTabWidget;
+	QFont font(STRING_FONT_SONGTI, 11);
+	main_tab_window_->setFont(font);
 
     left_splitter_ = new QSplitter(Qt::Vertical);
     left_splitter_->addWidget(config_widget_);
     left_splitter_->addWidget(file_list_widget_);
 
+	unitparam_tab_page_->PageFontSetting(font);
     main_tab_window_->addTab(unitparam_tab_page_, unitparam_tab_page_->widget_name());
     main_tab_window_->setMinimumWidth(size().width() * 4/5);
 
@@ -231,7 +235,7 @@ void MainWindow::CreateTabPages()
 void MainWindow::CreateStatusBar()
 {
     statusBar()->showMessage(STRING_MAIN_STATUS);
-    statusBar()->setStyleSheet("background-color: rgb(233,246,254);font:12px");
+    statusBar()->setStyleSheet("background-color: rgb(233,246,254);font-size:12px");
 
     tip_ = new QLabel(statusBar());
     tip_->setMinimumSize(tip_->sizeHint());

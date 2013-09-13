@@ -57,13 +57,14 @@ void UnitparamtableWidget::InitPage()
     QLabel* allred_time_label = new QLabel(STRING_UI_UNIT_ALL_RED + ":");
     QLabel* curr_status_label = new QLabel(STRING_UI_UNIT_SIGNALER_STATUS + ":");
 
+/*
     QFont font(STRING_FONT_SONGTI, 11);
 	server_ip_label->setFont(font);
 	server_port_label->setFont(font);
 	flash_time_label->setFont(font);
 	allred_time_label->setFont(font);
 	curr_status_label->setFont(font);
-
+*/
     // signal_ip_lineedit_ = new QLineEdit;
     server_ip_lineedit_ = new QLineEdit;
     QRegExp ipreg("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-4]|[01]?\\d\\d?)");
@@ -111,10 +112,12 @@ void UnitparamtableWidget::InitPage()
     induction_signal_rbt_ = new QRadioButton(STRING_UI_UNIT_INDUCTION_SIGNALER + ":");
     other_signal_rbt_ = new QRadioButton(STRING_UI_UNIT_CENTRALIZE_SIGNALER + ":");
 
+/*
 	man_signal_rbt_->setFont(font);
 	multi_period_timer_signal_rbt_->setFont(font);
 	induction_signal_rbt_->setFont(font);
 	other_signal_rbt_->setFont(font);
+*/
 
 	other_signal_rbt_->setChecked(true);
     man_signal_rbt_->setEnabled(false);
@@ -125,9 +128,11 @@ void UnitparamtableWidget::InitPage()
     QLabel* multi_period_schedule_label = new QLabel(STRING_UI_UNIT_MULTI_SCHEDULE);
     QLabel* induction_schedule_label = new QLabel(STRING_UI_UNIT_INDUCTION_SCHEDULE);
 
+/*
 	man_schedule_label->setFont(font);
 	multi_period_schedule_label->setFont(font);
 	induction_schedule_label->setFont(font);
+*/
 
     state1_cmb_ = new QComboBox;
     state2_cmb_ = new QComboBox;
@@ -186,8 +191,24 @@ void UnitparamtableWidget::InitPage()
     }
 
     QGroupBox* right_group = new QGroupBox(STRING_UI_UNIT_FAULT_GROUP);
-	right_group->setFont(font);
+	/*right_group->setFont(font);*/
     right_group->setLayout(grlayout);
+
+	font_setting_list_.append(right_group);
+	font_setting_list_.append(man_schedule_label);
+	font_setting_list_.append(multi_period_schedule_label);
+	font_setting_list_.append(induction_schedule_label);
+
+	font_setting_list_.append(man_signal_rbt_);
+	font_setting_list_.append(multi_period_timer_signal_rbt_);
+	font_setting_list_.append(induction_signal_rbt_);
+	font_setting_list_.append(other_signal_rbt_);
+
+	font_setting_list_.append(server_ip_label);
+	font_setting_list_.append(server_port_label);
+	font_setting_list_.append(flash_time_label);
+	font_setting_list_.append(allred_time_label);
+	font_setting_list_.append(curr_status_label);
 
     ok_button_ = new QPushButton(STRING_OK);
     cancel_button_ = new QPushButton(STRING_CANCEL);
@@ -249,4 +270,8 @@ UnitparamtableWidget::~UnitparamtableWidget()
 
 void UnitparamtableWidget::PageFontSetting( const QFont &font )
 {
+	for (int i = 0; i < font_setting_list_.size(); i++)
+	{
+		font_setting_list_.at(i)->setFont(font);
+	}
 }

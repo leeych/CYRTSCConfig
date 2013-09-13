@@ -5,8 +5,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QFrame>
+#include "configoptwidget_global.h"
 
-class ConfigoptWidget : public QWidget
+class CONFIGOPTWIDGETSHARED_EXPORT ConfigoptWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -30,17 +31,18 @@ public slots:
     void OnPhasetimingButtonToggled(bool checked);
     void OnPhasetableButtonToggled(bool checked);
     void OnPhaseconflictButtonToggled(bool checked);
-    void OnChannelButtonToggled(bool checked);
     void OnDetectorButtonToggled(bool checked);
     void OnUnitparamButtonToggled(bool checked);
+    void OnChannelButtonToggled(bool checked);
 
 private:
     void InitPage();
     void InitSignalSlots();
 
-    void ResetButtonStatus();
+    void ResetButtonStatus(const QPushButton *self_btn);
 
 private:
+    QList<QPushButton *> button_list_;
     QFrame *frame_;
     QPushButton* schedule_plan_button_;
     QPushButton* time_table_button_;

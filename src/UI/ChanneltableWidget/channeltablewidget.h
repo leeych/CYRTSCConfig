@@ -5,12 +5,12 @@
 #include <QTableWidget>
 #include <QMenu>
 #include <QAction>
-#include "channeltablewidget_global.h"
 #include "channeleditdlg.h"
 #include "channelhandler.h"
 #include "bottombuttonswidget.h"
+//#include "channeltablewidget_global.h"
 
-class CHANNELTABLEWIDGETSHARED_EXPORT ChanneltableWidget : public QWidget
+class /*CHANNELTABLEWIDGETSHARED_EXPORT*/ ChanneltableWidget : public QWidget
 {
     Q_OBJECT
 

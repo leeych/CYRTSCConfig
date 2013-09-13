@@ -7,14 +7,14 @@
 TARGET = FileListWidget
 TEMPLATE = lib
 
-INCLUDEPATH += $$PWD/../../../include \
-               $$PWD/../../DataCenter/MDatabase \
+INCLUDEPATH += $$PWD/../../../include/ \
+               $$PWD/../../DataCenter/MDatabase/ \
 #               $$PWD/../../Common/DataInitializer
 #               $$PWD/../../Common/FileReaderWriter
 
 LIBS += -L$$PWD/../../../lib/ -lMDatabase
 
-DESTDIR = $$PWD/../../../lib
+DESTDIR = $$PWD/../../../lib/
 
 DEFINES += FILELISTWIDGET_LIBRARY
 

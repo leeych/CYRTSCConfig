@@ -12,7 +12,7 @@ INCLUDEPATH += $$PWD/../../../include/ \
 
 DESTDIR = $$PWD/../../../lib/
 
-LIBS += -L$$PWD/../../../lib/ -lMDatabase
+LIBS += -L$$PWD/../../../lib/ -lMDatabase -lUtility
 
 DEFINES += UNITPARAMTABLEWIDGET_LIBRARY
 

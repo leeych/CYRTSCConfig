@@ -7,6 +7,7 @@
 #include <QMenu>
 #include <QAction>
 #include "signalerstatuswidget_global.h"
+#include "buttonwidget.h"
 #include "signalerbasiceditdlg.h"
 #include "signalerhandler.h"
 #include "signaleronlinesettingdlg.h"
@@ -19,6 +20,7 @@ public:
     explicit SignalerStatusWidget(const QString& name, QWidget* parent = 0);
 	~SignalerStatusWidget();
     const QString& widget_name();
+    void Initialize();
     void UpdateTable();
 
 signals:
@@ -30,11 +32,12 @@ public slots:
     void OnAddActionClicked();
     void OnEditActionClicked();
     void OnDeleteActionClicked();
+    void OnSaveActionClicked();
     void OnAdvancedActionClicked();
     void OnCustomContextMenuRequested(QPoint);
     void OnTableCellDoubleClicked(int, int);
 
-    void OnTableRowUpdateSlot();
+    void OnTableRowUpdateSlot(int);
 
 private:
     void InitPage();
@@ -60,6 +63,8 @@ private:
 
     QTableWidget* signaler_table_;
     QPushButton* ok_button_, *cancel_button_;
+
+    ButtonWidget *button_widget_;
 };
 
 #endif // SIGNALERSTATUSWIDGET_H

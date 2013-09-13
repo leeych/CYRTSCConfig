@@ -15,12 +15,18 @@ SignalerStatusWidget::SignalerStatusWidget(const QString &name, QWidget *parent)
 
     InitPage();
     InitSignalSlots();
-    UpdateTable();
+//    UpdateTable();
 }
 
 const QString &SignalerStatusWidget::widget_name()
 {
     return widget_name_;
+}
+
+void SignalerStatusWidget::Initialize()
+{
+    handler_->init();
+    UpdateTable();
 }
 
 void SignalerStatusWidget::OnOkButtonClicked()
@@ -55,7 +61,7 @@ void SignalerStatusWidget::OnEditActionClicked()
         return;
     }
     int id = signaler_table_->item(row, 0)->text().toInt();
-    if (id <= 0 || signaler_edit_dlg_ == NULL)
+    if (signaler_edit_dlg_ == NULL)
     {
         return;
     }
@@ -70,7 +76,7 @@ void SignalerStatusWidget::OnDeleteActionClicked()
         return;
     }
     int id = signaler_table_->item(row, 0)->text().toInt();
-    if (handler_->remove_signaler(id))
+    if (handler_->remove_signaler(id) || id == 0)
     {
         signaler_table_->removeRow(row);
     }
@@ -80,9 +86,27 @@ void SignalerStatusWidget::OnDeleteActionClicked()
     }
 }
 
+void SignalerStatusWidget::OnSaveActionClicked()
+{
+    if (!handler_->save_data())
+    {
+		QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED + "!", STRING_OK);
+    }
+}
+
 void SignalerStatusWidget::OnAdvancedActionClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Advanced", STRING_OK);
+	int row = signaler_table_->currentRow();
+	if (row < 0)
+	{
+		return;
+	}
+	int id = signaler_table_->item(row, 0)->text().toUInt();
+	if (signaler_online_dlg_ == NULL)
+	{
+		return;
+	}
+	signaler_online_dlg_->Initialize();
 }
 
 void SignalerStatusWidget::OnCustomContextMenuRequested(QPoint)
@@ -95,28 +119,32 @@ void SignalerStatusWidget::OnCustomContextMenuRequested(QPoint)
 
 void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
 {
-    if (col != 0)
+    if (col == 1)
     {
+        signaler_online_dlg_->Initialize();
         return;
     }
     int id = signaler_table_->item(row, 0)->text().toInt();
-    if (id <= 0)
+    if (signaler_online_dlg_ == NULL)
     {
         return;
     }
-    // TODO: get signaler id to update dialog ui
+    signaler_edit_dlg_->Initialize(id, handler_);
 }
 
-void SignalerStatusWidget::OnTableRowUpdateSlot()
+void SignalerStatusWidget::OnTableRowUpdateSlot(int)
 {
+	UpdateTable();
 }
 
 void SignalerStatusWidget::InitPage()
 {
     InitContextMenu();
     InitTable();
+    button_widget_ = new ButtonWidget;
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->addWidget(signaler_table_);
+    vlayout->addWidget(button_widget_);
     setLayout(vlayout);
 }
 
@@ -127,7 +155,15 @@ void SignalerStatusWidget::InitSignalSlots()
     connect(edit_action_, SIGNAL(triggered()), this, SLOT(OnEditActionClicked()));
     connect(delete_action_, SIGNAL(triggered()), this, SLOT(OnDeleteActionClicked()));
     connect(advanced_button_, SIGNAL(triggered()), this, SLOT(OnAdvancedActionClicked()));
+
+    connect(button_widget_->addButtonPtr(), SIGNAL(clicked()), this, SLOT(OnAddActionClicked()));
+    connect(button_widget_->editButtonPtr(), SIGNAL(clicked()), this, SLOT(OnEditActionClicked()));
+    connect(button_widget_->delButtonPtr(), SIGNAL(clicked()), this, SLOT(OnDeleteActionClicked()));
+    connect(button_widget_->saveButtonPtr(), SIGNAL(clicked()), this, SLOT(OnSaveActionClicked()));
+    connect(button_widget_->advancedButtonPtr(), SIGNAL(clicked()), this, SLOT(OnAdvancedActionClicked()));
+
     connect(signaler_table_, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(OnTableCellDoubleClicked(int,int)));
+    connect(signaler_edit_dlg_, SIGNAL(updateSignalerSignal(int)), this, SLOT(OnTableRowUpdateSlot(int)));
 }
 
 void SignalerStatusWidget::InitTable()
@@ -168,7 +204,7 @@ void SignalerStatusWidget::InitTableHeader()
     signaler_table_->setColumnWidth(9, width / 9);
     signaler_table_->setColumnHidden(0, true);
     QStringList headers;
-    headers << STRING_UI_SIGNALER_STATUS << STRING_UI_SIGNALER_NAME << STRING_UI_SIGNALER_IP
+    headers << "0" << STRING_UI_SIGNALER_STATUS << STRING_UI_SIGNALER_NAME << STRING_UI_SIGNALER_IP
             << STRING_UI_SIGNALER_PORT << STRING_UI_SIGNALER_POSITION << STRING_UI_SIGNALER_BRANCH
                << STRING_UI_SIGNALER_MODE << STRING_UI_SIGNALER_VERSION << STRING_UI_SIGNALER_MARKUP;
     signaler_table_->setHorizontalHeaderLabels(headers);
@@ -227,6 +263,8 @@ QColor SignalerStatusWidget::get_status_text_color(SignalerParam::SignalerStatus
 
 void SignalerStatusWidget::UpdateTable()
 {
+	signaler_table_->clear();
+	InitTableHeader();
     QList<SignalerParam> signaler_list = handler_->get_signaler_list();
     int table_row = signaler_list.size();
     QString str;

@@ -8,34 +8,43 @@ TARGET = SignalerOnlineSettingDlg
 TEMPLATE = lib
 
 INCLUDEPATH += $$PWD/../../../include/ \
-               $$PWD/../../DataCenter/MDatabase \
-               $$PWD/../../Common/Utility
-               $$PWD/../UIBase \
-               $$PWD/../BottomButtonWidget \
-               $$PWD/../UnitparamtableWidget \
-               $$PWD/../ScheduleTableWidget \
-               $$PWD/../TimingplanWidget \
-               $$PWD/../PhaseTableWidget \
-               $$PWD/../ChanneltableWidget \
-               $$PWD/../DetectortableWidget \
-               $$PWD/../TimesectiontableWidget \
-               $$PWD/../PhasetimingtableWidget \
+               $$PWD/../../DataCenter/MDatabase/ \
+               $$PWD/../../Common/Utility/ \
+               $$PWD/../UIBase/ \
+               $$PWD/../BottomButtonsWidget/ \
+               $$PWD/../UnitparamtableWidget/ \
+               $$PWD/../ScheduleTableWidget/ \
+               $$PWD/../TimingplanWidget/ \
+               $$PWD/../PhasetableWidget/ \
+               $$PWD/../ChanneltableWidget/ \
+               $$PWD/../DetectortableWidget/ \
+               $$PWD/../TimesectiontableWidget/ \
+               $$PWD/../PhasetimingtableWidget/ \
                $$PWD/../PhaseconflicttableWidget
 
-LIBS += -L$$PWD/../../../lib/ -lBottomButtonWidget \
-        -lUnitParamWidget -lScheduleTableWidget -lTimingplanWidget -lPhasetableWidget \
+LIBS += -L$$PWD/../../../lib/ -lBottomButtonsWidget \
+        -lUIBase \
+        -lUnitparamtableWidget -lScheduleTableWidget -lTimingplanWidget -lPhasetableWidget \
         -lChanneltableWidget -lDetectortableWidget -lTimesectiontableWidget -lPhaseconflicttableWidget \
-        -lPhasetimingtableWidget -lUIBase \
+        -lPhasetimingtableWidget \
         -lMDatabase -lUtility
 
 DESTDIR = $$PWD/../../../lib/
 
 DEFINES += SIGNALERONLINESETTINGDLG_LIBRARY
 
-SOURCES += signaleronlinesettingdlg.cpp
+SOURCES += signaleronlinesettingdlg.cpp \
+    eventlogdlg.cpp \
+    timeipdlg.cpp \
+    detectorflowdlg.cpp \
+    realtimemonitordlg.cpp
 
 HEADERS += signaleronlinesettingdlg.h\
-        signaleronlinesettingdlg_global.h
+        signaleronlinesettingdlg_global.h \
+    eventlogdlg.h \
+    timeipdlg.h \
+    detectorflowdlg.h \
+    realtimemonitordlg.h
 
 unix:!symbian {
     maemo5 {

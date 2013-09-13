@@ -4,9 +4,9 @@
 #include <QTabWidget>
 #include <QTabBar>
 #include <QToolButton>
+#include "uibase_global.h"
 
-
-class MTabCloseButton : public QToolButton
+class UIBASESHARED_EXPORT MTabCloseButton : public QToolButton
 {
     Q_OBJECT
 
@@ -48,6 +48,7 @@ public:
     QString currentTabName();
 
     QString tabName(int index);
+	void setTabBarFont(const QFont &font);
 
 signals:
     void closeTabSignal(const QString& name);

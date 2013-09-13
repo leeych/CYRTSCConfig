@@ -4,7 +4,6 @@ SUBDIRS += \
     UIBase \
     BottomButtonsWidget \
     ConfigoptWidget \
-    FileListWidget \
     ScheduleTableWidget \
     TimingplanWidget \
     PhasetableWidget \
@@ -14,6 +13,7 @@ SUBDIRS += \
     TimesectiontableWidget \
     PhasetimingtableWidget \
     UnitparamtableWidget \
+    FileListWidget \
+    SignalerOnlineSettingDlg \
     SignalerStatusWidget \
-    TSCLogin \
-    SignalerOnlineSettingDlg
+    TSCLogin

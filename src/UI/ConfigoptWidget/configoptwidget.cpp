@@ -10,37 +10,56 @@ ConfigoptWidget::ConfigoptWidget(QWidget *parent) :
 
 void ConfigoptWidget::OnScheduleplanButtonToggled(bool checked)
 {
-    emit scheduleplanSignal(STRING_UI_SCHEDULE_PLAN);
+    if (checked)
+    {
+        emit scheduleplanSignal(STRING_UI_SCHEDULE_PLAN);
+        ResetButtonStatus(schedule_plan_button_);
+    }
 }
 
 void ConfigoptWidget::OnTimesectionButtonToggled(bool checked)
 {
-    emit timesectionSignal(STRING_UI_TIME_SECTION);
+    if (checked)
+    {
+        emit timesectionSignal(STRING_UI_TIME_SECTION);
+        ResetButtonStatus(time_table_button_);
+    }
 }
 
 void ConfigoptWidget::OnTimingplanButtonToggled(bool checked)
 {
-    emit timingplanSignal(STRING_UI_TIMING_PLAN);
+    if (checked)
+    {
+        emit timingplanSignal(STRING_UI_TIMING_PLAN);
+        ResetButtonStatus(timing_plan_button_);
+    }
 }
 
 void ConfigoptWidget::OnPhasetimingButtonToggled(bool checked)
 {
-    emit phasetimingSignal(STRING_UI_PHASE_TIMING);
+    if (checked)
+    {
+        emit phasetimingSignal(STRING_UI_PHASE_TIMING);
+        ResetButtonStatus(phase_timing_button_);
+    }
 }
 
 void ConfigoptWidget::OnPhasetableButtonToggled(bool checked)
 {
-    emit phasetableSignal(STRING_UI_PHASE_TABLE);
+    if (checked)
+    {
+        emit phasetableSignal(STRING_UI_PHASE_TABLE);
+        ResetButtonStatus(phase_table_button_);
+    }
 }
 
 void ConfigoptWidget::OnPhaseconflictButtonToggled(bool checked)
 {
-    emit phaseconflictSignal(STRING_UI_PHASE_CONFLICT);
-}
-
-void ConfigoptWidget::OnChannelButtonToggled(bool checked)
-{
-    emit channelSignal(STRING_UI_CHANNEL);
+    if (checked)
+    {
+        emit phaseconflictSignal(STRING_UI_PHASE_CONFLICT);
+        ResetButtonStatus(phase_conflict_button_);
+    }
 }
 
 void ConfigoptWidget::OnDetectorButtonToggled(bool checked)
@@ -48,10 +67,7 @@ void ConfigoptWidget::OnDetectorButtonToggled(bool checked)
     if (checked)
     {
         emit detectorSignal(STRING_UI_DETECTOR);
-    }
-    else
-    {
-        ResetButtonStatus();
+        ResetButtonStatus(detector_button_);
     }
 }
 
@@ -60,10 +76,7 @@ void ConfigoptWidget::OnUnitparamButtonToggled(bool checked)
     if (checked)
     {
         emit unitparamSignal(STRING_UI_UNIT_TABLE);
-    }
-    else
-    {
-        ResetButtonStatus();
+        ResetButtonStatus(unit_param_button_);
     }
 }
 
@@ -78,6 +91,16 @@ void ConfigoptWidget::InitPage()
     phase_conflict_button_ = new QPushButton(STRING_UI_PHASE_CONFLICT);
     channel_button_ = new QPushButton(STRING_UI_CHANNEL);
     detector_button_ = new QPushButton(STRING_UI_DETECTOR);
+
+    unit_param_button_->setCheckable(true);
+    schedule_plan_button_->setCheckable(true);
+    time_table_button_->setCheckable(true);
+    timing_plan_button_->setCheckable(true);
+    phase_timing_button_->setCheckable(true);
+    phase_table_button_->setCheckable(true);
+    phase_conflict_button_->setCheckable(true);
+    channel_button_->setCheckable(true);
+    detector_button_->setCheckable(true);
 
 	QVBoxLayout* vlayout = new QVBoxLayout;
 	vlayout->addWidget(unit_param_button_);
@@ -111,20 +134,47 @@ void ConfigoptWidget::InitSignalSlots()
     connect(phase_timing_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhasetimingButtonToggled(bool)));
     connect(phase_table_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhasetableButtonToggled(bool)));
     connect(phase_conflict_button_, SIGNAL(toggled(bool)), this, SLOT(OnPhaseconflictButtonToggled(bool)));
+    //connect(channel_button_, SIGNAL(clicked()), this, SLOT(OnChannelButtonToggled));
     connect(channel_button_, SIGNAL(toggled(bool)), this, SLOT(OnChannelButtonToggled(bool)));
     connect(detector_button_, SIGNAL(toggled(bool)), this, SLOT(OnDetectorButtonToggled(bool)));
+
+    button_list_.append(unit_param_button_);
+    button_list_.append(schedule_plan_button_);
+    button_list_.append(time_table_button_);
+    button_list_.append(timing_plan_button_);
+    button_list_.append(phase_timing_button_);
+    button_list_.append(phase_table_button_);
+    button_list_.append(phase_conflict_button_);
+    button_list_.append(channel_button_);
+    button_list_.append(detector_button_);
 }
 
-void ConfigoptWidget::ResetButtonStatus()
+void ConfigoptWidget::ResetButtonStatus(const QPushButton *self_btn)
 {
-    schedule_plan_button_->setChecked(false);
-    time_table_button_->setChecked(false);
-    timing_plan_button_->setChecked(false);
-    phase_timing_button_->setChecked(false);
-    phase_table_button_->setChecked(false);
-    phase_table_button_->setChecked(false);
-    phase_conflict_button_->setChecked(false);
-    channel_button_->setChecked(false);
-    detector_button_->setChecked(false);
-    unit_param_button_->setChecked(false);
+    for (int i = 0; i < button_list_.size(); i++)
+    {
+        if (button_list_.at(i) != self_btn)
+        {
+            button_list_.at(i)->setChecked(false);
+        }
+    }
+//    schedule_plan_button_->setChecked(false);
+//    time_table_button_->setChecked(false);
+//    timing_plan_button_->setChecked(false);
+//    phase_timing_button_->setChecked(false);
+//    phase_table_button_->setChecked(false);
+//    phase_table_button_->setChecked(false);
+//    phase_conflict_button_->setChecked(false);
+//    channel_button_->setChecked(false);
+//    detector_button_->setChecked(false);
+//    unit_param_button_->setChecked(false);
+}
+
+void ConfigoptWidget::OnChannelButtonToggled(bool checked)
+{
+    if (checked)
+    {
+        emit channelSignal(STRING_UI_CHANNEL);
+        ResetButtonStatus(channel_button_);
+    }
 }

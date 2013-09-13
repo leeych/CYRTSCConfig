@@ -2,13 +2,21 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 
+#include <QFile>
+#include <QFileDialog>
+
 #include "signaleronlinesettingdlg.h"
 #include "macrostring.h"
 
 
-SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(const QString &dialog_name, QWidget *parent)
-    : QDialog(parent), dialog_title_(dialog_name)
+SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
+    : QDialog(parent)
 {
+    time_ip_dlg_ = new TimeIPDlg(this);
+    flow_dlg_ = new DetectorFlowDlg(this);
+    event_log_dlg_ = new EventLogDlg(this);
+    monitor_dlg_ = new RealtimeMonitorDlg(this);
+
     InitPage();
     InitSignalSlots();
 }
@@ -40,34 +48,43 @@ void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 
 void SignalerOnlineSettingDlg::OnSendButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Send", STRING_OK);
+    QString file_name = QFileDialog::getOpenFileName(NULL, STRING_OPEN, "./", "Data(*.dat);;All File(*.*)");
+    if (file_name.isNull() || file_name.isEmpty())
+    {
+        return;
+    }
+    if (!QFile::exists(file_name))
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_FILE_NOT_EXISTS, STRING_OK);
+        return;
+    }
+    // TODO: send file to signaler
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Monitor", STRING_OK);
+    monitor_dlg_->Initialize();
 }
 
 void SignalerOnlineSettingDlg::OnLogButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Log", STRING_OK);
+    event_log_dlg_->Initialize();
 }
 
 void SignalerOnlineSettingDlg::OnFlowButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Flow", STRING_OK);
+    flow_dlg_->Initialize();
 }
 
 void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Setting", STRING_OK);
+    time_ip_dlg_->Initialize();
 }
 
 
 void SignalerOnlineSettingDlg::InitPage()
 {
     InitTabPage();
-
     conn_button_ = new QPushButton(STRING_UI_SIGNALER_CONNECT);
     read_button_ = new QPushButton(STRING_UI_SIGNALER_READ_FILE);
     update_button_ = new QPushButton(STRING_UI_SIGNALER_UPDATE_FILE);
@@ -111,17 +128,20 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
 
 void SignalerOnlineSettingDlg::InitTabPage()
 {
-    dialog_tab_ = new MTabWidget;
+    QFont font(STRING_FONT_SONGTI, 11);
+    dialog_tab_ = new MTabWidget(this);
+    dialog_tab_->setFont(font);
+//    dialog_tab_ = new QTabWidget;
 
-    unitparam_widget_ = new unitparam_widget_;
-    schedule_widget_ = new ScheduleTableWidget;
-    timesection_widget_ = new TimesectiontableWidget;
-    timing_widget_ = new TimingplanWidget;
-    stage_timing_widget_ = new PhasetimingtableWidget;
-    phase_widget_ = new PhasetableWidget;
-    phase_err_widget_ = new PhaseconflicttableWidget;
-    channel_widget_ = new ChanneltableWidget;
-    detector_widget_ = new DetectortableWidget;
+    unitparam_widget_ = new UnitparamtableWidget(STRING_UI_UNIT_TABLE);
+    schedule_widget_ = new ScheduleTableWidget(STRING_UI_SCHEDULE_PLAN);
+    timesection_widget_ = new TimesectiontableWidget(STRING_UI_TIME_SECTION);
+    timing_widget_ = new TimingplanWidget(STRING_UI_TIMING_PLAN);
+    stage_timing_widget_ = new PhasetimingtableWidget(STRING_UI_PHASE_TIMING);
+    phase_widget_ = new PhasetableWidget(STRING_UI_PHASE_TABLE);
+    phase_err_widget_ = new PhaseconflicttableWidget(STRING_UI_PHASE_CONFLICT);
+    channel_widget_ = new ChanneltableWidget(STRING_UI_CHANNEL);
+    detector_widget_ = new DetectortableWidget(STRING_UI_DETECTOR);
 
     dialog_tab_->addTab(unitparam_widget_, STRING_UI_UNIT_TABLE);
     dialog_tab_->addTab(schedule_widget_, STRING_UI_SCHEDULE_PLAN);
@@ -136,5 +156,5 @@ void SignalerOnlineSettingDlg::InitTabPage()
 
 void SignalerOnlineSettingDlg::UpdateUI()
 {
-    setWindowTitle(dialog_title_);
+    setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
 }

@@ -8,8 +8,6 @@ MTabWidget::MTabWidget(QWidget *parent) :
 {
     tabBar = new MTabBar;
     tabBar->setFocusPolicy(Qt::NoFocus);
-	QFont font("ËÎÌו", 12);
-	tabBar->setFont(font);
     setTabBar(tabBar);
     QString dir;
     MUtility::getStyleSheetDir(dir);
@@ -92,6 +90,11 @@ void MTabWidget::closeButtonClicked(QWidget *widget)
             break;
         }
     }
+}
+
+void MTabWidget::setTabBarFont( const QFont &font )
+{
+	tabBar->setFont(font);
 }
 
 MTabBar::MTabBar(QWidget *parent) :

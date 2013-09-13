@@ -1,8 +1,11 @@
 #include "signalerhandler.h"
+#include "mutility.h"
 
 SignalerHandler::SignalerHandler()
 {
-    db_ = MDatabase::GetInstance();
+    QString dir;
+    MUtility::getMainDir(dir);
+    file_name_ = dir + "/user/xml/signaler.xml";
 }
 
 SignalerHandler::~SignalerHandler()
@@ -11,13 +14,15 @@ SignalerHandler::~SignalerHandler()
 
 void SignalerHandler::init()
 {
-    SignalerMap &signaler_map = db_->get_signaler_map();
-    SignalerMap::iterator iter = signaler_map.begin();
-    while (iter != signaler_map.end())
+//    SignalerMap &signaler_map = db_->get_signaler_map();
+    manager_ = SignalerManager::GetInstance();
+    //manager_->createXmlTest();
+    if (manager_ == NULL)
     {
-        signaler_map_.insert(iter.key(), iter.value());
-        ++iter;
+        return;
     }
+
+    signaler_map_ =  manager_->GetSignaler(file_name_);
 }
 
 void SignalerHandler::set_signaler(const SignalerParam &signaler)
@@ -52,8 +57,9 @@ bool SignalerHandler::remove_signaler(int signaler_id)
 
 bool SignalerHandler::save_data()
 {
-    db_->set_signaler(signaler_map_);
-    return true;
+//    db_->set_signaler(signaler_map_);
+    bool status = manager_->SetSignaler(signaler_map_, file_name_);
+    return status;
 }
 
 QList<SignalerParam> SignalerHandler::get_signaler_list()
@@ -66,8 +72,8 @@ QList<SignalerParam> SignalerHandler::get_signaler_list()
 void SignalerHandler::set_signaler_list(const QList<SignalerParam> &signaler_list)
 {
     signaler_map_.clear();
-    QList<SignalerParam>::iterator iter = signaler_list.begin();
-    while (iter != signaler_list.end())
+    QList<SignalerParam>::const_iterator iter = signaler_list.constBegin();
+    while (iter != signaler_list.constEnd())
     {
         signaler_map_.insert((*iter).signaler_id, *iter);
         ++iter;
@@ -81,4 +87,12 @@ bool SignalerHandler::signaler_less_than(const SignalerParam &left, const Signal
         return false;
     }
     return true;
+}
+
+int SignalerHandler::get_max_signaler_id()
+{
+	SignalerMap::ConstIterator iter = signaler_map_.constEnd();
+	--iter;
+	int max_id = iter.key();
+	return max_id;
 }

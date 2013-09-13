@@ -4,14 +4,28 @@
 #
 #-------------------------------------------------
 
+QT     += xml
+
 TARGET = SignalerStatusWidget
 TEMPLATE = lib
 
 INCLUDEPATH += $$PWD/../../../include/ \
                $$PWD/../../DataCenter/MDatabase/ \
-               $$PWD/../SignalerOnlineSettingDlg/
+               $$PWD/../UIBase/ \
+               $$PWD/../SignalerOnlineSettingDlg/ \
+               $$PWD/../BottomButtonsWidget \
+               $$PWD/../UnitparamtableWidget \
+               $$PWD/../ScheduleTableWidget \
+               $$PWD/../TimingplanWidget \
+               $$PWD/../PhasetableWidget \
+               $$PWD/../ChanneltableWidget \
+               $$PWD/../DetectortableWidget \
+               $$PWD/../TimesectiontableWidget \
+               $$PWD/../PhasetimingtableWidget \
+               $$PWD/../PhaseconflicttableWidget \
+               $$PWD/../../Common/SignalerManager \
 
-LIBS += -L$$PWD/../../../lib/ -lMDatabase -lSignalerOnlineSettingDlg
+LIBS += -L$$PWD/../../../lib/ -lMDatabase -lSignalerOnlineSettingDlg -lSignalerManager -lUtility
 
 DESTDIR = $$PWD/../../../lib/
 
@@ -19,12 +33,14 @@ DEFINES += SIGNALERSTATUSWIDGET_LIBRARY
 
 SOURCES += signalerstatuswidget.cpp \
     signalerbasiceditdlg.cpp \
-    signalerhandler.cpp
+    signalerhandler.cpp \
+    buttonwidget.cpp
 
 HEADERS += signalerstatuswidget.h\
         signalerstatuswidget_global.h \
     signalerbasiceditdlg.h \
-    signalerhandler.h
+    signalerhandler.h \
+    buttonwidget.h
 
 unix:!symbian {
     maemo5 {

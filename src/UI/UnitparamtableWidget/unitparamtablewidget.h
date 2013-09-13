@@ -7,6 +7,7 @@
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QList>
 #include "unitparamtablewidget_global.h"
 #include "unitparamhandler.h"
 
@@ -18,6 +19,8 @@ public:
     explicit UnitparamtableWidget(const QString& name, QWidget* parent = 0);
 	~UnitparamtableWidget();
     const QString& widget_name();
+	void PageFontSetting(const QFont &font);
+
     void UpdateUI();
 
 signals:
@@ -33,11 +36,11 @@ private:
     void InitSignalSlots();
 
     bool SaveData();
-	void PageFontSetting(const QFont &font);
 
 private:
     UnitparamHandler *handler_;
     QString widget_name_;
+	QList<QWidget *> font_setting_list_;
 
 private:
     QLineEdit* signal_ip_lineedit_;

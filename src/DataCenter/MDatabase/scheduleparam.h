@@ -5,7 +5,6 @@ class ScheduleParam
 {
 public:
     ScheduleParam();
-    ~ScheduleParam();
 
     ScheduleParam(const ScheduleParam &rhs);
     ScheduleParam& operator=(const ScheduleParam &rhs);

@@ -9,7 +9,12 @@
 #define STRING_CANCEL                   QObject::tr("Cancel")
 #define STRING_OK                       QObject::tr("Ok")
 #define STRING_WARNING                  QObject::tr("Warning")
+#define STRING_OPEN                     QObject::tr("Open")
+#define STRING_FILE_NOT_EXISTS          QObject::tr("File not exists")
 
+#define STRING_IP                       QObject::tr("IP Address")
+#define STRING_MASK                     QObject::tr("Mask")
+#define STRING_GATEWAY                  QObject::tr("Gateway")
 #define STRING_FONT_SONGTI              QObject::tr("Song ti")
 
 #define STRING_UI_ADD                   QObject::tr("Add")
@@ -68,6 +73,7 @@
 #define STRING_UI_SIGNALER_MARKUP       QObject::tr("Mark up")
 
 #define STRING_UI_SIGNALER_ID           QObject::tr("Signaler id")
+#define STRING_UI_SIGNALER_BASIC_INFO	QObject::tr("Signaler basic information setting")
 #define STRING_UI_SIGNALER_PARAM_SET    QObject::tr("Signaler param setting")
 
 #define STRING_UI_FILELIST_ADD          QObject::tr("Add file to list")
@@ -294,6 +300,8 @@
 #define STRING_UI_FILEMANAGER_DELETE_FILE_FAILED   QObject::tr("Delete file failed.")
 #define STRING_UI_FILEMANAGER_CLEAR_FILE_FAILED    QObject::tr("Clear file list failed.")
 
+#define STRING_UI_SIGNALER_ADVANCED_SETUP          QObject::tr("Signaler advanced setting")
+
 #define STRING_UI_SIGNALER_CONNECT          QObject::tr("Connect")
 #define STRING_UI_SIGNALER_READ_FILE        QObject::tr("Read setting file")
 #define STRING_UI_SIGNALER_UPDATE_FILE      QObject::tr("Update setting file")
@@ -302,7 +310,63 @@
 #define STRING_UI_SIGNALER_LOG_READ         QObject::tr("Read log file")
 #define STRING_UI_SIGNALER_FLOW_READ        QObject::tr("Read flow")
 #define STRING_UI_SIGNALER_SETTING          QObject::tr("Settings")
+#define STRING_UI_SIGNALER_SAVE_FAILED	    QObject::tr("Save Failed")
 
 #define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
+
+#define STRING_UI_SIGNALER_TIME_NETWORK_TITLE       QObject::tr("Signaler Time-Network setting")
+#define STRING_UI_SIGNALER_SYS_TIME         QObject::tr("System time")
+#define STRING_UI_SIGNALER_TIME_GRP         QObject::tr("Time setting")
+#define STRING_UI_SIGNALER_NETWORK_GRP      QObject::tr("Network setting")
+#define STRING_UI_SIGNALER_READ_SYSTIME     QObject::tr("Read sys time")
+#define STRING_UI_SIGNALER_SYNC_TIME        QObject::tr("Sync time")
+#define STRING_UI_SIGNALER_REFRESH          QObject::tr("Refresh")
+#define STRING_UI_SIGNALER_WRITE_IP         QObject::tr("Set signaler IP")
+
+#define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
+
+#define STRING_UI_SIGNALER_EVENT_TYPE       QObject::tr("Event type")
+#define STRING_UI_SIGNALER_EVENT_CLEARTIME  QObject::tr("Event log clear time")
+
+#define STRING_UI_SIGNALER_EVENT_TYPE_ID        QObject::tr("Event type ID")
+#define STRING_UI_SIGNALER_EVENT_FLOW_ID        QObject::tr("Event flow ID")
+#define STRING_UI_SIGNALER_EVENT_DATETIME       QObject::tr("Event datetime")
+#define STRING_UI_SIGNALER_EVENT_DESC           QObject::tr("Event desc")
+
+#define STRING_UI_SIGNALER_EVENT_READ_LOG       QObject::tr("Read log")
+#define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
+#define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
+#define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
+
+#define STRING_UI_SIGNALER_DETECTOR_TITLE       QObject::tr("Detector flow info")
+#define STRING_UI_SIGNALER_DETECTOR_ID          QObject::tr("Detector ID")
+#define STRING_UI_SIGNALER_DETECTOR_FLOW        QObject::tr("Detector flow ID")
+#define STRING_UI_SIGNALER_DETECTOR_DATETIME    QObject::tr("Detector datetime")
+#define STRING_UI_SIGNALER_DETECTOR_NUM         QObject::tr("Detect num")
+#define STRING_UI_SIGNALER_DETECTOR_PHASE       QObject::tr("Detector phase")
+#define STRING_UI_SIGNALER_DETECTOR_TOTAL_FLOW  QObject::tr("Total flow")
+#define STRING_UI_SGINALER_DETECTOR_READ_FLOW   QObject::tr("Flow read")
+#define STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW  QObject::tr("Clear flow")
+
+#define STRING_UI_SIGNALER_MONITOR_SIGNALER_RECORD  QObject::tr("Signaler record")
+#define STRING_UI_SIGNALER_MONITOR_LIGHT_STATUS     QObject::tr("Lights status")
+#define STRING_UI_SIGNALER_MONITOR_DRIVER_STATUS    QObject::tr("Driver status")
+#define STRING_UI_SIGNALER_MONITOR_DETECTOR_STATUS  QObject::tr("Detector status")
+
+#define STRING_UI_SIGNALER_MONITOR_ROAD             QObject::tr("Road status monitor")
+#define STRING_UI_SIGNALER_MONITOR_STATUS_PARAM     QObject::tr("Status param")
+
+#define STRING_UI_SIGNALER_MONITOR_SIGNALER_STATUS  QObject::tr("Signaler status info")
+#define STRING_UI_SIGNALER_MONITOR_LIGHT_COLOR      QObject::tr("Lights color")
+#define STRING_UI_SIGNALER_MONITOR_DRIVER_ID        QObject::tr("Driver id")
+#define STRING_UI_SIGNALER_MONITOR_DRIVER_TYPE      QObject::tr("Driver type")
+#define STRING_UI_SIGNALER_MONITOR_DETECTOR_ID      QObject::tr("Detector id")
+#define STRING_UI_SIGNALER_MONITOR_DETECTOR_FLOW    QObject::tr("Detector flow")
+
+#define STRING_UI_SIGNALER_MONITOR_CYCLE_TIME       QObject::tr("Cycle time")
+#define STRING_UI_SIGNALER_MONITOR_STAGE_ID         QObject::tr("Stage ID")
+#define STRING_UI_SIGNALER_MONITOR_PHASE_ID         QObject::tr("Current phase id")
+#define STRING_UI_SIGNALER_MONITOR_PHASE_TIME       QObject::tr("Phase time")
+#define STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME    QObject::tr("Signaler time")
 
 #endif // MACROSTRING_H

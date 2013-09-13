@@ -2,6 +2,7 @@
 #define SCHEDULEHANDLER_H
 
 #include <QList>
+#include "scheduleparam.h"
 #include "mdatabase.h"
 
 class ScheduleHandler
