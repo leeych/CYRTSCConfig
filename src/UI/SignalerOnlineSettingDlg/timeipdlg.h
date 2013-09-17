@@ -27,6 +27,8 @@ public slots:
     void OnRefreshButtonClicked();
     void OnWriteIPButtonClicked();
 
+    void OnCmdReadTscTime();
+
 protected:
     void closeEvent(QCloseEvent *);
     

@@ -1,6 +1,7 @@
 #include <QtGui>
 #include "mtabwidget.h"
 #include "mutility.h"
+#include "macrostring.h"
 
 
 MTabWidget::MTabWidget(QWidget *parent) :
@@ -12,6 +13,8 @@ MTabWidget::MTabWidget(QWidget *parent) :
     QString dir;
     MUtility::getStyleSheetDir(dir);
     setStyleSheet(QLatin1String(MUtility::fetchQrc(dir + "tabwidget.qss")));
+    QFont font(STRING_FONT_SONGTI, 11);
+    setFont(font);
 //    setStyleSheet("background-color:RGB(233, 246, 254);");
     connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
 }

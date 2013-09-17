@@ -19,6 +19,7 @@ public:
     bool save_data();
 
 	int get_max_signaler_id();
+    bool set_signaler_status(int id, SignalerParam::SignalerStatus);
 
     QList<SignalerParam> get_signaler_list();
     void set_signaler_list(const QList<SignalerParam> &signaler_list);

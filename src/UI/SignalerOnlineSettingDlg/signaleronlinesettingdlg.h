@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QPushButton>
+#include <QLabel>
 #include "signaleronlinesettingdlg_global.h"
 
 #include "mtabwidget.h"
@@ -34,6 +35,8 @@
 #include "eventlogdlg.h"
 #include "realtimemonitordlg.h"
 
+#include "synccommand.h"
+
 
 class SIGNALERONLINESETTINGDLGSHARED_EXPORT SignalerOnlineSettingDlg : public QDialog
 {
@@ -42,7 +45,7 @@ class SIGNALERONLINESETTINGDLGSHARED_EXPORT SignalerOnlineSettingDlg : public QD
 public:
     explicit SignalerOnlineSettingDlg(QWidget *parent = 0);
     ~SignalerOnlineSettingDlg();
-    void Initialize();
+    void Initialize(const QString &ip, unsigned int port);
 
 signals:
 
@@ -56,11 +59,22 @@ public slots:
     void OnFlowButtonClicked();
     void OnSettingButtonClicked();
 
+    void OnConnectedSlot();
+    void OnDisconnectedSlot();
+
 private:
     void InitPage();
     void InitSignalSlots();
     void InitTabPage();
     void UpdateUI();
+
+    void UpdateConnectStatus(bool status);
+
+private:
+    SyncCommand *sync_cmd_;
+    QString ip_;
+    unsigned int port_;
+    bool conn_status_;
 
 private:
     MTabWidget *dialog_tab_;
@@ -76,6 +90,7 @@ private:
     ChanneltableWidget *channel_widget_;
     DetectortableWidget *detector_widget_;
 
+    QLabel *conn_tip_label_;
     QPushButton *conn_button_, *read_button_, *update_button_;
     QPushButton *send_button_, *monitor_button_, *log_button_;
     QPushButton *flow_button_, *setting_button_;

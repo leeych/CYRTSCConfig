@@ -4,4 +4,5 @@ SUBDIRS += \
     Utility \
     XmlHelper \
     SignalerManager \
-    Communication
+    Communication \
+    CommandCallback

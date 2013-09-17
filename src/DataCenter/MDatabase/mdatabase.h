@@ -18,7 +18,7 @@
 #include <QList>
 #include <QMultiMap>
 
-class MDATABASESHARED_EXPORT MDatabase
+class MDatabase
 {
 public:
     static MDatabase* GetInstance()

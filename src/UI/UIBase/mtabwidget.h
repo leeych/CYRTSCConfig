@@ -6,7 +6,7 @@
 #include <QToolButton>
 #include "uibase_global.h"
 
-class UIBASESHARED_EXPORT MTabCloseButton : public QToolButton
+class MTabCloseButton : public QToolButton
 {
     Q_OBJECT
 

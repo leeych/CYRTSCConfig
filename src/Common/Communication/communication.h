@@ -3,7 +3,7 @@
 
 #include "communication_global.h"
 
-class COMMUNICATIONSHARED_EXPORT Communication
+class Communication
 {
     
 public:

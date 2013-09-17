@@ -29,6 +29,9 @@
 #define STRING_UI_NORMAL                QObject::tr("Normal")
 #define STRING_UI_ABNORMAL              QObject::tr("Abnormal")
 
+#define STRING_UI_ONLINE                QObject::tr("Online")
+#define STRING_UI_OFFLINE               QObject::tr("Offline")
+
 #define STRING_UI_LOGIN_USERNAME        QObject::tr("Username")
 #define STRING_UI_LOGIN_PASSWD          QObject::tr("Password")
 #define STRING_UI_LOGIN_LOGIN           QObject::tr("Log in")
@@ -302,6 +305,7 @@
 
 #define STRING_UI_SIGNALER_ADVANCED_SETUP          QObject::tr("Signaler advanced setting")
 
+#define STRING_UI_SIGNALER_DISCONNECT       QObject::tr("Disconnect")
 #define STRING_UI_SIGNALER_CONNECT          QObject::tr("Connect")
 #define STRING_UI_SIGNALER_READ_FILE        QObject::tr("Read setting file")
 #define STRING_UI_SIGNALER_UPDATE_FILE      QObject::tr("Update setting file")
@@ -311,6 +315,9 @@
 #define STRING_UI_SIGNALER_FLOW_READ        QObject::tr("Read flow")
 #define STRING_UI_SIGNALER_SETTING          QObject::tr("Settings")
 #define STRING_UI_SIGNALER_SAVE_FAILED	    QObject::tr("Save Failed")
+
+#define STRING_UI_SIGNALER_TIP_CONNECT      QObject::tr("Connected to the signaler")
+#define STRING_UI_SIGNALER_TIP_DISCONN      QObject::tr("Disconnected from the signaler")
 
 #define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
 

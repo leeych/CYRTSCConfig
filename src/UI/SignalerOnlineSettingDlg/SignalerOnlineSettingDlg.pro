@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+QT      += network
+
 TARGET = SignalerOnlineSettingDlg
 TEMPLATE = lib
 
@@ -20,14 +22,15 @@ INCLUDEPATH += $$PWD/../../../include/ \
                $$PWD/../DetectortableWidget/ \
                $$PWD/../TimesectiontableWidget/ \
                $$PWD/../PhasetimingtableWidget/ \
-               $$PWD/../PhaseconflicttableWidget
+               $$PWD/../PhaseconflicttableWidget/ \
+               $$PWD/../../Common/Communication/
 
 LIBS += -L$$PWD/../../../lib/ -lBottomButtonsWidget \
         -lUIBase \
         -lUnitparamtableWidget -lScheduleTableWidget -lTimingplanWidget -lPhasetableWidget \
         -lChanneltableWidget -lDetectortableWidget -lTimesectiontableWidget -lPhaseconflicttableWidget \
         -lPhasetimingtableWidget \
-        -lMDatabase -lUtility
+        -lMDatabase -lUtility -lCommunication
 
 DESTDIR = $$PWD/../../../lib/
 

@@ -19,7 +19,7 @@ struct RequestHead;
 struct ReplayHead;
 class Request;
 
-class COMMUNICATIONSHARED_EXPORT CmdThread : public QThread
+class CmdThread : public QThread
 {
     Q_OBJECT
 public:

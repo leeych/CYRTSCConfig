@@ -1,5 +1,10 @@
 #include "signalerstatuswidget.h"
 #include "macrostring.h"
+
+#include "signalerbasiceditdlg.h"
+#include "signalerhandler.h"
+#include "signaleronlinesettingdlg.h"
+
 #include <QLabel>
 #include <QHeaderView>
 #include <QHBoxLayout>
@@ -102,11 +107,13 @@ void SignalerStatusWidget::OnAdvancedActionClicked()
 		return;
 	}
 	int id = signaler_table_->item(row, 0)->text().toUInt();
-	if (signaler_online_dlg_ == NULL)
+    if (signaler_online_dlg_ == NULL || id == 0)
 	{
 		return;
 	}
-	signaler_online_dlg_->Initialize();
+    QString ip = signaler_table_->item(row, 3)->text().trimmed();
+    unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
+    signaler_online_dlg_->Initialize(ip, port);
 }
 
 void SignalerStatusWidget::OnCustomContextMenuRequested(QPoint)
@@ -121,7 +128,9 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
 {
     if (col == 1)
     {
-        signaler_online_dlg_->Initialize();
+        QString ip = signaler_table_->item(row, 3)->text().trimmed();
+        unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
+        signaler_online_dlg_->Initialize(ip, port);
         return;
     }
     int id = signaler_table_->item(row, 0)->text().toInt();
@@ -134,7 +143,37 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
 
 void SignalerStatusWidget::OnTableRowUpdateSlot(int)
 {
-	UpdateTable();
+    UpdateTable();
+}
+
+void SignalerStatusWidget::OnConnectedSlot()
+{
+    qDebug() << "connected with signaler";
+    int row = signaler_table_->currentRow();
+    if (row < 0)
+    {
+        return;
+    }
+    int id = signaler_table_->item(row, 0)->text().toInt();
+    handler_->set_signaler_status(id, SignalerParam::Online);
+    QTableWidgetItem *item_status = signaler_table_->item(row, 1);
+    item_status->setText(STRING_UI_ONLINE);
+    item_status->setTextColor(get_status_text_color(SignalerParam::Online));
+}
+
+void SignalerStatusWidget::OnDisconnectedSlot()
+{
+    qDebug() << "disconnect from signaler";
+    int row = signaler_table_->currentRow();
+    if (row < 0)
+    {
+        return;
+    }
+    int id = signaler_table_->item(row, 0)->text().toInt();
+    handler_->set_signaler_status(id, SignalerParam::Offline);
+    QTableWidgetItem *item_status = signaler_table_->item(row, 1);
+    item_status->setText(STRING_UI_OFFLINE);
+    item_status->setTextColor(get_status_text_color(SignalerParam::Offline));
 }
 
 void SignalerStatusWidget::InitPage()
@@ -164,6 +203,11 @@ void SignalerStatusWidget::InitSignalSlots()
 
     connect(signaler_table_, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(OnTableCellDoubleClicked(int,int)));
     connect(signaler_edit_dlg_, SIGNAL(updateSignalerSignal(int)), this, SLOT(OnTableRowUpdateSlot(int)));
+
+    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectedSlot()));
+    connect(SyncCommand::GetInstance(), SIGNAL(disconnectedSignal()), this, SLOT(OnDisconnectedSlot()));
+    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), signaler_online_dlg_, SLOT(OnConnectedSlot()));
+    connect(SyncCommand::GetInstance(), SIGNAL(disconnectedSignal()), signaler_online_dlg_, SLOT(OnDisconnectedSlot()));
 }
 
 void SignalerStatusWidget::InitTable()
@@ -240,11 +284,11 @@ QString SignalerStatusWidget::get_status_desc(SignalerParam::SignalerStatus stat
     QString str = "-";
     if (status == SignalerParam::Online)
     {
-        str = STRING_UI_NORMAL;
+        str = STRING_UI_ONLINE;
     }
     else
     {
-        str = STRING_UI_ABNORMAL;
+        str = STRING_UI_OFFLINE;
     }
     return str;
 }

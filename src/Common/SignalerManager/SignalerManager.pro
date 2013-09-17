@@ -22,11 +22,11 @@ DEFINES += SIGNALERMANAGER_LIBRARY
 
 SOURCES += signalermanager.cpp \
     signalerelement.cpp \
-    signalerparam.cpp
+#    signalerparam.cpp
 
 HEADERS += signalermanager.h\
         SignalerManager_global.h \
-    signalerelement.h
+#    signalerelement.h
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN

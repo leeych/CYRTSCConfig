@@ -94,5 +94,15 @@ int SignalerHandler::get_max_signaler_id()
 	SignalerMap::ConstIterator iter = signaler_map_.constEnd();
 	--iter;
 	int max_id = iter.key();
-	return max_id;
+    return max_id;
+}
+
+bool SignalerHandler::set_signaler_status(int id, SignalerParam::SignalerStatus status)
+{
+    if (!signaler_map_.contains(id))
+    {
+        return false;
+    }
+    signaler_map_[id].signaler_status = status;
+    return true;
 }

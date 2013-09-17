@@ -4,7 +4,8 @@
 class ScheduleParam
 {
 public:
-    ScheduleParam();
+    explicit ScheduleParam();
+    ~ScheduleParam();
 
     ScheduleParam(const ScheduleParam &rhs);
     ScheduleParam& operator=(const ScheduleParam &rhs);

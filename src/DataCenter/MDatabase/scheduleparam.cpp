@@ -9,6 +9,10 @@ ScheduleParam::ScheduleParam() :
 {
 }
 
+ScheduleParam::~ScheduleParam()
+{
+}
+
 ScheduleParam::ScheduleParam(const ScheduleParam &rhs)
 {
     this->schedule_id = rhs.schedule_id;

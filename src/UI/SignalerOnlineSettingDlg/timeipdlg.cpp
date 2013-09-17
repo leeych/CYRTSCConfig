@@ -1,11 +1,13 @@
 #include "timeipdlg.h"
 #include "macrostring.h"
+#include "synccommand.h"
 
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDateTime>
 #include <QMessageBox>
+
 
 TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
@@ -26,10 +28,12 @@ void TimeIPDlg::Initialize()
 
 void TimeIPDlg::OnReadSystimeButtonClicked()
 {
-    QDateTime datetime = QDateTime::currentDateTime();
-    QString str = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
-    sys_time_text_label_->setText(str);
-    sync_time_button_->setEnabled(!str.isEmpty());
+//    QDateTime datetime = QDateTime::currentDateTime();
+//    QString str = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+//    sys_time_text_label_->setText(str);
+//    sync_time_button_->setEnabled(!str.isEmpty());
+
+    SyncCommand::GetInstance()->ReadSignalerTime(this, SLOT(OnCmdReadTscTime()));
 }
 
 void TimeIPDlg::OnSyncTimeButtonClicked()
@@ -45,6 +49,11 @@ void TimeIPDlg::OnRefreshButtonClicked()
 void TimeIPDlg::OnWriteIPButtonClicked()
 {
     QMessageBox::information(this, STRING_TIP, "Set signaler IP", STRING_OK);
+}
+
+void TimeIPDlg::OnCmdReadTscTime()
+{
+
 }
 
 void TimeIPDlg::closeEvent(QCloseEvent *)

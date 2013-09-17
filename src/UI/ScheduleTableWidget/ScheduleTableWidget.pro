@@ -11,9 +11,9 @@ INCLUDEPATH += $$PWD/../../../include/ \
                $$PWD/../../DataCenter/MDatabase/ \
                $$PWD/../BottomButtonsWidget
 
-LIBS += -L$$PWD/../../../lib -lMDatabase -lBottomButtonsWidget
+DESTDIR = $$PWD/../../../lib/
 
-DESTDIR = $$PWD/../../../lib
+LIBS += -L$$PWD/../../../lib/ -lBottomButtonsWidget -lMDatabase
 
 DEFINES += SCHEDULETABLEWIDGET_LIBRARY
 

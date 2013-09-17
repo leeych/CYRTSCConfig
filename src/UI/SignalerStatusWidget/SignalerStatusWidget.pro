@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT     += xml
+QT     += xml network
 
 TARGET = SignalerStatusWidget
 TEMPLATE = lib
@@ -24,8 +24,9 @@ INCLUDEPATH += $$PWD/../../../include/ \
                $$PWD/../PhasetimingtableWidget \
                $$PWD/../PhaseconflicttableWidget \
                $$PWD/../../Common/SignalerManager \
+               $$PWD/../../Common/Communication
 
-LIBS += -L$$PWD/../../../lib/ -lMDatabase -lSignalerOnlineSettingDlg -lSignalerManager -lUtility
+LIBS += -L$$PWD/../../../lib/ -lMDatabase -lSignalerOnlineSettingDlg -lSignalerManager -lUtility -lCommunication
 
 DESTDIR = $$PWD/../../../lib/
 

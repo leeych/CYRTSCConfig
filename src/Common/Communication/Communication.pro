@@ -17,12 +17,16 @@ DEFINES += COMMUNICATION_LIBRARY
 
 SOURCES += communication.cpp \
     command.cpp \
-    cmdthread.cpp
+    cmdthread.cpp \
+    synccommand.cpp \
+    request.cpp
 
 HEADERS += communication.h\
         communication_global.h \
     command.h \
-    cmdthread.h
+    cmdthread.h \
+    synccommand.h \
+    request.h
 
 unix:!symbian {
     maemo5 {

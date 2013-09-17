@@ -12,6 +12,8 @@
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     : QDialog(parent)
 {
+    conn_status_ = false;
+    sync_cmd_ = SyncCommand::GetInstance();
     time_ip_dlg_ = new TimeIPDlg(this);
     flow_dlg_ = new DetectorFlowDlg(this);
     event_log_dlg_ = new EventLogDlg(this);
@@ -25,15 +27,24 @@ SignalerOnlineSettingDlg::~SignalerOnlineSettingDlg()
 {
 }
 
-void SignalerOnlineSettingDlg::Initialize()
+void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
 {
+    ip_ = ip;
+    port_ = port;
     UpdateUI();
     exec();
 }
 
 void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Connect", STRING_OK);
+    if (conn_status_)
+    {
+        sync_cmd_->disconnectFromHost();
+    }
+    else
+    {
+        sync_cmd_->connectToHost(ip_, port_);
+    }
 }
 
 void SignalerOnlineSettingDlg::OnReadButtonClicked()
@@ -81,6 +92,15 @@ void SignalerOnlineSettingDlg::OnSettingButtonClicked()
     time_ip_dlg_->Initialize();
 }
 
+void SignalerOnlineSettingDlg::OnConnectedSlot()
+{
+    UpdateConnectStatus(true);
+}
+
+void SignalerOnlineSettingDlg::OnDisconnectedSlot()
+{
+    UpdateConnectStatus(false);
+}
 
 void SignalerOnlineSettingDlg::InitPage()
 {
@@ -109,6 +129,8 @@ void SignalerOnlineSettingDlg::InitPage()
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addWidget(dialog_tab_);
     vlayout->addLayout(button_hlayout);
+    conn_tip_label_ = new QLabel;
+    vlayout->addWidget(conn_tip_label_);
     setLayout(vlayout);
 
     setWindowFlags(windowFlags() & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);
@@ -132,6 +154,7 @@ void SignalerOnlineSettingDlg::InitTabPage()
     dialog_tab_ = new MTabWidget(this);
     dialog_tab_->setFont(font);
 //    dialog_tab_ = new QTabWidget;
+//    dialog_tab_->setFont(font);
 
     unitparam_widget_ = new UnitparamtableWidget(STRING_UI_UNIT_TABLE);
     schedule_widget_ = new ScheduleTableWidget(STRING_UI_SCHEDULE_PLAN);
@@ -157,4 +180,20 @@ void SignalerOnlineSettingDlg::InitTabPage()
 void SignalerOnlineSettingDlg::UpdateUI()
 {
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
+}
+
+void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)
+{
+    if (status)
+    {
+        conn_status_ = true;
+        conn_button_->setText(STRING_UI_SIGNALER_DISCONNECT);
+        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
+    }
+    else
+    {
+        conn_status_ = false;
+        conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
+        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_DISCONN);
+    }
 }

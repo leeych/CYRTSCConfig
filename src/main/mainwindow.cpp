@@ -108,10 +108,10 @@ void MainWindow::InitPage()
 
     config_widget_ = new ConfigoptWidget;
     file_list_widget_ = new FileListWidget;
-    main_tab_window_ = new MTabWidget;
-	QFont font(STRING_FONT_SONGTI, 11);
-	main_tab_window_->setFont(font);
+    main_tab_window_ = new MTabWidget(this);
+//    main_tab_window_ = new QTabWidget(this);
 
+    QFont font(STRING_FONT_SONGTI, 11);
     left_splitter_ = new QSplitter(Qt::Vertical);
     left_splitter_->addWidget(config_widget_);
     left_splitter_->addWidget(file_list_widget_);
@@ -135,6 +135,7 @@ void MainWindow::InitPage()
     QString dir;
     MUtility::getStyleSheetDir(dir);
     setStyleSheet(QLatin1String(MUtility::fetchQrc(dir + "mainwindow.qss")));
+//    main_tab_window_->setFont(font);
 }
 
 void MainWindow::InitSignalSlots()

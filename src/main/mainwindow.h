@@ -74,6 +74,7 @@ private:
     FileListWidget* file_list_widget_;
 
     MTabWidget* main_tab_window_;
+//    QTabWidget *main_tab_window_;
     // Tab pages
     ScheduleTableWidget* schedule_tab_page_;
     TimesectiontableWidget* time_section_tab_page_;
