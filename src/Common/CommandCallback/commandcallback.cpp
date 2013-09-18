@@ -1,9 +1,6 @@
 #include "commandcallback.h"
 
-
-CommandCallback::CommandCallback()
-{
-}
+CommandCallback *CommandCallback::instance_ = NULL;
 
 CommandCallback::~CommandCallback()
 {
@@ -27,5 +24,10 @@ void CommandCallback::OnCmdParam()
 }
 
 void CommandCallback::OnReadTscTimeSlot()
+{
+}
+
+CommandCallback::CommandCallback(QObject *parent)
+    : QObject(parent)
 {
 }

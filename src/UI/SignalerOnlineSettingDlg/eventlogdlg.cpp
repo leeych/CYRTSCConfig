@@ -1,11 +1,13 @@
 #include "eventlogdlg.h"
 #include "macrostring.h"
+#include "synccommand.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
-
 #include <QMessageBox>
+
+#include <QFile>
 
 EventLogDlg::EventLogDlg(QWidget *parent) :
     QDialog(parent)
@@ -26,7 +28,8 @@ void EventLogDlg::Initialize()
 
 void EventLogDlg::OnReadLogButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Read log", STRING_OK);
+//    QMessageBox::information(this, STRING_TIP, "Read log", STRING_OK);
+    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(void*)));
 }
 
 void EventLogDlg::OnRemoveEventButtonClicked()
@@ -42,6 +45,23 @@ void EventLogDlg::OnExportLogButtonClicked()
 void EventLogDlg::OnExportReportButtonClicked()
 {
     QMessageBox::information(this, STRING_TIP, "Export report", STRING_OK);
+}
+
+void EventLogDlg::OnCmdReadEventLog(void *content)
+{
+    if (content == NULL)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
+        return;
+    }
+    event_log_array_.append((char *)content);
+    QString log_str(event_log_array_);
+    if (log_str.right(3).endsWith("END"))
+    {
+        ParseEventLogArray(event_log_array_);
+        event_log_array_.clear();
+        return;
+    }
 }
 
 void EventLogDlg::InitPage()
@@ -112,4 +132,34 @@ void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
     tree->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
     QHeaderView *header_view = tree->header();
     header_view->setDefaultAlignment(Qt::AlignCenter);
+}
+
+void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
+{
+    char head[4] = {'\0'};
+    void const *content = &byte_arr;
+    memcpy(head, content, 4);
+    if (strcmp(head, "CYT6") != 0)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_INCORRECT, STRING_OK);
+        return;
+    }
+    unsigned int len = 0;
+    memcpy(&len, content + 4, 4);
+    char *log_buff = new char[len + 1];
+    memcpy(log_buff, content + 8, len);
+    log_buff[len] = '\0';
+    // TODO: left to parse log bytes array
+
+    byte_arr.remove(0, 4);
+    int index = byte_arr.indexOf("END");
+    byte_arr.remove(index, 3);
+
+    QString str(byte_arr);
+//    EventLog info((EventLog)byte_arr);
+
+    // write log to file
+    // ....
+    QFile file("user/tmp/tmp.edat");
+    file.write(byte_arr);
 }

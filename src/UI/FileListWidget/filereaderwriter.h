@@ -17,6 +17,8 @@ public:
 
     bool ReadFile(const char* file_path);
     bool WriteFile(const char* file_path);
+    bool WriteFile(const TSCParam &param, const char *file_path);
+    void SetTSCParam(const TSCParam &param);
 
 private:
 	void ResetParam();

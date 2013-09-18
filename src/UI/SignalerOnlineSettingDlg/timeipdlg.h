@@ -6,10 +6,7 @@
 #include <QLineEdit>
 #include <QLabel>
 
-//class QPushButton;
-//class QGroupBox;
-//class QLineEdit;
-//class QLabel;
+#include <QTcpSocket>
 
 class TimeIPDlg : public QDialog
 {
@@ -27,7 +24,11 @@ public slots:
     void OnRefreshButtonClicked();
     void OnWriteIPButtonClicked();
 
-    void OnCmdReadTscTime();
+    // cmd callback
+    void OnCmdReadTscTime(void *content);
+    void OnCmdReadNetworkingInfo(void *content);
+    void OnConnectEstablish();
+    void OnConnectError(QAbstractSocket::SocketError);
 
 protected:
     void closeEvent(QCloseEvent *);
@@ -37,8 +38,11 @@ private:
     void InitSignalSlots();
     void UpdateUI();
 
+    void EnableButtonExcept(bool enable, QPushButton *btn_ptr);
+
 private:
     QString dialog_name_;
+    QList<QPushButton *> button_list_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

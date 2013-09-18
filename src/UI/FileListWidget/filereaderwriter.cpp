@@ -86,6 +86,37 @@ bool FileReaderWriter::WriteFile(const char* file_path)
     return true;
 }
 
+bool FileReaderWriter::WriteFile(const TSCParam &param, const char *file_path)
+{
+    FILE *fp = fopen(file_path, "wb+");
+    fseek(fp, 0, SEEK_SET);
+    size_t header = fwrite(&param.tsc_header_, sizeof(param.tsc_header_), 1, fp);
+    size_t unit = fwrite(&param.unit_param_, sizeof(param.unit_param_), 1, fp);
+    size_t sched = fwrite(&param.sched_table_, sizeof(param.sched_table_), 1, fp);
+    size_t time_section = fwrite(&param.time_section_table_, sizeof(param.time_section_table_), 1, fp);
+    size_t timing = fwrite(&param.timing_plan_table_, sizeof(param.timing_plan_table_), 1, fp);
+    size_t stage_timing = fwrite(&param.stage_timing_table_, sizeof(param.stage_timing_table_), 1, fp);
+    size_t phase_table = fwrite(&param.phase_table_, sizeof(param.phase_table_), 1, fp);
+    size_t phase_conflict = fwrite(&param.phase_conflict_table_, sizeof(param.phase_conflict_table_), 1, fp);
+    size_t channel_table = fwrite(&param.channel_table_, sizeof(param.channel_table_), 1, fp);
+    size_t channel_hint = fwrite(&param.channel_hint_table_, sizeof(param.channel_hint_table_), 1, fp);
+    size_t detector = fwrite(&param.detector_table_, sizeof(param.detector_table_), 1, fp);
+    //fflush(fp);
+    fclose(fp);
+
+    if (header == 0 || unit == 0 || sched == 0 || time_section == 0 || timing == 0 || stage_timing == 0
+        || phase_table == 0 || phase_conflict == 0 || channel_table == 0 || channel_hint == 0 || detector == 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+void FileReaderWriter::SetTSCParam(const TSCParam &param)
+{
+    memcpy(&tsc_param_, &param, sizeof(param));
+}
+
 void FileReaderWriter::ResetParam()
 {
 	memset(&tsc_param_.tsc_header_, 0x00, sizeof(tsc_param_.tsc_header_));

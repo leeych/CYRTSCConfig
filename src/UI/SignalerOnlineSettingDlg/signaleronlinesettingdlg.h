@@ -18,24 +18,14 @@
 #include "channeltablewidget.h"
 #include "detectortablewidget.h"
 
-//class TimeIPDlg;
-//class UnitparamtableWidget;
-//class ScheduleTableWidget;
-//class TimesectiontableWidget;
-//class TimingplanWidget;
-//class PhasetimingtableWidget;
-//class PhasetableWidget;
-//class PhaseconflicttableWidget;
-//class ChanneltableWidget;
-//class DetectortableWidget;
-
-
 #include "timeipdlg.h"
 #include "detectorflowdlg.h"
 #include "eventlogdlg.h"
 #include "realtimemonitordlg.h"
 
 #include "synccommand.h"
+
+#include <QTcpSocket>
 
 
 class SIGNALERONLINESETTINGDLGSHARED_EXPORT SignalerOnlineSettingDlg : public QDialog
@@ -62,6 +52,13 @@ public slots:
     void OnConnectedSlot();
     void OnDisconnectedSlot();
 
+    // cmd call back
+    void OnCmdGetVerId(void *content);
+    void OnCmdReadConfig(void *content);
+
+protected:
+    void timerEvent(QTimerEvent *);
+
 private:
     void InitPage();
     void InitSignalSlots();
@@ -69,12 +66,17 @@ private:
     void UpdateUI();
 
     void UpdateConnectStatus(bool status);
+    void UpdateButtonStatus(bool enable);
 
 private:
     SyncCommand *sync_cmd_;
     QString ip_;
     unsigned int port_;
     bool conn_status_;
+    QTcpSocket *socket_;
+
+    bool is_ver_correct_;
+    int ver_check_id_;  // check version
 
 private:
     MTabWidget *dialog_tab_;

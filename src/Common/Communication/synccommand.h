@@ -7,6 +7,7 @@
 #define CONNECT_WAIT_TIME   (2000)
 #define WRITE_WAIT_TIME     (30000)
 #define READ_WAIT_TIME      (30000)
+#define VERSION_CHECK_TIME  (1000)
 
 #define REPLY_HEAD_FIX      ("CYT")
 
@@ -18,11 +19,17 @@ class SyncCommand : public QObject
 
 public:
     static SyncCommand *GetInstance();
+    QTcpSocket *getSocket();
+
     void connectToHost(const QString &ip, unsigned int port);
     void disconnectFromHost();
 
-    void ReadSignalerConfigFile();
-    void ReadSignalerTime(const QObject *target, const std::string &slot);
+    void ReadSignalerConfigFile(QObject *target, const std::string &slot);
+    void ReadSignalerTime(QObject *target, const std::string &slot);
+    void ReadSignalerNetworkInfo(QObject *target, const std::string &slot);
+    void ReadEventLogFile(QObject *target, const std::string &slot);
+
+    void ReadTscVersion(QObject *target, const std::string &slot);
 
 signals:
     void connectedSignal();
@@ -30,7 +37,8 @@ signals:
     void connectErrorStrSignal(QString);
     void disconnectedSignal();
 
-    void readyRead(int cmd_id, void *content);
+    void readyRead(void *content);
+    void readyRead();
 
 public slots:
     void OnConnectEstablished();
@@ -39,12 +47,16 @@ public slots:
 
 private slots:
     void parseReply();
+    void socketReadyReadSlot();
 
 private:
     void WriteRequest();
+    void RegParseHandler();
+    void UnRegParseHandler();
+    void InitParseHandler(QObject *target, const std::string &slot);
 
 private:
-    SyncCommand();
+    SyncCommand(QObject *parent = 0);
     ~SyncCommand();
     static SyncCommand *instance_;
 

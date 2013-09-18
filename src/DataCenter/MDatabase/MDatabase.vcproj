@@ -205,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath="signalerparam.cpp"
+				>
+			</File>
+			<File
 				RelativePath="timesection.cpp"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath="scheduleparam.h"
+				>
+			</File>
+			<File
+				RelativePath="signalerparam.h"
 				>
 			</File>
 			<File

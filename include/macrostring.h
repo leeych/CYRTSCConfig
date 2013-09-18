@@ -12,6 +12,9 @@
 #define STRING_OPEN                     QObject::tr("Open")
 #define STRING_FILE_NOT_EXISTS          QObject::tr("File not exists")
 
+#define STRING_SUCCEEDED                QObject::tr("succeeded")
+#define STRING_FAILED                   QObject::tr("failed")
+
 #define STRING_IP                       QObject::tr("IP Address")
 #define STRING_MASK                     QObject::tr("Mask")
 #define STRING_GATEWAY                  QObject::tr("Gateway")
@@ -317,7 +320,9 @@
 #define STRING_UI_SIGNALER_SAVE_FAILED	    QObject::tr("Save Failed")
 
 #define STRING_UI_SIGNALER_TIP_CONNECT      QObject::tr("Connected to the signaler")
+#define STRING_UI_SIGNALER_TIP_VERCHECK     QObject::tr("TCP connected succeeded, check version now")
 #define STRING_UI_SIGNALER_TIP_DISCONN      QObject::tr("Disconnected from the signaler")
+#define STRING_UI_SIGNALER_TIP_VERERROR     QObject::tr("Signaler version incorrect")
 
 #define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
 
@@ -329,6 +334,8 @@
 #define STRING_UI_SIGNALER_SYNC_TIME        QObject::tr("Sync time")
 #define STRING_UI_SIGNALER_REFRESH          QObject::tr("Refresh")
 #define STRING_UI_SIGNALER_WRITE_IP         QObject::tr("Set signaler IP")
+
+#define STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED     QObject::tr("Save temp signaler configure file failed")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
 
@@ -344,6 +351,67 @@
 #define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
+
+#define STRING_UI_SIGNALER_EVENT_SOCKET_NULL    QObject::tr("Read socket data is null")
+#define STRING_UI_SIGNALER_EVENT_INCORRECT      QObject::tr("Log socket package incorrect")
+
+// Event log description desc
+// Software event
+#define STRING_EVENT_LOG_SOFTWARE               QObject::tr("Software event")
+#define STRING_EVENT_LOG_START                  QObject::tr("Software starts running")
+#define STRING_EVENT_LOG_SERIAL_OPEN            QObject::tr("Serial opened")
+#define STRING_EVENT_LOG_SERIAL_CONFIG          QObject::tr("Serial configure")
+#define STRING_EVENT_LOG_WATCHDOG_OPEN          QObject::tr("Watch dog open")
+#define STRING_EVENT_LOG_CONFIG_FILE_OPEN       QObject::tr("Configure file open")
+#define STRING_EVENT_LOG_NO_TIMESECTION         QObject::tr("No time-section to run")
+#define STRING_EVENT_LOG_NO_PLAN_RUN            QObject::tr("No plan to run")
+#define STRING_EVENT_LOG_CTRLMODE_INVALID       QObject::tr("Invalid control mode")
+#define STRING_EVENT_LOG_PHASE_CONFL_STAGE      QObject::tr("Phase conflict in the same stage")
+#define STRING_EVENT_LOG_NO_VALID_PHASE         QObject::tr("No valid phase")
+#define STRING_EVENT_LOG_WRITE_BACKPLANE_SERIAL QObject::tr("Write backplane serial")
+#define STRING_EVENT_LOG_WRITE_PANEL_SERIAL     QObject::tr("Write panel serial")
+#define STRING_EVENT_LOG_LOCAL_SERVER_INIT      QObject::tr("Local server initiated")
+#define STRING_EVENT_LOG_LOCAL_SERVER_RECV      QObject::tr("Local server recv data")
+#define STRING_EVENT_LOG_LOCAL_SERVER_SEND      QObject::tr("Local server send data")
+#define STRING_EVENT_LOG_LOCAL_SERVER_CONNECT   QObject::tr("Local server connect")
+#define STRING_EVENT_LOG_LOCAL_CLIENT_SEND      QObject::tr("Local client send data")
+#define STRING_EVENT_LOG_LOCAL_CLIENT_RECV      QObject::tr("Local client recv data")
+#define STRING_EVENT_LOG_READ_GPS_DATA          QObject::tr("Read GPS data")
+
+// Green conflict restoration
+#define STRING_EVENT_LOG_RESTORE                QObject::tr("Restoration")
+#define STRING_EVENT_LOG_BRIGHT_TOGETHER        QObject::tr("Bright together")
+#define STRING_EVENT_LOG_GREEN_CONFL            QObject::tr("Green conflict")
+#define STRING_EVENT_LOG_RG_BRIGHT              QObject::tr("Red green")
+#define STRING_EVENT_LOG_ERR_BRIGHT             QObject::tr("Error bright")
+#define STRING_EVENT_LOG_OFF_BRIGHT             QObject::tr("off bright")
+
+#define STRING_EVENT_LOG_RED                    QObject::tr("Red light")
+#define STRING_EVENT_LOG_GREEN                  QObject::tr("Green light")
+#define STRING_EVENT_LOG_YELLOW                 QObject::tr("Yellow light")
+
+// CAN communication event
+#define STRING_EVENT_LOG_CAN_COMMUNICATION      QObject::tr("CAN communication")
+#define STRING_EVENT_LOG_DRIVER                 QObject::tr("Driver board")
+#define STRING_EVENT_LOG_FAULT                  QObject::tr("Fault")
+#define STRING_EVENT_LOG_NORMAL                 QObject::tr("Normal")
+#define STRING_EVENT_LOG_MPU                    QObject::tr("MPU")
+
+// Driver board event
+#define STRING_EVENT_LOG_DRIVER_EVENT           QObject::tr("Driver event")
+#define STRING_EVENT_LOG_NOT_INSTALLED          QObject::tr("not installed")
+#define STRING_EVENT_LOG_RUN                    QObject::tr("run")
+#define STRING_EVENT_LOG_YELLOW_FLASH_FAULT     QObject::tr("fault yellow flash")
+#define STRING_EVENT_LOG_YELLOW_FLASH_SEPERATE  QObject::tr("yellow flash seperated")
+#define STRING_EVENT_LOG_OFF                    QObject::tr("(off)")
+#define STRING_EVENT_LOG_CTRL                   QObject::tr("(ctrl)")
+
+// Detector event
+#define STRING_EVENT_LOG_DETECTOR_FAULT         QObject::tr("Vehicle detector fault")
+#define STRING_EVENT_LOG_DETECTOR               QObject::tr("Detector")
+
+#define STRING_EVENT_LOG_STOP                   QObject::tr("Software stopped")
+#define STRING_EVENT_LOG_DESC_ERROR             QObject::tr("Description info error")
 
 #define STRING_UI_SIGNALER_DETECTOR_TITLE       QObject::tr("Detector flow info")
 #define STRING_UI_SIGNALER_DETECTOR_ID          QObject::tr("Detector ID")
@@ -375,5 +443,6 @@
 #define STRING_UI_SIGNALER_MONITOR_PHASE_ID         QObject::tr("Current phase id")
 #define STRING_UI_SIGNALER_MONITOR_PHASE_TIME       QObject::tr("Phase time")
 #define STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME    QObject::tr("Signaler time")
+
 
 #endif // MACROSTRING_H

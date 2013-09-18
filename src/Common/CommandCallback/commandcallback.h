@@ -4,7 +4,7 @@
 #include <QObject>
 #include "commandcallback_global.h"
 
-class COMMANDCALLBACKSHARED_EXPORT CommandCallback
+class COMMANDCALLBACKSHARED_EXPORT CommandCallback : public QObject
 {
     Q_OBJECT
 public:
@@ -18,7 +18,7 @@ public slots:
     void OnReadTscTimeSlot();
 
 private:
-    CommandCallback();
+    explicit CommandCallback(QObject *parent = 0);
     ~CommandCallback();
     static CommandCallback* instance_;
 };

@@ -7,6 +7,8 @@
 
 #include "signaleronlinesettingdlg.h"
 #include "macrostring.h"
+#include "tscparam.h"
+#include "filereaderwriter.h"
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -18,6 +20,9 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     flow_dlg_ = new DetectorFlowDlg(this);
     event_log_dlg_ = new EventLogDlg(this);
     monitor_dlg_ = new RealtimeMonitorDlg(this);
+
+    is_ver_correct_ = false;
+    ver_check_id_ = 0;
 
     InitPage();
     InitSignalSlots();
@@ -40,6 +45,11 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     if (conn_status_)
     {
         sync_cmd_->disconnectFromHost();
+        if (ver_check_id_ != 0)
+        {
+            killTimer(ver_check_id_);
+            ver_check_id_ = 0;
+        }
     }
     else
     {
@@ -49,7 +59,7 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 
 void SignalerOnlineSettingDlg::OnReadButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Read", STRING_OK);
+    sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadConfig(void *)));
 }
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
@@ -95,11 +105,66 @@ void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     UpdateConnectStatus(true);
+    sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(void *)));
+//    if (ver_check_id_ == 0)
+//    {
+//        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
+//    }
+}
+
+void SignalerOnlineSettingDlg::OnCmdGetVerId(void *content)
+{
+    qDebug() << "on cmd ready read";
+    char ver[12] = {'\0'};
+    memcpy(ver, content, 11);
+    if (strcmp(ver, "CYT0V100END") != 0)
+    {
+        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_VERERROR);
+        return;
+    }
+    conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
+
+    // reset timer
+    is_ver_correct_ = true;
+    killTimer(ver_check_id_);
+    ver_check_id_ = 0;
+    UpdateButtonStatus(true);
 }
 
 void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 {
     UpdateConnectStatus(false);
+}
+
+void SignalerOnlineSettingDlg::OnCmdReadConfig(void *content)
+{
+    if (content == NULL)
+    {
+        return;
+    }
+    char head[4] = {'\0'};
+    memcpy(head, content, 4);
+    unsigned int len = 0;
+    memcpy(&len, content + 4, 4);
+    TSCParam tscparam;
+    memcpy(&tscparam, content + 8, len);
+//    writer.SetTSCParam(tscparam);
+    QString file_name = "user/tmp/" + ip_ + ".dat";
+    FileReaderWriter writer;
+    bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
+    if (!status)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+        return;
+    }
+}
+
+void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
+{
+    if (ver_check_id_ != 0)
+    {
+        OnConnectedSlot();
+    }
 }
 
 void SignalerOnlineSettingDlg::InitPage()
@@ -180,20 +245,32 @@ void SignalerOnlineSettingDlg::InitTabPage()
 void SignalerOnlineSettingDlg::UpdateUI()
 {
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
+    UpdateButtonStatus(false);
 }
 
 void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)
 {
+    conn_status_ = status;
     if (status)
     {
-        conn_status_ = true;
         conn_button_->setText(STRING_UI_SIGNALER_DISCONNECT);
-        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
+        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_VERCHECK);
     }
     else
     {
-        conn_status_ = false;
         conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
         conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_DISCONN);
     }
+}
+
+void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
+{
+    dialog_tab_->setEnabled(enable);
+    read_button_->setEnabled(enable);
+    update_button_->setEnabled(enable);
+    send_button_->setEnabled(enable);
+    monitor_button_->setEnabled(enable);
+    log_button_->setEnabled(enable);
+    flow_button_->setEnabled(enable);
+    setting_button_->setEnabled(enable);
 }

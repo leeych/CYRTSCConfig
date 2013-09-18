@@ -8,6 +8,10 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+#include "command.h"
+
+#include <QIODevice>
+
 
 TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
@@ -28,12 +32,7 @@ void TimeIPDlg::Initialize()
 
 void TimeIPDlg::OnReadSystimeButtonClicked()
 {
-//    QDateTime datetime = QDateTime::currentDateTime();
-//    QString str = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
-//    sys_time_text_label_->setText(str);
-//    sync_time_button_->setEnabled(!str.isEmpty());
-
-    SyncCommand::GetInstance()->ReadSignalerTime(this, SLOT(OnCmdReadTscTime()));
+    SyncCommand::GetInstance()->ReadSignalerTime(this, SLOT(OnCmdReadTscTime(void *)));
 }
 
 void TimeIPDlg::OnSyncTimeButtonClicked()
@@ -43,7 +42,8 @@ void TimeIPDlg::OnSyncTimeButtonClicked()
 
 void TimeIPDlg::OnRefreshButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Refresh", STRING_OK);
+    SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(void *)));
+    EnableButtonExcept(false, NULL);
 }
 
 void TimeIPDlg::OnWriteIPButtonClicked()
@@ -51,14 +51,67 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     QMessageBox::information(this, STRING_TIP, "Set signaler IP", STRING_OK);
 }
 
-void TimeIPDlg::OnCmdReadTscTime()
+void TimeIPDlg::OnCmdReadTscTime(void *content)
 {
+    char head[4] = {'\0'};
+    memcpy(head, content, 4);
+    if (strcmp(head, "CYT7") != 0)
+    {
+        return;
+    }
+    unsigned int sec = 0;
+    memcpy(&sec, content + 4, 4);
+    QDateTime datetime = QDateTime::fromTime_t(sec).toLocalTime();
+    sys_time_text_label_->setText(datetime.toString("yyyy-MM-dd hh:mm::ss ddd"));
 
+    EnableButtonExcept(true, NULL);
+}
+
+void TimeIPDlg::OnCmdReadNetworkingInfo(void *content)
+{
+    QString network((char *)content);
+    if (network.left(4) != QString("CYT8") || network.right(3) != QString("END"))
+    {
+        return;
+    }
+
+    QString gateway = "DefaultGateway=\"";
+    QString ipaddress = "IPAddress=\"";
+    QString netmask = "SubnetMask=\"";
+    QString end = "END";
+    int gateway_idx = network.indexOf(gateway);
+    gateway_idx += gateway.size();
+    int ip_idx = network.indexOf(ipaddress);
+    gateway = network.mid(gateway_idx, ip_idx - gateway_idx - 2);
+
+    ip_idx += ipaddress.size();
+    int netmask_idx = network.indexOf(netmask);
+    ipaddress = network.mid(ip_idx, netmask_idx - ip_idx - 2);
+
+    netmask_idx += netmask.size();
+    int end_idx = network.indexOf(end);
+    netmask = network.mid(netmask_idx, end_idx - netmask_idx - 2);
+
+    gateway_lineedit_->setText(gateway);
+    ip_lineedit_->setText(ipaddress);
+    mask_lineedit_->setText(netmask);
+
+    EnableButtonExcept(true, NULL);
+}
+
+void TimeIPDlg::OnConnectEstablish()
+{
+}
+
+void TimeIPDlg::OnConnectError(QAbstractSocket::SocketError)
+{
+    qDebug() << "socket error";
 }
 
 void TimeIPDlg::closeEvent(QCloseEvent *)
 {
     sys_time_text_label_->clear();
+//    socket_->abort();
 }
 
 void TimeIPDlg::InitPage()
@@ -96,12 +149,12 @@ void TimeIPDlg::InitPage()
     gateway_lineedit_->setContextMenuPolicy(Qt::NoContextMenu);
 
     QGridLayout *grid_layout = new QGridLayout;
-    grid_layout->addWidget(ip_label, 0, 0, 1, 1, Qt::AlignLeft);
-    grid_layout->addWidget(ip_lineedit_, 0, 1, 1, 1, Qt::AlignLeft);
-    grid_layout->addWidget(mask_label, 1, 0, 1, 1, Qt::AlignLeft);
-    grid_layout->addWidget(mask_lineedit_, 1, 1, 1, 1, Qt::AlignLeft);
-    grid_layout->addWidget(gateway_label, 2, 0, 1, 1, Qt::AlignLeft);
-    grid_layout->addWidget(gateway_lineedit_, 2, 1, 1, 1, Qt::AlignLeft);
+    grid_layout->addWidget(ip_label, 0, 0, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(ip_lineedit_, 0, 1, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(mask_label, 1, 0, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(mask_lineedit_, 1, 1, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(gateway_label, 2, 0, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(gateway_lineedit_, 2, 1, 1, 1, Qt::AlignCenter);
     grid_layout->addWidget(refresh_button_, 3, 0, 1, 1, Qt::AlignCenter);
     grid_layout->addWidget(write_ip_button_, 3, 1, 1, 1, Qt::AlignCenter);
     network_grp->setLayout(grid_layout);
@@ -125,4 +178,22 @@ void TimeIPDlg::InitSignalSlots()
 void TimeIPDlg::UpdateUI()
 {
     sync_time_button_->setEnabled(false);
+}
+
+void TimeIPDlg::EnableButtonExcept(bool enable, QPushButton *btn_ptr)
+{
+    if (button_list_.isEmpty())
+    {
+        button_list_.append(read_sys_time_button_);
+        button_list_.append(sync_time_button_);
+        button_list_.append(refresh_button_);
+        button_list_.append(write_ip_button_);
+    }
+    for (int i = 0; i < button_list_.size(); i++)
+    {
+        if (button_list_.at(i) != btn_ptr)
+        {
+            button_list_.at(i)->setEnabled(enable);
+        }
+    }
 }

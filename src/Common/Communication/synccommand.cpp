@@ -13,85 +13,53 @@ SyncCommand *SyncCommand::GetInstance()
     return instance_;
 }
 
+QTcpSocket *SyncCommand::getSocket()
+{
+    return socket_;
+}
+
 void SyncCommand::connectToHost(const QString &ip, unsigned int port)
 {
     ip_ = ip;
     port_ = port;
     socket_->connectToHost(ip, port);
-    bool status = socket_->waitForConnected();
-    if (!status)
-    {
-        qDebug() << "can not connect to signaler";
-        emit connectErrorStrSignal("can not connect to signaler");
-        return;
-    }
 }
 
 void SyncCommand::disconnectFromHost()
 {
     socket_->disconnectFromHost();
-    bool status = socket_->waitForDisconnected();
-    if (!status)
-    {
-        qDebug() << "can not disconnect from signaler";
-        emit connectErrorStrSignal("can not disconnect from signaler");
-    }
 }
 
-void SyncCommand::ReadSignalerConfigFile()
+void SyncCommand::ReadSignalerConfigFile(QObject *target, const std::string &slot)
 {
-    socket_->readAll();
-    socket_->write(Command::GetConfigure);
-//    bool write_flag = socket_->waitForBytesWritten();
+    InitParseHandler(target, slot);
+    qint64 sz = socket_->write(Command::GetConfigure.c_str());
+    qDebug() << "write GetConfigure bytes: " << sz;
 }
 
-void SyncCommand::ReadSignalerTime(const QObject *target, const std::string &slot)
+void SyncCommand::ReadSignalerTime(QObject *target, const std::string &slot)
 {
-    target_obj_ = target;
-    slot_ = slot;
-    socket_->readAll();
-    socket_->write(Command::GetTSCtime);
-    bool write_flag = socket_->waitForBytesWritten();
-    bool read_flag = false;
-    unsigned int recv_len = 0;
-    ReplyHead head;
-    if (write_flag)
-    {
-        while (socket_->bytesAvailable() < 7)   // 7 present for minimum size
-        {
-            read_flag = socket_->waitForReadyRead();
-            if (!read_flag)
-            {
-                socket_->readAll();
-                qDebug() << "recv data failed, time out" << (socket_->bytesAvailable());
-                break;
-            }
-        }
-        while (read_flag)
-        {
-            int read_len = socket_->read((char *)&head, sizeof(head));
-            if (read_len != sizeof(head))
-            {
-                qDebug() << "socket read head error";
-                socket_->readAll();     // clear socket data
-                read_flag = false;
-                break;
-            }
-            if (strcmp(head.prefix_, REPLY_HEAD_FIX) != 0)
-            {
-                qDebug() << "head not begin with" << REPLY_HEAD_FIX;
-                socket_->readAll();     // clear socket data
-                read_flag = false;
-                break;
-            }
-        }
-    }
+    InitParseHandler(target, slot);
+    qint64 sz = socket_->write(Command::GetTSCtime.c_str());
+    qDebug() << "write GetTSCTime bytes: " << sz;
+}
 
-    if (write_flag && read_flag)
-    {
-        // TODO: left to be done.
-    }
-    // TODO: wait for write return.
+void SyncCommand::ReadSignalerNetworkInfo(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::GetNetAddress.c_str());
+}
+
+void SyncCommand::ReadEventLogFile(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::GetEventInfo.c_str());
+}
+
+void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::GetVerId.c_str());
 }
 
 void SyncCommand::OnConnectEstablished()
@@ -116,26 +84,63 @@ void SyncCommand::parseReply()
     qDebug() << "parse reply";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
-        connect(this, SIGNAL(readyRead()), target_obj_, slot_);
+        connect(this, SIGNAL(readyRead()), target_obj_, slot_.c_str());
     }
-    emit readyRead(0, NULL);
+    emit readyRead(NULL);
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
-        disconnect(this, SIGNAL(readyRead()), target_obj_, slot_);
+        disconnect(this, SIGNAL(readyRead()), target_obj_, slot_.c_str());
     }
 }
 
-SyncCommand::SyncCommand()
+void SyncCommand::socketReadyReadSlot()
 {
-    socket_ = new QTcpSocket;
+    QByteArray array(socket_->readAll());
+    emit readyRead((void *)array.data());
+}
+
+SyncCommand::SyncCommand(QObject *parent) :
+    QObject(parent)
+{
+    socket_ = new QTcpSocket(this);
+    target_obj_ = NULL;
 //    connect(socket_, SIGNAL(readyRead()), this, SLOT(parseReply()));
     connect(socket_, SIGNAL(connected()), this, SLOT(OnConnectEstablished()));
     connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnConnectError(QAbstractSocket::SocketError)));
     connect(socket_, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
+    connect(socket_, SIGNAL(readyRead()), this, SLOT(socketReadyReadSlot()));
 }
 
 SyncCommand::~SyncCommand()
 {
     delete socket_;
     socket_ = NULL;
+}
+
+
+void SyncCommand::RegParseHandler()
+{
+    qDebug() << "register parse handler";
+    if ((target_obj_ != NULL) && (!slot_.empty()))
+    {
+        connect(this, SIGNAL(readyRead(void*)), target_obj_, slot_.c_str());
+    }
+}
+
+void SyncCommand::UnRegParseHandler()
+{
+    qDebug() << "unregister parse handler";
+    if ((target_obj_ != NULL) && (!slot_.empty()))
+    {
+        disconnect(this, SIGNAL(readyRead(void*)), target_obj_, slot_.c_str());
+    }
+}
+
+void SyncCommand::InitParseHandler(QObject *target, const std::string &slot)
+{
+    UnRegParseHandler();
+    target_obj_ = target;
+    slot_ = slot;
+    RegParseHandler();
+    socket_->readAll();
 }

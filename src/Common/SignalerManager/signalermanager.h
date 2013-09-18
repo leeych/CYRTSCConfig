@@ -8,7 +8,7 @@
 #include "signalerparam.h"
 
 
-class SIGNALERMANAGERSHARED_EXPORT SignalerManager
+class SignalerManager
 {
 public:
     static SignalerManager *GetInstance()

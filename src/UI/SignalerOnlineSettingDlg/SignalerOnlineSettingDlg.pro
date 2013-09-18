@@ -23,13 +23,14 @@ INCLUDEPATH += $$PWD/../../../include/ \
                $$PWD/../TimesectiontableWidget/ \
                $$PWD/../PhasetimingtableWidget/ \
                $$PWD/../PhaseconflicttableWidget/ \
-               $$PWD/../../Common/Communication/
+               $$PWD/../../Common/Communication/ \
+               $$PWD/../FileListWidget/
 
 LIBS += -L$$PWD/../../../lib/ -lBottomButtonsWidget \
         -lUIBase \
         -lUnitparamtableWidget -lScheduleTableWidget -lTimingplanWidget -lPhasetableWidget \
         -lChanneltableWidget -lDetectortableWidget -lTimesectiontableWidget -lPhaseconflicttableWidget \
-        -lPhasetimingtableWidget \
+        -lPhasetimingtableWidget -lFileListWidget \
         -lMDatabase -lUtility -lCommunication
 
 DESTDIR = $$PWD/../../../lib/
@@ -40,14 +41,20 @@ SOURCES += signaleronlinesettingdlg.cpp \
     eventlogdlg.cpp \
     timeipdlg.cpp \
     detectorflowdlg.cpp \
-    realtimemonitordlg.cpp
+    realtimemonitordlg.cpp \
+    eventparam.cpp \
+    logparam.cpp \
+    eventloghandler.cpp
 
 HEADERS += signaleronlinesettingdlg.h\
         signaleronlinesettingdlg_global.h \
     eventlogdlg.h \
     timeipdlg.h \
     detectorflowdlg.h \
-    realtimemonitordlg.h
+    realtimemonitordlg.h \
+    eventparam.h \
+    logparam.h \
+    eventloghandler.h
 
 unix:!symbian {
     maemo5 {

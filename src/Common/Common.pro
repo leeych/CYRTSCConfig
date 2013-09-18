@@ -5,4 +5,5 @@ SUBDIRS += \
     XmlHelper \
     SignalerManager \
     Communication \
-    CommandCallback
+    CommandCallback \
+    LogExportor
