@@ -25,8 +25,8 @@ public slots:
     void OnWriteIPButtonClicked();
 
     // cmd callback
-    void OnCmdReadTscTime(void *content);
-    void OnCmdReadNetworkingInfo(void *content);
+    void OnCmdReadTscTime(QByteArray &array_content);
+    void OnCmdReadNetworkingInfo(QByteArray &content);
     void OnConnectEstablish();
     void OnConnectError(QAbstractSocket::SocketError);
 

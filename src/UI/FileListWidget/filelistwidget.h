@@ -12,7 +12,7 @@
 #include "filereaderwriter.h"
 #include "datainitializer.h"
 
-class FILELISTWIDGETSHARED_EXPORT FileListWidget : public QWidget
+class FileListWidget : public QWidget
 {
     Q_OBJECT
 

@@ -335,6 +335,8 @@
 #define STRING_UI_SIGNALER_REFRESH          QObject::tr("Refresh")
 #define STRING_UI_SIGNALER_WRITE_IP         QObject::tr("Set signaler IP")
 
+#define STRING_UI_SIGNALER_READ_FILE_FAILED         QObject::tr("Read signaler configure file failed")
+#define STRING_UI_SIGNALER_READ_FILE_SUCCESS        QObject::tr("Read signaler configure file succeeded")
 #define STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED     QObject::tr("Save temp signaler configure file failed")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
@@ -353,6 +355,7 @@
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
 
 #define STRING_UI_SIGNALER_EVENT_SOCKET_NULL    QObject::tr("Read socket data is null")
+#define STRING_UI_SIGNALER_EVENT_FAILED         QObject::tr("Get event log info failed")
 #define STRING_UI_SIGNALER_EVENT_INCORRECT      QObject::tr("Log socket package incorrect")
 
 // Event log description desc
@@ -379,6 +382,7 @@
 #define STRING_EVENT_LOG_READ_GPS_DATA          QObject::tr("Read GPS data")
 
 // Green conflict restoration
+#define STRING_EVENT_LOG_CHANNEL                QObject::tr("Channel")
 #define STRING_EVENT_LOG_RESTORE                QObject::tr("Restoration")
 #define STRING_EVENT_LOG_BRIGHT_TOGETHER        QObject::tr("Bright together")
 #define STRING_EVENT_LOG_GREEN_CONFL            QObject::tr("Green conflict")

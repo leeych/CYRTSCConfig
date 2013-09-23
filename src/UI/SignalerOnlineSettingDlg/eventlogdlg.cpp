@@ -1,6 +1,7 @@
 #include "eventlogdlg.h"
 #include "macrostring.h"
 #include "synccommand.h"
+#include "eventloghandler.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -20,8 +21,10 @@ EventLogDlg::~EventLogDlg()
 {
 }
 
-void EventLogDlg::Initialize()
+void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
 {
+    file_name_ = ip + ".edat";
+    handler_ = handler;
     UpdateUI();
     exec();
 }
@@ -56,6 +59,12 @@ void EventLogDlg::OnCmdReadEventLog(void *content)
     }
     event_log_array_.append((char *)content);
     QString log_str(event_log_array_);
+    if (event_log_array_.contains("EVENTLOGER"))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_FAILED, STRING_OK);
+        return;
+    }
+
     if (log_str.right(3).endsWith("END"))
     {
         ParseEventLogArray(event_log_array_);
@@ -114,6 +123,19 @@ void EventLogDlg::InitSignalSlots()
 
 void EventLogDlg::UpdateUI()
 {
+    QFile file(file_name_);
+    if (!file.open(QIODevice::ReadWrite))
+    {
+        return;
+    }
+    // update event tree
+    event_tree_->clear();
+    for (int i = 0; i < handler_->get_event_type_list().size(); i++)
+    {
+        // TODO:
+    }
+    event_detail_tree_->clear();
+    // TODO:
 }
 
 void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
@@ -137,7 +159,7 @@ void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
 {
     char head[4] = {'\0'};
-    void const *content = &byte_arr;
+    char const *content = byte_arr.data();
     memcpy(head, content, 4);
     if (strcmp(head, "CYT6") != 0)
     {
@@ -158,8 +180,8 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     QString str(byte_arr);
 //    EventLog info((EventLog)byte_arr);
 
-    // write log to file
-    // ....
+    // init handler
+
     QFile file("user/tmp/tmp.edat");
     file.write(byte_arr);
 }

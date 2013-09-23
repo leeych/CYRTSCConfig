@@ -9,6 +9,8 @@
 #include "macrostring.h"
 #include "tscparam.h"
 #include "filereaderwriter.h"
+#include "synccommand.h"
+#include "eventloghandler.h"
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -16,6 +18,8 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
 {
     conn_status_ = false;
     sync_cmd_ = SyncCommand::GetInstance();
+    handler_ = new EventLogHandler;
+
     time_ip_dlg_ = new TimeIPDlg(this);
     flow_dlg_ = new DetectorFlowDlg(this);
     event_log_dlg_ = new EventLogDlg(this);
@@ -59,7 +63,8 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 
 void SignalerOnlineSettingDlg::OnReadButtonClicked()
 {
-    sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadConfig(void *)));
+    config_byte_array_.clear();
+    sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadConfig(QByteArray&)));
 }
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
@@ -89,7 +94,7 @@ void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 
 void SignalerOnlineSettingDlg::OnLogButtonClicked()
 {
-    event_log_dlg_->Initialize();
+    event_log_dlg_->Initialize(ip_, handler_);
 }
 
 void SignalerOnlineSettingDlg::OnFlowButtonClicked()
@@ -105,30 +110,31 @@ void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     UpdateConnectStatus(true);
-    sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(void *)));
+    sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(QByteArray&)));
 //    if (ver_check_id_ == 0)
 //    {
 //        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
 //    }
 }
 
-void SignalerOnlineSettingDlg::OnCmdGetVerId(void *content)
+void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
 {
     qDebug() << "on cmd ready read";
     char ver[12] = {'\0'};
-    memcpy(ver, content, 11);
+    memcpy(ver, content.data(), 11);
     if (strcmp(ver, "CYT0V100END") != 0)
     {
         conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_VERERROR);
         return;
     }
-    conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
 
     // reset timer
     is_ver_correct_ = true;
     killTimer(ver_check_id_);
     ver_check_id_ = 0;
     UpdateButtonStatus(true);
+    UpdateConnectStatus(true);
+    conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
 }
 
 void SignalerOnlineSettingDlg::OnDisconnectedSlot()
@@ -136,25 +142,38 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
     UpdateConnectStatus(false);
 }
 
-void SignalerOnlineSettingDlg::OnCmdReadConfig(void *content)
+void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
-    if (content == NULL)
+    QString file_name = "user/tmp/" + ip_ + ".dat";
+    if (content.isEmpty())
     {
+        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
+        config_byte_array_.clear();
+        QFile::remove(file_name);
         return;
     }
-    char head[4] = {'\0'};
-    memcpy(head, content, 4);
-    unsigned int len = 0;
-    memcpy(&len, content + 4, 4);
-    TSCParam tscparam;
-    memcpy(&tscparam, content + 8, len);
-//    writer.SetTSCParam(tscparam);
-    QString file_name = "user/tmp/" + ip_ + ".dat";
-    FileReaderWriter writer;
-    bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
-    if (!status)
+    config_byte_array_.append(content);
+    if (config_byte_array_.right(3).endsWith("END"))
     {
-        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+        bool status = ParseConfigArray(config_byte_array_);
+        if (status)
+        {
+            TSCParam tscparam;
+            memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
+            FileReaderWriter writer;
+            bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
+            if (!status)
+            {
+                conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
+                QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+                QFile::remove(file_name);
+            }
+        }
+        else
+        {
+            conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
+        }
+        config_byte_array_.clear();
         return;
     }
 }
@@ -255,11 +274,13 @@ void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)
     {
         conn_button_->setText(STRING_UI_SIGNALER_DISCONNECT);
         conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_VERCHECK);
+//        UpdateButtonStatus(true);
     }
     else
     {
         conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
         conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_DISCONN);
+        UpdateButtonStatus(false);
     }
 }
 
@@ -273,4 +294,22 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
     log_button_->setEnabled(enable);
     flow_button_->setEnabled(enable);
     setting_button_->setEnabled(enable);
+}
+
+bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)
+{
+    char *header = byte_array.left(4).data();
+    char tail[4] = {'\0'};
+    memcpy(tail, byte_array.right(3).data(), sizeof(byte_array.right(3).data()));
+    if ((strncmp(header, "CTY4", sizeof("CTY4")) != 0) || (strncmp(tail, "END", sizeof("END")) != 0))
+    {
+        return false;
+    }
+    byte_array.remove(0, 4);    // remove "CTY4"
+    unsigned int len = 0;
+    memcpy(&len, byte_array.left(4).data(), 4);
+    byte_array.remove(0, 4);    // remove content length
+    int index = byte_array.indexOf("END");
+    byte_array.remove(index, sizeof("END"));
+    return true;
 }

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QLabel>
+#include <QTcpSocket>
 #include "signaleronlinesettingdlg_global.h"
 
 #include "mtabwidget.h"
@@ -23,10 +24,8 @@
 #include "eventlogdlg.h"
 #include "realtimemonitordlg.h"
 
-#include "synccommand.h"
-
-#include <QTcpSocket>
-
+class SyncCommand;
+class EventLogHandler;
 
 class SIGNALERONLINESETTINGDLGSHARED_EXPORT SignalerOnlineSettingDlg : public QDialog
 {
@@ -53,8 +52,8 @@ public slots:
     void OnDisconnectedSlot();
 
     // cmd call back
-    void OnCmdGetVerId(void *content);
-    void OnCmdReadConfig(void *content);
+    void OnCmdGetVerId(QByteArray &content);
+    void OnCmdReadConfig(QByteArray &content);
 
 protected:
     void timerEvent(QTimerEvent *);
@@ -68,8 +67,11 @@ private:
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
 
+    bool ParseConfigArray(QByteArray &byte_array);
+
 private:
     SyncCommand *sync_cmd_;
+    EventLogHandler *handler_;
     QString ip_;
     unsigned int port_;
     bool conn_status_;
@@ -77,6 +79,8 @@ private:
 
     bool is_ver_correct_;
     int ver_check_id_;  // check version
+
+    QByteArray config_byte_array_;
 
 private:
     MTabWidget *dialog_tab_;

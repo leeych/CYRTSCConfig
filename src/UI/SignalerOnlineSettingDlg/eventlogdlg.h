@@ -7,13 +7,15 @@
 
 #include "tsc.h"
 
+class EventLogHandler;
+
 class EventLogDlg : public QDialog
 {
     Q_OBJECT
 public:
     explicit EventLogDlg(QWidget *parent = 0);
     ~EventLogDlg();
-    void Initialize();
+    void Initialize(const QString &ip, EventLogHandler *handler);
     
 signals:
     
@@ -37,8 +39,9 @@ private:
     void ParseEventLogArray(QByteArray &byte_arr);
 
 private:
+    EventLogHandler *handler_;
     QByteArray event_log_array_;
-
+    QString file_name_;
     class EventLog
     {
     public:

@@ -44,7 +44,8 @@ SOURCES += signaleronlinesettingdlg.cpp \
     realtimemonitordlg.cpp \
     eventparam.cpp \
     logparam.cpp \
-    eventloghandler.cpp
+    eventloghandler.cpp \
+    eventlogdescriptor.cpp
 
 HEADERS += signaleronlinesettingdlg.h\
         signaleronlinesettingdlg_global.h \
@@ -54,7 +55,8 @@ HEADERS += signaleronlinesettingdlg.h\
     realtimemonitordlg.h \
     eventparam.h \
     logparam.h \
-    eventloghandler.h
+    eventloghandler.h \
+    eventlogdescriptor.h
 
 unix:!symbian {
     maemo5 {

@@ -32,7 +32,7 @@ void TimeIPDlg::Initialize()
 
 void TimeIPDlg::OnReadSystimeButtonClicked()
 {
-    SyncCommand::GetInstance()->ReadSignalerTime(this, SLOT(OnCmdReadTscTime(void *)));
+    SyncCommand::GetInstance()->ReadSignalerTime(this, SLOT(OnCmdReadTscTime(QByteArray&)));
 }
 
 void TimeIPDlg::OnSyncTimeButtonClicked()
@@ -42,7 +42,7 @@ void TimeIPDlg::OnSyncTimeButtonClicked()
 
 void TimeIPDlg::OnRefreshButtonClicked()
 {
-    SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(void *)));
+    SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(QByteArray&)));
     EnableButtonExcept(false, NULL);
 }
 
@@ -51,9 +51,10 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     QMessageBox::information(this, STRING_TIP, "Set signaler IP", STRING_OK);
 }
 
-void TimeIPDlg::OnCmdReadTscTime(void *content)
+void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
 {
     char head[4] = {'\0'};
+    char *content = array_content.data();
     memcpy(head, content, 4);
     if (strcmp(head, "CYT7") != 0)
     {
@@ -61,15 +62,19 @@ void TimeIPDlg::OnCmdReadTscTime(void *content)
     }
     unsigned int sec = 0;
     memcpy(&sec, content + 4, 4);
+    if (sec >= 60 * 60 * 8)     // east 8 time-zoon
+    {
+        sec -= 60 * 60 * 8;
+    }
     QDateTime datetime = QDateTime::fromTime_t(sec).toLocalTime();
-    sys_time_text_label_->setText(datetime.toString("yyyy-MM-dd hh:mm::ss ddd"));
+    sys_time_text_label_->setText(datetime.toString("yyyy-MM-dd hh:mm:ss ddd"));
 
     EnableButtonExcept(true, NULL);
 }
 
-void TimeIPDlg::OnCmdReadNetworkingInfo(void *content)
+void TimeIPDlg::OnCmdReadNetworkingInfo(QByteArray &content)
 {
-    QString network((char *)content);
+    QString network(content.data());
     if (network.left(4) != QString("CYT8") || network.right(3) != QString("END"))
     {
         return;
