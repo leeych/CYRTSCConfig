@@ -86,7 +86,7 @@ void SyncCommand::parseReply()
     {
         connect(this, SIGNAL(readyRead()), target_obj_, slot_.c_str());
     }
-    emit readyRead(NULL);
+//    emit readyRead(QByteArray);
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
         disconnect(this, SIGNAL(readyRead()), target_obj_, slot_.c_str());
@@ -95,8 +95,8 @@ void SyncCommand::parseReply()
 
 void SyncCommand::socketReadyReadSlot()
 {
-    QByteArray array(socket_->readAll());
-    emit readyRead((void *)array.data());
+    sock_array_ = socket_->readAll();
+    emit readyRead(sock_array_);
 }
 
 SyncCommand::SyncCommand(QObject *parent) :
@@ -123,7 +123,7 @@ void SyncCommand::RegParseHandler()
     qDebug() << "register parse handler";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
-        connect(this, SIGNAL(readyRead(void*)), target_obj_, slot_.c_str());
+        connect(this, SIGNAL(readyRead(QByteArray&)), target_obj_, slot_.c_str());
     }
 }
 
@@ -132,7 +132,7 @@ void SyncCommand::UnRegParseHandler()
     qDebug() << "unregister parse handler";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
-        disconnect(this, SIGNAL(readyRead(void*)), target_obj_, slot_.c_str());
+        disconnect(this, SIGNAL(readyRead(QByteArray&)), target_obj_, slot_.c_str());
     }
 }
 

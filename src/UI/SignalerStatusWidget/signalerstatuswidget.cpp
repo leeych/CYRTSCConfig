@@ -4,6 +4,7 @@
 #include "signalerbasiceditdlg.h"
 #include "signalerhandler.h"
 #include "signaleronlinesettingdlg.h"
+#include "synccommand.h"
 
 #include <QLabel>
 #include <QHeaderView>

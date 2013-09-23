@@ -80,15 +80,15 @@ void PhaseeditDlg::InitPage()
     phase_mode_cmb_ = new QComboBox;
 
     // additional phases
-    phase_mode_cmb_->addItem(STRING_UI_PHASE_MOTOR);
-    phase_mode_cmb_->addItem(STRING_UI_PHASE_BIKE);
-    phase_mode_cmb_->addItem(STRING_UI_PHASE_WALKMAN);
-    phase_mode_cmb_->addItem(STRING_UI_PHASE_DELAY);
-
     phase_mode_cmb_->addItem(STRING_UI_PHASE_FIX);
     phase_mode_cmb_->addItem(STRING_UI_PHASE_DETERMINED);
     phase_mode_cmb_->addItem(STRING_UI_PHASE_ELASTICITY);
     phase_mode_cmb_->addItem(STRING_UI_PHASE_CRUTIAL);
+
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_DELAY);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_WALKMAN);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_BIKE);
+    phase_mode_cmb_->addItem(STRING_UI_PHASE_MOTOR);
 
     QHBoxLayout* hlayout = new QHBoxLayout;
     hlayout->addWidget(phase_id_label);
@@ -294,6 +294,7 @@ void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
     else if ((phase_type & 0x020) == 0x020)
     {
         phase_mode_cmb_->setCurrentIndex(2);
+        detector_num_spinbox_->setEnabled(true);
     }
     else if ((phase_type & 0x010) == 0x010)
     {
@@ -310,7 +311,6 @@ void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
     else if ((phase_type & 0x02) == 0x02)
     {
         phase_mode_cmb_->setCurrentIndex(6);
-        detector_num_spinbox_->setEnabled(true);
     }
     else if ((phase_type & 0x01) == 0x01)
     {
@@ -322,7 +322,7 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
 {
     int min_green = min_green_time_spinbox_->value();
     int max_green1 = max1_green_time_spinbox_->value();
-    if (min_green >= max_green1)
+    if (min_green > max_green1)
     {
         return MinLargerThanMax1;
     }

@@ -4,3 +4,7 @@
 EventLogExportor::EventLogExportor()
 {
 }
+
+EventLogExportor::~EventLogExportor()
+{
+}

@@ -1,5 +1,10 @@
 #include "eventloghandler.h"
 #include "eventlogdescriptor.h"
+#include "macrostring.h"
+
+#include <QDateTime>
+#include <QStringList>
+#include <QFile>
 
 EventLogHandler::EventLogHandler()
 {
@@ -80,17 +85,143 @@ bool EventLogHandler::remove_log(unsigned char event_type_id, unsigned int log_v
 
 QList<EventParam> EventLogHandler::get_event_type_list()
 {
-    return QList<EventParam> event_list;
+    QList<EventParam> event_list;
+    return event_list;
 }
 
-QList<LogParam> EventLogHandler::get_event_log_list()
+QList<QString> EventLogHandler::get_event_type_desc_list()
 {
-    return QList<LogParam> log_list;
+    QString str;
+    QList<QString> event_type_desc_list;
+    QList<LogParam> log_list;
+    EventLogIter iter = event_log_map_.begin();
+    while (iter != event_log_map_.end())
+    {
+        LogParamMap log_map = iter.value();
+        log_list = log_map.values();
+        qSort(log_list);
+        for (int i = 0; i < log_list.size(); i++)
+        {
+            str = descriptor_->GetLogDesc(iter.key(), log_list.at(i).log_value);
+            event_type_desc_list.append(str);
+        }
+        ++iter;
+    }
+    return event_type_desc_list;
 }
 
-QString EventLogHandler::get_desc(unsigned char event_type_id, unsigned int log_value)
+QList<LogParam> EventLogHandler::get_event_log_list(unsigned char event_type_id)
+{
+    QList<LogParam> log_list;
+    if (event_type_id == 0)     // return all of the log_param
+    {
+        EventLogIter iter = event_log_map_.begin();
+        while (iter != event_log_map_.end())
+        {
+            QMap<unsigned int, LogParam>::iterator itr = iter.value().begin();
+            while (itr != iter.value().end())
+            {
+                log_list += itr.value();
+                ++itr;
+            }
+            ++iter;
+        }
+        qSort(log_list);
+        return log_list;
+    }
+
+    LogParamMap log_map = event_log_map_.value(event_type_id);
+    log_list = log_map.values();
+    qSort(log_list);
+    return log_list;
+}
+
+QString EventLogHandler::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
     return descriptor_->GetLogDesc(event_type_id, log_value);
+}
+
+QString EventLogHandler::get_datetime_desc(unsigned int seconds)
+{
+    QString desc;
+    if (seconds >= 60 * 60 * 8)
+    {
+        seconds -= 60 * 60 * 8;
+    }
+    QDateTime datetime = QDateTime::fromTime_t(seconds);
+    desc = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+    return desc;
+}
+
+bool EventLogHandler::export_event_log(const QString &file_name)
+{
+    if (event_log_map_.isEmpty())
+    {
+        return false;
+    }
+
+    QStringList header;
+    header << STRING_UI_SIGNALER_EVENT_FLOW_ID << "    "
+           << STRING_UI_SIGNALER_EVENT_DATETIME << "    "
+           << STRING_UI_SIGNALER_EVENT_DESC << "\n";
+    QString line("%1    %2    %3 \n");
+    QString content, caption;
+    QMap<unsigned int, LogParam> log_map;
+    EventLogIter iter = event_log_map_.begin();
+    while (iter != event_log_map_.end())
+    {
+        log_map = iter.value();
+        caption = descriptor_->GetEventTypeDesc(iter.key());
+        content += caption + "\n";
+        for (int i = 0; i < header.count(); i++)
+        {
+            content.append(header.at(i));
+        }
+        QMap<unsigned int, LogParam>::iterator log_itr = log_map.begin();
+        while (log_itr != log_map.end())
+        {
+            content += line.arg(log_itr.value().log_id).arg(this->get_datetime_desc(log_itr.value().log_time)).arg(this->get_log_desc(iter.key(), log_itr.key()));
+            ++log_itr;
+        }
+        ++iter;
+    }
+
+    QFile file(file_name);
+    file.write(content.toUtf8());
+
+    return true;
+}
+
+bool EventLogHandler::export_report(const QString &file_name)
+{
+    if (event_log_map_.isEmpty())
+    {
+        return false;
+    }
+    int fidx = file_name.lastIndexOf("/");
+    int bidx = file_name.lastIndexOf(".");
+    QString ip = file_name.mid(fidx, bidx - fidx + 1);
+    QString declare_str = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+            "<head>"
+            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
+            "<title>" + ip + "</title>"
+            "</head>";
+    QString content = declare_str;
+    content += "<body>";
+    QString table_str = "<table cellspacing=0 cellpadding=4 border=1 valign=middle>";
+    QString caption_str = "<tr>"
+            "<td colspan=4 align=center valign=middle><font size=4 color=red >%1</td>"
+            "</tr>";
+
+    QString header = "<tr><th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_TYPE + "</th>"
+            "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_FLOW_ID + "</th>"
+            "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_DATETIME + "</th>"
+            "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_DESC + "</th>"
+			"</tr>";
+//	QString content = "<tr></tr>";
+
+    return true;
 }
 
 bool EventLogHandler::is_event_log_valid(const EventLogList_t &loginfo)

@@ -8,6 +8,7 @@ class LOGEXPORTORSHARED_EXPORT EventLogExportor
 {
 public:
     EventLogExportor();
+    ~EventLogExportor();
 };
 
 #endif // EVENTLOGEXPORTOR_H

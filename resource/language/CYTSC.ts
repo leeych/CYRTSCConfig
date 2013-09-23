@@ -543,7 +543,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="137"/>
-        <location filename="../../include/macrostring.h" line="446"/>
+        <location filename="../../include/macrostring.h" line="468"/>
         <source>Stage ID</source>
         <translation>阶段号</translation>
     </message>
@@ -849,7 +849,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="212"/>
-        <location filename="../../include/macrostring.h" line="421"/>
+        <location filename="../../include/macrostring.h" line="443"/>
         <source>Detector ID</source>
         <translation>检测器号</translation>
     </message>
@@ -1439,122 +1439,222 @@
         <translation>描述信息错误</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="420"/>
+        <location filename="../../include/macrostring.h" line="421"/>
+        <source>********** Software Event **********</source>
+        <translation>***********************软件事件***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="422"/>
+        <source>********** Green Conflict Restore **********</source>
+        <translation>**********************绿冲突恢复**********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="423"/>
+        <source>********** Green Conflict **********</source>
+        <translation>***********************绿冲突************************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="424"/>
+        <source>********** Red-Green Bright Restore **********</source>
+        <translation>*********************红绿同亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="425"/>
+        <source>********** Red Off Bright Restore **********</source>
+        <translation>*********************红灯不亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="426"/>
+        <source>********** Red Error Bright Restore **********</source>
+        <translation>*********************红灯误亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="427"/>
+        <source>********** Yellow Off Bright Restore **********</source>
+        <translation>*********************黄灯不亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="428"/>
+        <source>********** Yellow Error Bright Restore **********</source>
+        <translation>*********************黄灯误亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="429"/>
+        <source>********** Green Off Bright Restore **********</source>
+        <translation>*********************绿灯不亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="430"/>
+        <source>********** Green Error Bright Restore **********</source>
+        <translation>*********************绿灯误亮恢复*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="431"/>
+        <source>********** Red-Green Bright **********</source>
+        <translation>***********************红绿同亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="432"/>
+        <source>********** Red Off Bright **********</source>
+        <translation>***********************红灯不亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="433"/>
+        <source>********** Red Error Bright **********</source>
+        <translation>***********************红灯误亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="434"/>
+        <source>********** Yellow Off Bright **********</source>
+        <translation>***********************黄灯不亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="435"/>
+        <source>********** Yellow Error Bright **********</source>
+        <translation>***********************黄灯误亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="436"/>
+        <source>********** Green Off Bright **********</source>
+        <translation>***********************绿灯不亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="437"/>
+        <source>********** Green Error Bright **********</source>
+        <translation>***********************绿灯误亮***********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="438"/>
+        <source>********** CAN Communication **********</source>
+        <translation>**********************CAN通讯事件*********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="439"/>
+        <source>********** Vehicle Fault **********</source>
+        <translation>********************车辆检测器故障********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="440"/>
+        <source>********** Driver Event ***********</source>
+        <translation>**********************驱动板事件**********************</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="442"/>
         <source>Detector flow info</source>
         <translation>检测器流量信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="422"/>
+        <location filename="../../include/macrostring.h" line="444"/>
         <source>Detector flow ID</source>
         <translation>流水号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="423"/>
+        <location filename="../../include/macrostring.h" line="445"/>
         <source>Detector datetime</source>
         <translation>日期时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="424"/>
+        <location filename="../../include/macrostring.h" line="446"/>
         <source>Detect num</source>
         <translation>检测数量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="425"/>
+        <location filename="../../include/macrostring.h" line="447"/>
         <source>Detector phase</source>
         <translation>对应相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="426"/>
+        <location filename="../../include/macrostring.h" line="448"/>
         <source>Total flow</source>
         <translation>流量统计</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="427"/>
+        <location filename="../../include/macrostring.h" line="449"/>
         <source>Flow read</source>
         <translation>读取流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="428"/>
+        <location filename="../../include/macrostring.h" line="450"/>
         <source>Clear flow</source>
         <translation>清空流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="430"/>
+        <location filename="../../include/macrostring.h" line="452"/>
         <source>Signaler record</source>
         <translation>信号机状态记录</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="431"/>
+        <location filename="../../include/macrostring.h" line="453"/>
         <source>Lights status</source>
         <translation>信号灯状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="432"/>
+        <location filename="../../include/macrostring.h" line="454"/>
         <source>Driver status</source>
         <translation>驱动板状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="433"/>
+        <location filename="../../include/macrostring.h" line="455"/>
         <source>Detector status</source>
         <translation>检测器状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="435"/>
+        <location filename="../../include/macrostring.h" line="457"/>
         <source>Road status monitor</source>
         <translation>路口交通监控</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="436"/>
+        <location filename="../../include/macrostring.h" line="458"/>
         <source>Status param</source>
         <translation>状态参数</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="438"/>
+        <location filename="../../include/macrostring.h" line="460"/>
         <source>Signaler status info</source>
         <translation>信号机状态信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="439"/>
+        <location filename="../../include/macrostring.h" line="461"/>
         <source>Lights color</source>
         <translation>灯色</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="440"/>
+        <location filename="../../include/macrostring.h" line="462"/>
         <source>Driver id</source>
         <translation>驱动板号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="441"/>
+        <location filename="../../include/macrostring.h" line="463"/>
         <source>Driver type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="442"/>
+        <location filename="../../include/macrostring.h" line="464"/>
         <source>Detector id</source>
         <translation>检测器号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="443"/>
+        <location filename="../../include/macrostring.h" line="465"/>
         <source>Detector flow</source>
         <translation>流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="445"/>
+        <location filename="../../include/macrostring.h" line="467"/>
         <source>Cycle time</source>
         <translation>周期时长</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="447"/>
+        <location filename="../../include/macrostring.h" line="469"/>
         <source>Current phase id</source>
         <translation>当前相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="448"/>
+        <location filename="../../include/macrostring.h" line="470"/>
         <source>Phase time</source>
         <translation>相位时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="449"/>
+        <location filename="../../include/macrostring.h" line="471"/>
         <source>Signaler time</source>
         <translation>信号机时间</translation>
     </message>

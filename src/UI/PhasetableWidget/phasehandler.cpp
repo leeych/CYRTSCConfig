@@ -187,7 +187,7 @@ unsigned char PhaseHandler::get_phase_type_by_desc(const QString &desc)
     }
     else if (desc == STRING_UI_PHASE_DETERMINED)
     {
-        return 0x04;
+        return 0x040;
     }
     else if (desc == STRING_UI_PHASE_FIX)
     {

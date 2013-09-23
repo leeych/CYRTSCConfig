@@ -16,7 +16,7 @@ public:
     explicit EventLogDlg(QWidget *parent = 0);
     ~EventLogDlg();
     void Initialize(const QString &ip, EventLogHandler *handler);
-    
+
 signals:
     
 public slots:
@@ -24,6 +24,7 @@ public slots:
     void OnRemoveEventButtonClicked();
     void OnExportLogButtonClicked();
     void OnExportReportButtonClicked();
+    void OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *, int);
 
     // cmd return caller
     void OnCmdReadEventLog(void *content);
@@ -32,6 +33,8 @@ private:
     void InitPage();
     void InitSignalSlots();
     void UpdateUI();
+    void UpdateEventTypeTree();
+    void UpdateEventDetailTree();
 
     void InitTree(QTreeWidget *tree, const QStringList &header);
 

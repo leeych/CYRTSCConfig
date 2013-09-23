@@ -50,6 +50,15 @@ void EventLogDlg::OnExportReportButtonClicked()
     QMessageBox::information(this, STRING_TIP, "Export report", STRING_OK);
 }
 
+void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
+{
+    if (item == NULL || col < 0)
+    {
+        return;
+    }
+    UpdateEventDetailTree();
+}
+
 void EventLogDlg::OnCmdReadEventLog(void *content)
 {
     if (content == NULL)
@@ -119,6 +128,30 @@ void EventLogDlg::InitSignalSlots()
     connect(remove_event_button_, SIGNAL(clicked()), this, SLOT(OnRemoveEventButtonClicked()));
     connect(export_log_button_, SIGNAL(clicked()), this, SLOT(OnExportLogButtonClicked()));
     connect(export_report_button_, SIGNAL(clicked()), this, SLOT(OnExportReportButtonClicked()));
+    connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
+}
+
+void EventLogDlg::UpdateEventDetailTree()
+{
+    QList<QTreeWidgetItem *> item_list;
+    event_detail_tree_->clear();
+    item_list.clear();
+    QList<LogParam> log_param_list = handler_->get_event_log_list(0);
+    QString desc;
+    for (int i = 0; i < log_param_list.size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(event_detail_tree_);
+        desc.sprintf("%d", log_param_list.at(i).event_type_id);
+        item->setText(0, desc);
+        desc.sprintf("%04d", log_param_list.at(i).log_id);
+        item->setText(1, desc);
+        desc = handler_->get_datetime_desc(log_param_list.at(i).log_time);
+        item->setText(2, desc);
+        desc = handler_->get_log_desc(log_param_list.at(i).event_type_id, log_param_list.at(i).log_value);
+        item->setText(3, desc);
+        item_list.append(item);
+    }
+    event_detail_tree_->addTopLevelItems(item_list);
 }
 
 void EventLogDlg::UpdateUI()
@@ -128,14 +161,22 @@ void EventLogDlg::UpdateUI()
     {
         return;
     }
-    // update event tree
+    UpdateEventTypeTree();
+    UpdateEventDetailTree();
+}
+
+void EventLogDlg::UpdateEventTypeTree()
+{
     event_tree_->clear();
-    for (int i = 0; i < handler_->get_event_type_list().size(); i++)
+    QList<QTreeWidgetItem *> item_list;
+    QList<QString> event_desc_list = handler_->get_event_type_desc_list();
+    for (int i = 0; i < event_desc_list.size(); i++)
     {
-        // TODO:
+        QTreeWidgetItem *item = new QTreeWidgetItem(event_tree_);
+        item->setText(0, event_desc_list.at(i));
+        item_list.append(item);
     }
-    event_detail_tree_->clear();
-    // TODO:
+    event_tree_->addTopLevelItems(item_list);
 }
 
 void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)

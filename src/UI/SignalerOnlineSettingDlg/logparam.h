@@ -7,7 +7,8 @@ public:
     LogParam();
     LogParam(const LogParam &rhs);
     LogParam &operator =(const LogParam &rhs);
-    bool operator ==(const LogParam &rhs);
+    bool operator ==(const LogParam &rhs) const;
+    bool operator <(const LogParam &rhs) const;
     ~LogParam();
 
 public:

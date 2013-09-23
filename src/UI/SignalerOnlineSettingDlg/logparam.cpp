@@ -26,7 +26,7 @@ LogParam &LogParam::operator =(const LogParam &rhs)
     return *this;
 }
 
-bool LogParam::operator ==(const LogParam &rhs)
+bool LogParam::operator ==(const LogParam &rhs) const
 {
     if (this->event_type_id != rhs.event_type_id
             || this->log_id != rhs.log_id
@@ -36,6 +36,19 @@ bool LogParam::operator ==(const LogParam &rhs)
         return false;
     }
     return true;
+}
+
+bool LogParam::operator <(const LogParam &rhs) const
+{
+    if (this->event_type_id < rhs.event_type_id)
+    {
+        return true;
+    }
+    if (this->log_id < rhs.log_id)
+    {
+        return true;
+    }
+    return false;
 }
 
 LogParam::~LogParam()

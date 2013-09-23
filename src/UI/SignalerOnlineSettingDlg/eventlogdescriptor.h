@@ -9,6 +9,7 @@ class EventLogDescriptor
 public:
     static EventLogDescriptor *GetInstance();
     QString GetLogDesc(unsigned char event_type_id, unsigned int log_value);
+    QString GetEventTypeDesc(unsigned char event_type_id);
     void DisposeDescriptor();
 
 private:
@@ -17,6 +18,7 @@ private:
     static EventLogDescriptor *instance_;
 
     void GenSoftwareDesc();
+    void GenLogCaptionDesc();
 
 private:
     class EventLogTag
@@ -63,6 +65,7 @@ private:
     };
 
     QMap<EventLogTag, QString> log_desc_map_;
+    QMap<unsigned char, QString> log_txt_caption_map_;
 };
 
 #endif // EVENTLOGDESC_H

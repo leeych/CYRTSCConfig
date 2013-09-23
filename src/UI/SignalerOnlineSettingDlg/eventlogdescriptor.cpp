@@ -6,6 +6,7 @@ const int Max_Channel_Num = 64;
 
 EventLogDescriptor::EventLogDescriptor()
 {
+    GenLogCaptionDesc();
     GenSoftwareDesc();
 
     EventLogTag tag;
@@ -185,6 +186,12 @@ QString EventLogDescriptor::GetLogDesc(unsigned char event_type_id, unsigned int
     return desc;
 }
 
+QString EventLogDescriptor::GetEventTypeDesc(unsigned char event_type_id)
+{
+    QString desc = log_txt_caption_map_.value(event_type_id);
+    return desc;
+}
+
 void EventLogDescriptor::DisposeDescriptor()
 {
     if (instance_ != NULL)
@@ -251,4 +258,28 @@ void EventLogDescriptor::GenSoftwareDesc()
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_READ_GPS_DATA + STRING_SUCCEEDED));
     tag.log_value = 25;
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_READ_GPS_DATA + STRING_FAILED));
+}
+
+void EventLogDescriptor::GenLogCaptionDesc()
+{
+    log_txt_caption_map_.insert(1, QString(STRING_EXPORT_SOFTWARE_EVENT));
+    log_txt_caption_map_.insert(2, QString(STRING_EXPORT_GREEN_CONFLICT_RESTORE));
+    log_txt_caption_map_.insert(3, QString(STRING_EXPORT_GREEN_CONFLICT));
+    log_txt_caption_map_.insert(4, QString(STRING_EXPORT_RG_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(5, QString(STRING_EXPORT_RED_OFF_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(6, QString(STRING_EXPORT_RED_ERR_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(7, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(8, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(9, QString(STRING_EXPORT_GREEN_OFF_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(10, QString(STRING_EXPORT_GREEN_ERR_BRIGHT_RESTORE));
+    log_txt_caption_map_.insert(11, QString(STRING_EXPORT_RG_BRIGHT));
+    log_txt_caption_map_.insert(12, QString(STRING_EXPORT_RED_OFF_BRIGHT));
+    log_txt_caption_map_.insert(13, QString(STRING_EXPORT_RED_ERR_BRIGHT));
+    log_txt_caption_map_.insert(14, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT));
+    log_txt_caption_map_.insert(15, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT));
+    log_txt_caption_map_.insert(16, QString(STRING_EXPORT_GREEN_OFF_BRIGHT));
+    log_txt_caption_map_.insert(17, QString(STRING_EXPORT_GREEN_ERR_BRIGHT));
+    log_txt_caption_map_.insert(18, QString(STRING_EXPORT_CAN_COMMUNICATION));
+    log_txt_caption_map_.insert(19, QString(STRING_EXPORT_VEHICLE_FAULT));
+    log_txt_caption_map_.insert(20, QString(STRING_EXPORT_DRIVER_EVENT));
 }

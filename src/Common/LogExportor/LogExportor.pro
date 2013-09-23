@@ -11,6 +11,8 @@ TEMPLATE = lib
 
 DEFINES += LOGEXPORTOR_LIBRARY
 
+INCLUDEPATH += $$PWD/../../UI/SignalerOnlineSettingDlg/
+
 DESTDIR = $$PWD/../../../lib/
 
 SOURCES += eventlogexportor.cpp

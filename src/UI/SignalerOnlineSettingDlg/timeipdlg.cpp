@@ -1,15 +1,13 @@
 #include "timeipdlg.h"
 #include "macrostring.h"
 #include "synccommand.h"
+#include "command.h"
 
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDateTime>
 #include <QMessageBox>
-
-#include "command.h"
-
 #include <QIODevice>
 
 

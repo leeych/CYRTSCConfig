@@ -37,7 +37,7 @@ signals:
     void connectErrorStrSignal(QString);
     void disconnectedSignal();
 
-    void readyRead(void *content);
+    void readyRead(QByteArray &content);
     void readyRead();
 
 public slots:
@@ -64,6 +64,7 @@ private:
     QTcpSocket *socket_;
     QString ip_;
     unsigned int port_;
+    QByteArray sock_array_;
 
     QObject *target_obj_;
     std::string slot_;
