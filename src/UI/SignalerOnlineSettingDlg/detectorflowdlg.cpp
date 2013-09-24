@@ -99,7 +99,7 @@ void DetectorFlowDlg::InitSignalSlots()
 {
     connect(read_flow_button_, SIGNAL(clicked()), this, SLOT(OnReadFlowButtonClicked()));
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(onClearFowButtonClicked()));
-    connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonclicked()));
+    connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
 }
 
 void DetectorFlowDlg::UpdateUI()

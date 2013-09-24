@@ -66,7 +66,7 @@ void MainWindow::OnCommunicationToolButtonClicked()
 void MainWindow::OnConfigurationToolButtonClicked()
 {
     left_splitter_->setVisible(true);
-//    ChangeTabPage(STRING_UI_SCHEDULE_PLAN);
+    ChangeTabPage(curr_page_name_);
 }
 
 void MainWindow::OnHelpToolButtonClicked()
