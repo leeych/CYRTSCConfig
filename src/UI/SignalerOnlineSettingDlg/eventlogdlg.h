@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QTreeWidget>
+#include <QLabel>
 
 #include "tsc.h"
 
@@ -51,6 +52,7 @@ private:
 private:
     QPushButton *read_log_button_, *remove_event_button_, *export_log_button_, *export_report_button_;
     QPushButton *ok_button_, *cancel_button_;
+    QLabel *tip_label_;
 
     QTreeWidget *event_tree_, *event_detail_tree_;
 };

@@ -18,10 +18,10 @@ EventLogHandler::~EventLogHandler()
 
 void EventLogHandler::init(const EventLog_t &event_log)
 {
-    if (event_log.FactEventLogNum == 0)
-    {
-        return;
-    }
+//    if (event_log.FactEventLogNum == 0)
+//    {
+//        return;
+//    }
 
     LogParam logparam;
     LogParamMap log_map;
@@ -117,7 +117,7 @@ QList<QString> EventLogHandler::get_event_type_desc_list()
     QList<unsigned char> event_type_id_list = event_log_map_.keys();
     for (int i = 0; i < event_type_id_list.size(); i++)
     {
-        event_type_desc_list.append(descriptor_->GetEventTypeDesc(event_type_id_list.at(i)));
+        event_type_desc_list.append(descriptor_->get_log_desc(event_type_id_list.at(i), 0));
     }
     return event_type_desc_list;
 }
@@ -150,7 +150,7 @@ QList<LogParam> EventLogHandler::get_event_log_list(unsigned char event_type_id)
 
 QString EventLogHandler::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
-    return descriptor_->GetLogDesc(event_type_id, log_value);
+    return descriptor_->get_log_desc(event_type_id, log_value);
 }
 
 QString EventLogHandler::get_datetime_desc(unsigned int seconds)
@@ -173,26 +173,27 @@ bool EventLogHandler::export_event_log(const QString &file_name)
     }
 
     QStringList header;
-    header << STRING_UI_SIGNALER_EVENT_FLOW_ID << "    "
-           << STRING_UI_SIGNALER_EVENT_DATETIME << "    "
+    header << STRING_UI_SIGNALER_EVENT_FLOW_ID << "            "
+           << STRING_UI_SIGNALER_EVENT_DATETIME << "                "
            << STRING_UI_SIGNALER_EVENT_DESC << "\n";
-    QString line("%1        %2        %3 \n");
-    QString content, caption;
+    QString line("%1          %2    %3\n");
+    QString content, caption, desc;
     QMap<unsigned int, LogParam> log_map;
+    QMap<unsigned int, LogParam>::iterator log_itr = log_map.begin();
     EventLogIter iter = event_log_map_.begin();
     while (iter != event_log_map_.end())
     {
         log_map = iter.value();
-        caption = descriptor_->GetEventTypeDesc(iter.key());
+        caption = descriptor_->get_event_type_log_desc(iter.key());
         content += caption + "\n";
         for (int i = 0; i < header.count(); i++)
         {
             content.append(header.at(i));
         }
-        QMap<unsigned int, LogParam>::iterator log_itr = log_map.begin();
+        log_itr = log_map.begin();
         while (log_itr != log_map.end())
         {
-            content += line.arg(log_itr.value().log_id).arg(this->get_datetime_desc(log_itr.value().log_time)).arg(this->get_log_desc(iter.key(), log_itr.key()));
+            content += line.arg(desc.sprintf("%04d", log_itr.value().log_id)).arg(this->get_datetime_desc(log_itr.value().log_time)).arg(this->get_log_desc(iter.key(), log_itr.key()));
             ++log_itr;
         }
         ++iter;
@@ -218,7 +219,7 @@ bool EventLogHandler::export_report(const QString &file_name)
     }
     int fidx = file_name.lastIndexOf("/");
     int bidx = file_name.lastIndexOf(".");
-    QString ip = file_name.mid(fidx, bidx - fidx + 1);
+    QString ip = file_name.mid(fidx - 1, bidx - fidx);
     QString declare_str = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
             "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
             "<head>"
@@ -242,8 +243,8 @@ bool EventLogHandler::export_report(const QString &file_name)
     QString str;
     while (iter != event_log_map_.end())
     {
-        caption_str = "<tr>< td colspan=4 align=center valign=middle><font size=4 color=red ><strong>"
-                            + descriptor_->GetEventTypeDesc(iter.key()) + "</strong></font></td></tr>";
+        caption_str = "<tr><td colspan=4 align=center valign=middle><font size=4 color=red ><strong>"
+                            + descriptor_->get_log_desc(iter.key(), 0) + "</strong></font></td></tr>";
         log_map = iter.value();
         LogParamMap::iterator log_itr = log_map.begin();
         while (log_itr != log_map.end())
@@ -281,7 +282,7 @@ bool EventLogHandler::is_event_log_valid(const EventLogList_t &loginfo)
     if (loginfo.EventClassId == 0
             || loginfo.EventLogId == 0
             || loginfo.EventLogTime == 0
-            || loginfo.EventLogValue == 0)
+/*            || loginfo.EventLogValue == 0*/)
     {
         return false;
     }

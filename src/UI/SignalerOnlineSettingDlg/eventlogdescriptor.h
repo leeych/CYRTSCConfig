@@ -8,8 +8,8 @@ class EventLogDescriptor
 {
 public:
     static EventLogDescriptor *GetInstance();
-    QString GetLogDesc(unsigned char event_type_id, unsigned int log_value);
-    QString GetEventTypeDesc(unsigned char event_type_id);
+    QString get_log_desc(unsigned char event_type_id, unsigned int log_value);
+    QString get_event_type_log_desc(unsigned char event_type_id);
     void DisposeDescriptor();
 
 private:

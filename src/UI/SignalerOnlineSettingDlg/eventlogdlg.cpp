@@ -27,6 +27,7 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     file_name_ = "user/tmp/" + ip + ".edat";
     ip_ = ip;
     handler_ = handler;
+    tip_label_->clear();
     UpdateUI();
     exec();
 }
@@ -87,6 +88,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
         event_log_array_.clear();
+        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED);
         return;
     }
     event_log_array_.append(array);
@@ -94,6 +96,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_FAILED, STRING_OK);
         event_log_array_.clear();
+        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED);
         return;
     }
 
@@ -101,6 +104,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     {
         ParseEventLogArray(event_log_array_);
         event_log_array_.clear();
+        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED);
         UpdateUI();
     }
 }
@@ -113,6 +117,7 @@ void EventLogDlg::OnCmdDeleteEventLog(QByteArray &array)
         return;
     }
     // TODO: is there any return value left to be determined
+    tip_label_->setText(STRING_UI_SIGNALER_EVENT_LOG_DELETE_LOG + STRING_SUCCEEDED);
 }
 
 void EventLogDlg::InitPage()
@@ -142,16 +147,19 @@ void EventLogDlg::InitPage()
     export_report_button_ = new QPushButton(STRING_UI_SIGNALER_EVENT_EXPORT_REPORT);
 
     QHBoxLayout *button_hlayout = new QHBoxLayout;
-    button_hlayout->addStretch(1);
+//    button_hlayout->addStretch(1);
     button_hlayout->addWidget(read_log_button_);
     button_hlayout->addWidget(remove_event_button_);
     button_hlayout->addWidget(export_log_button_);
     button_hlayout->addWidget(export_report_button_);
-    button_hlayout->addStretch(1);
+//    button_hlayout->addStretch(1);
+
+    tip_label_ = new QLabel(this);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addLayout(tree_hlayout);
     vlayout->addLayout(button_hlayout);
+    vlayout->addWidget(tip_label_);
     setLayout(vlayout);
 }
 

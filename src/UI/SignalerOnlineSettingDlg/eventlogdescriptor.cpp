@@ -179,14 +179,14 @@ EventLogDescriptor *EventLogDescriptor::GetInstance()
     return instance_;
 }
 
-QString EventLogDescriptor::GetLogDesc(unsigned char event_type_id, unsigned int log_value)
+QString EventLogDescriptor::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
     EventLogTag tag(event_type_id, log_value);
     QString desc = log_desc_map_.value(tag);
     return desc;
 }
 
-QString EventLogDescriptor::GetEventTypeDesc(unsigned char event_type_id)
+QString EventLogDescriptor::get_event_type_log_desc(unsigned char event_type_id)
 {
     QString desc = log_txt_caption_map_.value(event_type_id);
     return desc;

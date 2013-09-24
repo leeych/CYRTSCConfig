@@ -360,6 +360,7 @@
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
 #define STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED      QObject::tr("Export log file failed")
 #define STRING_UI_SIGNALER_EVENT_LOG_EXPORT_HTML_FAILED     QObject::tr("Export html file failed")
+#define STRING_UI_SIGNALER_EVENT_LOG_DELETE_LOG             QObject::tr("Delete event log item")
 
 #define STRING_UI_SIGNALER_EVENT_SOCKET_NULL    QObject::tr("Read socket data is null")
 #define STRING_UI_SIGNALER_EVENT_FAILED         QObject::tr("Get event log info failed")
