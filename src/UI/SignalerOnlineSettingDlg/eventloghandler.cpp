@@ -21,6 +21,11 @@ void EventLogHandler::init(const EventLog_t &event_log)
     int count = 0;
     LogParam logparam;
     LogParamMap log_map;
+    if (event_log.FactEventLogNum == 0)
+    {
+        return;
+    }
+
     for (int i = 0; i < MAX_EVENTCLASS_LINE; i++)
     {
         for (int j = 0; j < MAX_EVENTLOG; j++)
@@ -47,11 +52,16 @@ void EventLogHandler::init(const EventLog_t &event_log)
 void EventLogHandler::init_from_file(const QString &file_name)
 {
     QFile file(file_name);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return;
+    }
     QByteArray array = file.readAll();
 //    EventLog_t *loginfo = (*(static_cast<EventLog*>(array.data()))).log_info;
     EventLog_t loginfo;
     memcpy(&loginfo, array.data(), sizeof(loginfo));
     init(loginfo);
+    file.close();
 }
 
 void EventLogHandler::set_log(const LogParam &loginfo)
@@ -197,7 +207,13 @@ bool EventLogHandler::export_event_log(const QString &file_name)
     }
 
     QFile file(file_name);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        file.close();
+        return false;
+    }
     file.write(content.toUtf8());
+    file.close();
 
     return true;
 }
@@ -254,8 +270,15 @@ bool EventLogHandler::export_report(const QString &file_name)
         ++iter;
     }
     content += table_str + "</body></html>";
+
     QFile file(file_name);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        file.close();
+        return false;
+    }
     file.write(content.toUtf8());
+    file.close();
 
     return true;
 }

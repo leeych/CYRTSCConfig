@@ -24,7 +24,7 @@ EventLogDlg::~EventLogDlg()
 
 void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
 {
-    file_name_ = ip + ".edat";
+    file_name_ = "user/tmp/" + ip + ".edat";
     handler_ = handler;
     UpdateUI();
     exec();
@@ -32,8 +32,7 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
 
 void EventLogDlg::OnReadLogButtonClicked()
 {
-//    QMessageBox::information(this, STRING_TIP, "Read log", STRING_OK);
-    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(void*)));
+    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
 }
 
 void EventLogDlg::OnDeleteEventButtonClicked()
@@ -44,8 +43,7 @@ void EventLogDlg::OnDeleteEventButtonClicked()
 
 void EventLogDlg::OnExportLogButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Export event log", STRING_OK);
-    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/tmp/", "EDat(*.edat);;All File(*.*)");
+    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/log/", "Log(*.log);;All File(*.*)");
     if (log_file.isNull() || log_file.isEmpty())
     {
         return;
@@ -60,7 +58,6 @@ void EventLogDlg::OnExportLogButtonClicked()
 
 void EventLogDlg::OnExportReportButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Export report", STRING_OK);
     QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/", "Html(*.html,*.htm);;All File(*.*)");
     if (report_file.isNull() || report_file.isEmpty())
     {
@@ -88,21 +85,22 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     if (array.isEmpty())
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
+        event_log_array_.clear();
         return;
     }
     event_log_array_.append(array);
-    QString log_str(event_log_array_);
     if (event_log_array_.contains("EVENTLOGER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_FAILED, STRING_OK);
+        event_log_array_.clear();
         return;
     }
 
-    if (log_str.right(3).endsWith("END"))
+    if (event_log_array_.endsWith("END"))
     {
         ParseEventLogArray(event_log_array_);
         event_log_array_.clear();
-        return;
+        UpdateUI();
     }
 }
 
@@ -190,11 +188,6 @@ void EventLogDlg::UpdateEventDetailTree()
 
 void EventLogDlg::UpdateUI()
 {
-    QFile file(file_name_);
-    if (!file.open(QIODevice::ReadWrite))
-    {
-        return;
-    }
     handler_->init_from_file(file_name_);
     UpdateEventTypeTree();
     UpdateEventDetailTree();
@@ -244,21 +237,17 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     }
     unsigned int len = 0;
     memcpy(&len, content + 4, 4);
-    char *log_buff = new char[len + 1];
-    memcpy(log_buff, content + 8, len);
-    log_buff[len] = '\0';
-    // TODO: left to parse log bytes array
-
-    byte_arr.remove(0, 4);
+    char cy_header[18] = {'\0'};
+    memcpy(cy_header, content + 8, sizeof(cy_header));
+    byte_arr.remove(0, 4+4+18);
     int index = byte_arr.indexOf("END");
     byte_arr.remove(index, 3);
 
-    QString str(byte_arr);
-//    EventLog info = (EventLog)byte_arr;
-
-    // init handler
-
-    file_name_ = "user/tmp/" + file_name_;
     QFile file(file_name_);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        return;
+    }
     file.write(byte_arr);
+    file.close();
 }
