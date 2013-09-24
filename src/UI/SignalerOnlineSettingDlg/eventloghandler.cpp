@@ -18,14 +18,14 @@ EventLogHandler::~EventLogHandler()
 
 void EventLogHandler::init(const EventLog_t &event_log)
 {
-    int count = 0;
-    LogParam logparam;
-    LogParamMap log_map;
     if (event_log.FactEventLogNum == 0)
     {
         return;
     }
 
+    LogParam logparam;
+    LogParamMap log_map;
+    int index = 0;
     for (int i = 0; i < MAX_EVENTCLASS_LINE; i++)
     {
         for (int j = 0; j < MAX_EVENTLOG; j++)
@@ -37,15 +37,16 @@ void EventLogHandler::init(const EventLog_t &event_log)
                 logparam.log_time = event_log.EventLogList[j + i * MAX_EVENTLOG].EventLogTime;
                 logparam.log_value = event_log.EventLogList[j + i * MAX_EVENTLOG].EventLogValue;
                 log_map.insert(logparam.log_value, logparam);
-                count++;
-            }
-            else
-            {
-                event_log_map_.insert(event_log.EventLogList[j + i * MAX_EVENTLOG].EventClassId, log_map);
-                log_map.clear();
-                break;
+                index = j;
             }
         }
+        if (log_map.isEmpty())
+        {
+            continue;
+        }
+        event_log_map_.insert(event_log.EventLogList[index + i * MAX_EVENTLOG].EventClassId, log_map);
+        index = 0;
+        log_map.clear();
     }
 }
 
@@ -112,21 +113,11 @@ QList<EventParam> EventLogHandler::get_event_type_list()
 
 QList<QString> EventLogHandler::get_event_type_desc_list()
 {
-    QString str;
     QList<QString> event_type_desc_list;
-    QList<LogParam> log_list;
-    EventLogIter iter = event_log_map_.begin();
-    while (iter != event_log_map_.end())
+    QList<unsigned char> event_type_id_list = event_log_map_.keys();
+    for (int i = 0; i < event_type_id_list.size(); i++)
     {
-        LogParamMap log_map = iter.value();
-        log_list = log_map.values();
-        qSort(log_list);
-        for (int i = 0; i < log_list.size(); i++)
-        {
-            str = descriptor_->GetLogDesc(iter.key(), log_list.at(i).log_value);
-            event_type_desc_list.append(str);
-        }
-        ++iter;
+        event_type_desc_list.append(descriptor_->GetEventTypeDesc(event_type_id_list.at(i)));
     }
     return event_type_desc_list;
 }
@@ -185,7 +176,7 @@ bool EventLogHandler::export_event_log(const QString &file_name)
     header << STRING_UI_SIGNALER_EVENT_FLOW_ID << "    "
            << STRING_UI_SIGNALER_EVENT_DATETIME << "    "
            << STRING_UI_SIGNALER_EVENT_DESC << "\n";
-    QString line("%1    %2    %3 \n");
+    QString line("%1        %2        %3 \n");
     QString content, caption;
     QMap<unsigned int, LogParam> log_map;
     EventLogIter iter = event_log_map_.begin();
@@ -235,7 +226,7 @@ bool EventLogHandler::export_report(const QString &file_name)
             "<title>" + ip + "</title>"
             "</head>";
     QString content = declare_str;
-    content += "<body>";
+    content += "<body><div align=\"center\">";
 
     QString table_str = "<table cellspacing=0 cellpadding=4 border=1 valign=middle>";
     QString header = "<tr><th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_TYPE + "</th>"
@@ -251,7 +242,8 @@ bool EventLogHandler::export_report(const QString &file_name)
     QString str;
     while (iter != event_log_map_.end())
     {
-        caption_str = "<tr><td>" + descriptor_->GetEventTypeDesc(iter.key()) + "</td></tr>";
+        caption_str = "<tr>< td colspan=4 align=center valign=middle><font size=4 color=red ><strong>"
+                            + descriptor_->GetEventTypeDesc(iter.key()) + "</strong></font></td></tr>";
         log_map = iter.value();
         LogParamMap::iterator log_itr = log_map.begin();
         while (log_itr != log_map.end())
@@ -270,7 +262,7 @@ bool EventLogHandler::export_report(const QString &file_name)
 
         ++iter;
     }
-    content += table_str + "</body></html>";
+    content += table_str + "</table></div></body></html>";
 
     QFile file(file_name);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))

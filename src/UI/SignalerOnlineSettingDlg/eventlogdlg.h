@@ -46,6 +46,7 @@ private:
     EventLogHandler *handler_;
     QByteArray event_log_array_;
     QString file_name_;
+    QString ip_;
 
 private:
     QPushButton *read_log_button_, *remove_event_button_, *export_log_button_, *export_report_button_;

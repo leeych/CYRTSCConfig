@@ -25,6 +25,7 @@ EventLogDlg::~EventLogDlg()
 void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
 {
     file_name_ = "user/tmp/" + ip + ".edat";
+    ip_ = ip;
     handler_ = handler;
     UpdateUI();
     exec();
@@ -43,7 +44,7 @@ void EventLogDlg::OnDeleteEventButtonClicked()
 
 void EventLogDlg::OnExportLogButtonClicked()
 {
-    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/log/", "Log(*.log);;All File(*.*)");
+    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/log/" + ip_ + ".log" , "Log(*.log);;All File(*.*)");
     if (log_file.isNull() || log_file.isEmpty())
     {
         return;
@@ -58,7 +59,7 @@ void EventLogDlg::OnExportLogButtonClicked()
 
 void EventLogDlg::OnExportReportButtonClicked()
 {
-    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/", "Html(*.html,*.htm);;All File(*.*)");
+    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/" + ip_ + ".html", "Html(*.html,*.htm);;All File(*.*)");
     if (report_file.isNull() || report_file.isEmpty())
     {
         return;
