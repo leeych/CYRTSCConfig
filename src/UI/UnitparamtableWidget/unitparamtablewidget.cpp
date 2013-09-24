@@ -85,8 +85,8 @@ void UnitparamtableWidget::InitPage()
 	flash_time_spinbox_->setMinimumWidth(120);
 	all_red_time_spinbox_->setMinimumWidth(120);
 
-    flash_time_spinbox_->setRange(0, 255);
-    all_red_time_spinbox_->setRange(0, 255);
+    flash_time_spinbox_->setRange(10, 255);
+    all_red_time_spinbox_->setRange(5, 255);
 
     signal_status_cmb_ = new QComboBox;
     signal_status_cmb_->addItem(STRING_UI_UNIT_AUTO_CONTORL);

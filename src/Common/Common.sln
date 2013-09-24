@@ -1,6 +1,16 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "E:/svn/CYRTSCConfig/src/Common/Utility\Utility.vcproj", "{29F25AA6-0C84-3D3F-83FA-C4BE8B400802}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/Utility\Utility.vcproj", "{15C6178A-AC6C-3DD9-959F-566721F3F561}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XmlHelper", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/XmlHelper\XmlHelper.vcproj", "{BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SignalerManager", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/SignalerManager\SignalerManager.vcproj", "{9F127328-A602-320D-9BAF-F3F41389355F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Communication", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/Communication\Communication.vcproj", "{1A30FB93-8DF0-364A-AE27-19FAE798340C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommandCallback", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/CommandCallback\CommandCallback.vcproj", "{D5518CA3-9813-3995-8976-E182C1250D2A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LogExportor", "E:/svn/CYTSC_bak/CYRTSCConfig/src/Common/LogExportor\LogExportor.vcproj", "{4933EFBF-A367-35F2-8AE7-535C273160C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
@@ -8,12 +18,35 @@ Global
 		ConfigName.1 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectDependencies) = postSolution
+		{9F127328-A602-320D-9BAF-F3F41389355F}.0 = {15C6178A-AC6C-3DD9-959F-566721F3F561}
+		{9F127328-A602-320D-9BAF-F3F41389355F}.1 = {BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}
+		{D5518CA3-9813-3995-8976-E182C1250D2A}.0 = {1A30FB93-8DF0-364A-AE27-19FAE798340C}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{29F25AA6-0C84-3D3F-83FA-C4BE8B400802}.Debug|Win32.ActiveCfg = Debug|Win32
-		{29F25AA6-0C84-3D3F-83FA-C4BE8B400802}.Debug|Win32.Build.0 = Debug|Win32
-		{29F25AA6-0C84-3D3F-83FA-C4BE8B400802}.Release|Win32.ActiveCfg = Release|Win32
-		{29F25AA6-0C84-3D3F-83FA-C4BE8B400802}.Release|Win32.Build.0 = Release|Win32
+		{15C6178A-AC6C-3DD9-959F-566721F3F561}.Debug|Win32.ActiveCfg = Debug|Win32
+		{15C6178A-AC6C-3DD9-959F-566721F3F561}.Debug|Win32.Build.0 = Debug|Win32
+		{15C6178A-AC6C-3DD9-959F-566721F3F561}.Release|Win32.ActiveCfg = Release|Win32
+		{15C6178A-AC6C-3DD9-959F-566721F3F561}.Release|Win32.Build.0 = Release|Win32
+		{BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}.Debug|Win32.Build.0 = Debug|Win32
+		{BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}.Release|Win32.ActiveCfg = Release|Win32
+		{BFBD7462-9CF6-3E13-AD11-FCCEB147BCAD}.Release|Win32.Build.0 = Release|Win32
+		{9F127328-A602-320D-9BAF-F3F41389355F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F127328-A602-320D-9BAF-F3F41389355F}.Debug|Win32.Build.0 = Debug|Win32
+		{9F127328-A602-320D-9BAF-F3F41389355F}.Release|Win32.ActiveCfg = Release|Win32
+		{9F127328-A602-320D-9BAF-F3F41389355F}.Release|Win32.Build.0 = Release|Win32
+		{1A30FB93-8DF0-364A-AE27-19FAE798340C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A30FB93-8DF0-364A-AE27-19FAE798340C}.Debug|Win32.Build.0 = Debug|Win32
+		{1A30FB93-8DF0-364A-AE27-19FAE798340C}.Release|Win32.ActiveCfg = Release|Win32
+		{1A30FB93-8DF0-364A-AE27-19FAE798340C}.Release|Win32.Build.0 = Release|Win32
+		{D5518CA3-9813-3995-8976-E182C1250D2A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D5518CA3-9813-3995-8976-E182C1250D2A}.Debug|Win32.Build.0 = Debug|Win32
+		{D5518CA3-9813-3995-8976-E182C1250D2A}.Release|Win32.ActiveCfg = Release|Win32
+		{D5518CA3-9813-3995-8976-E182C1250D2A}.Release|Win32.Build.0 = Release|Win32
+		{4933EFBF-A367-35F2-8AE7-535C273160C0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4933EFBF-A367-35F2-8AE7-535C273160C0}.Debug|Win32.Build.0 = Debug|Win32
+		{4933EFBF-A367-35F2-8AE7-535C273160C0}.Release|Win32.ActiveCfg = Release|Win32
+		{4933EFBF-A367-35F2-8AE7-535C273160C0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

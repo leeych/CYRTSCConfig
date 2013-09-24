@@ -20,6 +20,9 @@ public:
     enum PhaseErr
     {
         MinLargerThanMax1,
+        GreenFlashZero,
+        ManGreenClearZero,
+        FixGreenZero,
         None
     };
 

@@ -28,6 +28,7 @@ public:
     void ReadSignalerTime(QObject *target, const std::string &slot);
     void ReadSignalerNetworkInfo(QObject *target, const std::string &slot);
     void ReadEventLogFile(QObject *target, const std::string &slot);
+    void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);
 
     void ReadTscVersion(QObject *target, const std::string &slot);
 

@@ -56,6 +56,13 @@ void SyncCommand::ReadEventLogFile(QObject *target, const std::string &slot)
     socket_->write(Command::GetEventInfo.c_str());
 }
 
+// const std::string &param: represent for log_id and log_time string
+void SyncCommand::DeleteEventLog(const std::string &param, QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write((Command::ClearEventInfo + param).c_str());
+}
+
 void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

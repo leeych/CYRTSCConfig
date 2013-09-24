@@ -9,6 +9,7 @@
 #include <QMessageBox>
 
 #include <QFile>
+#include <QFileDialog>
 
 EventLogDlg::EventLogDlg(QWidget *parent) :
     QDialog(parent)
@@ -35,19 +36,42 @@ void EventLogDlg::OnReadLogButtonClicked()
     SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(void*)));
 }
 
-void EventLogDlg::OnRemoveEventButtonClicked()
+void EventLogDlg::OnDeleteEventButtonClicked()
 {
     QMessageBox::information(this, STRING_TIP, "Remove event", STRING_OK);
+    SyncCommand::GetInstance()->DeleteEventLog("1 20130924", this, SLOT(OnCmdDeleteEventLog(QByteArray&)));
 }
 
 void EventLogDlg::OnExportLogButtonClicked()
 {
     QMessageBox::information(this, STRING_TIP, "Export event log", STRING_OK);
+    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/tmp/", "EDat(*.edat);;All File(*.*)");
+    if (log_file.isNull() || log_file.isEmpty())
+    {
+        return;
+    }
+    bool status = handler_->export_event_log(log_file);
+    if (!status)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED, STRING_OK);
+        return;
+    }
 }
 
 void EventLogDlg::OnExportReportButtonClicked()
 {
     QMessageBox::information(this, STRING_TIP, "Export report", STRING_OK);
+    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/", "Html(*.html,*.htm);;All File(*.*)");
+    if (report_file.isNull() || report_file.isEmpty())
+    {
+        return;
+    }
+    bool status = handler_->export_report(report_file);
+    if (!status)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_HTML_FAILED, STRING_OK);
+        return;
+    }
 }
 
 void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
@@ -59,14 +83,14 @@ void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col
     UpdateEventDetailTree();
 }
 
-void EventLogDlg::OnCmdReadEventLog(void *content)
+void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
 {
-    if (content == NULL)
+    if (array.isEmpty())
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
         return;
     }
-    event_log_array_.append((char *)content);
+    event_log_array_.append(array);
     QString log_str(event_log_array_);
     if (event_log_array_.contains("EVENTLOGER"))
     {
@@ -80,6 +104,16 @@ void EventLogDlg::OnCmdReadEventLog(void *content)
         event_log_array_.clear();
         return;
     }
+}
+
+void EventLogDlg::OnCmdDeleteEventLog(QByteArray &array)
+{
+    if (array.isEmpty())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
+        return;
+    }
+    // TODO: is there any return value left to be determined
 }
 
 void EventLogDlg::InitPage()
@@ -125,7 +159,7 @@ void EventLogDlg::InitPage()
 void EventLogDlg::InitSignalSlots()
 {
     connect(read_log_button_, SIGNAL(clicked()), this, SLOT(OnReadLogButtonClicked()));
-    connect(remove_event_button_, SIGNAL(clicked()), this, SLOT(OnRemoveEventButtonClicked()));
+    connect(remove_event_button_, SIGNAL(clicked()), this, SLOT(OnDeleteEventButtonClicked()));
     connect(export_log_button_, SIGNAL(clicked()), this, SLOT(OnExportLogButtonClicked()));
     connect(export_report_button_, SIGNAL(clicked()), this, SLOT(OnExportReportButtonClicked()));
     connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
@@ -161,6 +195,7 @@ void EventLogDlg::UpdateUI()
     {
         return;
     }
+    handler_->init_from_file(file_name_);
     UpdateEventTypeTree();
     UpdateEventDetailTree();
 }
@@ -219,10 +254,11 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     byte_arr.remove(index, 3);
 
     QString str(byte_arr);
-//    EventLog info((EventLog)byte_arr);
+//    EventLog info = (EventLog)byte_arr;
 
     // init handler
 
-    QFile file("user/tmp/tmp.edat");
+    file_name_ = "user/tmp/" + file_name_;
+    QFile file(file_name_);
     file.write(byte_arr);
 }

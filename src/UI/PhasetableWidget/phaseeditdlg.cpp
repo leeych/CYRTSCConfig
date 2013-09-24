@@ -27,6 +27,21 @@ void PhaseeditDlg::OnOkButtonClicked()
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_MIN_LARGER_MAX + QString::number(1) + " !", STRING_OK);
         return;
     }
+    if (ValidateUI() == GreenFlashZero)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_GREEN_FLASH_ZERO_TIP, STRING_OK);
+        return;
+    }
+    if (ValidateUI() == ManGreenClearZero)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_GREEN_CLEAR_TIP, STRING_OK);
+        return;
+    }
+    if (ValidateUI() == FixGreenZero)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_FIX_GREEN_TIP, STRING_OK);
+        return;
+    }
 
     if (SaveData())
     {
@@ -75,7 +90,7 @@ void PhaseeditDlg::InitPage()
     max1_green_time_spinbox_->setRange(0, 255);
     max2_green_time_spinbox_->setRange(0, 255);
     fix_green_time_spinbox_->setRange(0, 255);
-    green_flash_time_spinbox_->setRange(0, 255);
+    green_flash_time_spinbox_->setRange(1, 255);
 
     phase_mode_cmb_ = new QComboBox;
 
@@ -325,6 +340,20 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
     if (min_green > max_green1)
     {
         return MinLargerThanMax1;
+    }
+    if (green_flash_time_spinbox_->value() == 0)
+    {
+        return GreenFlashZero;
+    }
+    if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_WALKMAN))
+            && ((man_green_time_spinbox_->value() == 0) || (man_clear_time_spinbox_->value() == 0)))
+    {
+        return ManGreenClearZero;
+    }
+    if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_FIX))
+            && (fix_green_time_spinbox_->value() == 0))
+    {
+        return FixGreenZero;
     }
     return None;
 }

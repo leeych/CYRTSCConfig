@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QGridLayout>
+#include <QMessageBox>
 
 PhasetimingeditDlg::PhasetimingeditDlg(QWidget *parent) :
     QDialog(parent)
@@ -39,10 +40,16 @@ void PhasetimingeditDlg::OnResetButtonClicked()
 
 void PhasetimingeditDlg::OnOkButtonClicked()
 {
-	EnableSettingUI(false);
+    if (ValidateUI() == GreenLessYellow)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_TIMING_GREEN_LT_YELLOW, STRING_OK);
+        return;
+    }
+
+    EnableSettingUI(false);
     if (SaveRowData())
     {
-		UpdateTree(phase_timing_tmp_list_);
+        UpdateTree(phase_timing_tmp_list_);
     }
 }
 
@@ -182,9 +189,9 @@ void PhasetimingeditDlg::InitPage()
     red_time_spinbox_ = new QSpinBox;
     delay_time_spinbox_ = new QSpinBox;
 
-    green_time_spinbox_->setRange(0, 255);
+    green_time_spinbox_->setRange(3, 255);
     red_time_spinbox_->setRange(0, 255);
-    yellow_time_spinbox_->setRange(0, 255);
+    yellow_time_spinbox_->setRange(3, 255);
 	delay_time_spinbox_->setRange(0, 10);
 
     QHBoxLayout* phase_hlayout = new QHBoxLayout;
@@ -499,6 +506,15 @@ void PhasetimingeditDlg::EnableSettingUI(bool enable)
     //{
     //    release_phase_id_list_.at(i)->setEnabled(enable);
     //}
+}
+
+PhasetimingeditDlg::TimingErr PhasetimingeditDlg::ValidateUI()
+{
+    if (green_time_spinbox_->value() < yellow_time_spinbox_->value())
+    {
+        return GreenLessYellow;
+    }
+    return None;
 }
 
 bool PhasetimingeditDlg::SaveData()

@@ -44,6 +44,16 @@ void EventLogHandler::init(const EventLog_t &event_log)
     }
 }
 
+void EventLogHandler::init_from_file(const QString &file_name)
+{
+    QFile file(file_name);
+    QByteArray array = file.readAll();
+//    EventLog_t *loginfo = (*(static_cast<EventLog*>(array.data()))).log_info;
+    EventLog_t loginfo;
+    memcpy(&loginfo, array.data(), sizeof(loginfo));
+    init(loginfo);
+}
+
 void EventLogHandler::set_log(const LogParam &loginfo)
 {
     LogParamMap log_map = event_log_map_.value(loginfo.event_type_id);
@@ -209,17 +219,43 @@ bool EventLogHandler::export_report(const QString &file_name)
             "</head>";
     QString content = declare_str;
     content += "<body>";
-    QString table_str = "<table cellspacing=0 cellpadding=4 border=1 valign=middle>";
-    QString caption_str = "<tr>"
-            "<td colspan=4 align=center valign=middle><font size=4 color=red >%1</td>"
-            "</tr>";
 
+    QString table_str = "<table cellspacing=0 cellpadding=4 border=1 valign=middle>";
     QString header = "<tr><th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_TYPE + "</th>"
             "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_FLOW_ID + "</th>"
             "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_DATETIME + "</th>"
             "<th align=left valign=middle><font size=4 >" + STRING_UI_SIGNALER_EVENT_DESC + "</th>"
 			"</tr>";
-//	QString content = "<tr></tr>";
+
+    QString caption_str;
+    QString tbody_str;
+    LogParamMap log_map;
+    EventLogIter iter = event_log_map_.begin();
+    QString str;
+    while (iter != event_log_map_.end())
+    {
+        caption_str = "<tr><td>" + descriptor_->GetEventTypeDesc(iter.key()) + "</td></tr>";
+        log_map = iter.value();
+        LogParamMap::iterator log_itr = log_map.begin();
+        while (log_itr != log_map.end())
+        {
+            tbody_str +=
+                    "<tr>"
+                    "<td>" + QString::number(log_itr.value().event_type_id) + "</td>"
+                    "<td>" + str.sprintf("%04d", log_itr.value().log_id) + "</td>"
+                    "<td>" + this->get_datetime_desc(log_itr.value().log_time) + "</td>"
+                    "<td>" + this->get_log_desc(iter.key(), log_itr.value().log_value) + "</td>"
+                    "</tr>";
+            ++log_itr;
+        }
+        table_str += caption_str + header + tbody_str;
+        tbody_str = "";
+
+        ++iter;
+    }
+    content += table_str + "</body></html>";
+    QFile file(file_name);
+    file.write(content.toUtf8());
 
     return true;
 }

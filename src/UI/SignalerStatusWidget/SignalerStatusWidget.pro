@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT     += xml network
+QT     += xml
+QT     += network
 
 TARGET = SignalerStatusWidget
 TEMPLATE = lib

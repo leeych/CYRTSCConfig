@@ -21,13 +21,14 @@ signals:
     
 public slots:
     void OnReadLogButtonClicked();
-    void OnRemoveEventButtonClicked();
+    void OnDeleteEventButtonClicked();
     void OnExportLogButtonClicked();
     void OnExportReportButtonClicked();
     void OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *, int);
 
     // cmd return caller
-    void OnCmdReadEventLog(void *content);
+    void OnCmdReadEventLog(QByteArray &array);
+    void OnCmdDeleteEventLog(QByteArray &array);
     
 private:
     void InitPage();
@@ -45,28 +46,6 @@ private:
     EventLogHandler *handler_;
     QByteArray event_log_array_;
     QString file_name_;
-    class EventLog
-    {
-    public:
-        EventLog()
-        {
-            length = 0;
-            memset(header, 0x00, sizeof(header));
-            memset(&event_type_info, 0x00, sizeof(event_type_info));
-            memset(&log_info, 0x00, sizeof(log_info));
-        }
-        EventLog(const EventLog &rhs)
-        {
-            this->length = rhs.length;
-            memcpy(&event_type_info, &rhs.event_type_info, sizeof(rhs.event_type_info));
-            memcpy(&log_info, &rhs.log_info, sizeof(rhs.log_info));
-        }
-
-        unsigned int length;
-        char header[18];
-        EventClass_t event_type_info;
-        EventLog_t log_info;
-    };
 
 private:
     QPushButton *read_log_button_, *remove_event_button_, *export_log_button_, *export_report_button_;

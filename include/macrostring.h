@@ -134,6 +134,8 @@
 #define STRING_UI_PHASE_TIMING_RED      QObject::tr("Phase red time")
 #define STRING_UI_PHASE_TIMING_DELAY    QObject::tr("Start delay time")
 
+#define STRING_UI_PHASE_TIMING_GREEN_LT_YELLOW      QObject::tr("Yellow time must not larger than green time")
+
 #define STRING_UI_PHASE_TIMING_STAGE    QObject::tr("Stage ID")
 #define STRING_UI_PHASE_TIMING_TOP_LIMITED	QObject::tr("Already up to the phasetiming top limited num.")
 
@@ -160,6 +162,9 @@
 #define STRING_UI_PHASE_DETECTOR_NUM    QObject::tr("Max detector num")
 
 #define STRING_UI_PHASE_MIN_LARGER_MAX  QObject::tr("Min green can not larger than max ")
+#define STRING_UI_PHASE_GREEN_FLASH_ZERO_TIP    QObject::tr("Green flash time must larger than zero")
+#define STRING_UI_PHASE_MAN_GREEN_CLEAR_TIP     QObject::tr("Walkman green and clear time must larger than zero")
+#define STRING_UI_PHASE_FIX_GREEN_TIP           QObject::tr("Fix green time must larger than zero")
 #define STRING_UI_PHASE_ENABLE          QObject::tr("Enable this phase or not")
 
 #define STRING_UI_PHASE_MOTOR           QObject::tr("Motor phase")
@@ -353,6 +358,8 @@
 #define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
+#define STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED      QObject::tr("Export log file failed")
+#define STRING_UI_SIGNALER_EVENT_LOG_EXPORT_HTML_FAILED     QObject::tr("Export html file failed")
 
 #define STRING_UI_SIGNALER_EVENT_SOCKET_NULL    QObject::tr("Read socket data is null")
 #define STRING_UI_SIGNALER_EVENT_FAILED         QObject::tr("Get event log info failed")

@@ -38,14 +38,21 @@ private:
     void InitPage();
     void InitSignalSlots();
     void InitTree();
-    void UpdateTree(const QList<PhaseTiming>& plan_list);
     void InitContextMenu();
-
     QTreeWidgetItem *AddTreeTopLevelItem();
 
+    enum TimingErr
+    {
+        GreenLessYellow,
+        None
+    };
+
+    void UpdateTree(const QList<PhaseTiming>& plan_list);
     void UpdateUI();
     void UpdateSettingUI(unsigned char stage_id);
     void EnableSettingUI(bool enable);
+
+    TimingErr ValidateUI();
     bool SaveData();
     bool SaveRowData();
 
@@ -58,7 +65,6 @@ private:
 	unsigned char curr_stage_id_;
     PhasetimingHandler* handler_;
     QList<PhaseTiming> phase_timing_tmp_list_;
-
     QList<QCheckBox*> release_phase_id_list_;
 
 private:

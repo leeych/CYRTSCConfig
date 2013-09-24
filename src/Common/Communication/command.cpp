@@ -11,6 +11,9 @@ std::string Command::GetTSCtime = "GetTSCTime";
 std::string Command::GetNetAddress = "GetNetAddress";
 std::string Command::GetDetectInfo = "GetDetectInfo";
 std::string Command::GetDriverInfo = "GetDriveBoardInfo";
+
+std::string Command::ClearEventInfo = "ClearEventInfo";
+
 std::string Command::SetConfigure = "SetConfigure";
 std::string Command::ClearDetectInfo = "ClearDetectInfo";
 

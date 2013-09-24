@@ -18,6 +18,7 @@ MainWindow::~MainWindow()
 void MainWindow::OnConfigoptSlot(const QString &page_name)
 {
     ChangeTabPage(page_name);
+    curr_page_name_ = page_name;
 }
 
 void MainWindow::OnUpdateStatusBarSlot(const QString &file_name)
@@ -65,7 +66,7 @@ void MainWindow::OnCommunicationToolButtonClicked()
 void MainWindow::OnConfigurationToolButtonClicked()
 {
     left_splitter_->setVisible(true);
-    ChangeTabPage(STRING_UI_SCHEDULE_PLAN);
+//    ChangeTabPage(STRING_UI_SCHEDULE_PLAN);
 }
 
 void MainWindow::OnHelpToolButtonClicked()

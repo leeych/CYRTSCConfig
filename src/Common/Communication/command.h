@@ -19,6 +19,8 @@ public:
     static std::string GetDetectInfo;   // 9
     static std::string GetDriverInfo;   // 12
 
+    static std::string ClearEventInfo;
+
     static std::string SetConfigure;
     static std::string ClearDetectInfo;
 

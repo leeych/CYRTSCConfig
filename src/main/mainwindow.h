@@ -58,6 +58,7 @@ private:
 
 private:
     QMap<QString, QWidget*> tab_page_map_;
+    QString curr_page_name_;
 
 private:
     QLabel* tip_;
