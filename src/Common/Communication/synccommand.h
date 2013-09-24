@@ -23,14 +23,19 @@ public:
 
     void connectToHost(const QString &ip, unsigned int port);
     void disconnectFromHost();
+    void ReadTscVersion(QObject *target, const std::string &slot);
 
     void ReadSignalerConfigFile(QObject *target, const std::string &slot);
     void ReadSignalerTime(QObject *target, const std::string &slot);
     void ReadSignalerNetworkInfo(QObject *target, const std::string &slot);
+    void SyncSignalerTime(unsigned int seconds, QObject *target, const std::string &slot);
+    void ConfigNetwork(const QStringList &netinfo, QObject *target, const std::string &slot);
+
+    void SetConfiguration(QObject *target, const std::string &slot);
+    void SendConfigData(const char *content, QObject *target, const std::string &slot);
+
     void ReadEventLogFile(QObject *target, const std::string &slot);
     void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);
-
-    void ReadTscVersion(QObject *target, const std::string &slot);
 
 signals:
     void connectedSignal();

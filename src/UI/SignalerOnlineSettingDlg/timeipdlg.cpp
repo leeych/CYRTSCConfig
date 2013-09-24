@@ -35,7 +35,9 @@ void TimeIPDlg::OnReadSystimeButtonClicked()
 
 void TimeIPDlg::OnSyncTimeButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Sync time", STRING_OK);
+    QDateTime datetime = QDateTime::currentDateTime();
+    unsigned int seconds = datetime.toTime_t();
+    SyncCommand::GetInstance()->SyncSignalerTime(seconds, this, SLOT(OnCmdSyncSignalerTime(QByteArray&)));
 }
 
 void TimeIPDlg::OnRefreshButtonClicked()
@@ -46,7 +48,10 @@ void TimeIPDlg::OnRefreshButtonClicked()
 
 void TimeIPDlg::OnWriteIPButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Set signaler IP", STRING_OK);
+    QStringList param_list;
+    param_list << "0" << gateway_lineedit_->text().trimmed()
+               << ip_lineedit_->text().trimmed() << mask_lineedit_->text().trimmed();
+    SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
 }
 
 void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
@@ -102,6 +107,44 @@ void TimeIPDlg::OnCmdReadNetworkingInfo(QByteArray &content)
     EnableButtonExcept(true, NULL);
 }
 
+void TimeIPDlg::OnCmdSyncSignalerTime(QByteArray &array_content)
+{
+    if (array_content.isEmpty())
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SYNC_TIME_NULL + STRING_FAILED, STRING_OK);
+        return;
+    }
+    if (array_content == "TIMECFGOK")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SYNC_TIME + STRING_SUCCEEDED, STRING_OK);
+        return;
+    }
+    if (array_content == "TIMECFGER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SYNC_TIME + STRING_FAILED, STRING_OK);
+        return;
+    }
+}
+
+void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
+{
+    if (array_content.isEmpty())
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_NETWORK_CFG_NULL, STRING_OK);
+        return;
+    }
+    if (array_content == "NETSETOK")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_NETWORK + STRING_SUCCEEDED, STRING_OK);
+        return;
+    }
+    if (array_content == "NETSETER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_NETWORK + STRING_FAILED, STRING_OK);
+        return;
+    }
+}
+
 void TimeIPDlg::OnConnectEstablish()
 {
 }
@@ -114,7 +157,9 @@ void TimeIPDlg::OnConnectError(QAbstractSocket::SocketError)
 void TimeIPDlg::closeEvent(QCloseEvent *)
 {
     sys_time_text_label_->clear();
-//    socket_->abort();
+    ip_lineedit_->clear();
+    mask_lineedit_->clear();
+    gateway_lineedit_->clear();
 }
 
 void TimeIPDlg::InitPage()

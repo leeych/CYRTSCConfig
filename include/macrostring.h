@@ -11,6 +11,7 @@
 #define STRING_WARNING                  QObject::tr("Warning")
 #define STRING_OPEN                     QObject::tr("Open")
 #define STRING_FILE_NOT_EXISTS          QObject::tr("File not exists")
+#define STRING_FILE_OPEN                QObject::tr("Open file")
 
 #define STRING_SUCCEEDED                QObject::tr("succeeded")
 #define STRING_FAILED                   QObject::tr("failed")
@@ -339,10 +340,15 @@
 #define STRING_UI_SIGNALER_SYNC_TIME        QObject::tr("Sync time")
 #define STRING_UI_SIGNALER_REFRESH          QObject::tr("Refresh")
 #define STRING_UI_SIGNALER_WRITE_IP         QObject::tr("Set signaler IP")
+#define STRING_UI_SIGNALER_NETWORK          QObject::tr("Network configuration")
+#define STRING_UI_SIGNALER_SYNC_TIME_NULL   QObject::tr("Sync time return socket package is null")
+#define STRING_UI_SIGNALER_NETWORK_CFG_NULL   QObject::tr("Network configuration return package is null")
 
 #define STRING_UI_SIGNALER_READ_FILE_FAILED         QObject::tr("Read signaler configure file failed")
 #define STRING_UI_SIGNALER_READ_FILE_SUCCESS        QObject::tr("Read signaler configure file succeeded")
 #define STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED     QObject::tr("Save temp signaler configure file failed")
+#define STRING_UI_SIGNALER_SOCKET_ERROR     QObject::tr("Socket return package is null")
+#define STRING_UI_SIGNALER_CONFIG           QObject::tr("Configuration file send and set")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
 

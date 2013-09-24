@@ -85,6 +85,15 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
         return;
     }
     // TODO: send file to signaler
+    QFile file(file_name);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
+        return;
+    }
+    QByteArray array = file.readAll();
+    file.close();
+    SyncCommand::GetInstance()->SendConfigData(array.data(), this, SLOT(OnCmdSendConfig(QByteArray&)));
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
@@ -174,6 +183,29 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
             conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
         }
         config_byte_array_.clear();
+        return;
+    }
+}
+
+void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
+{
+}
+
+void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
+{
+    if (content.isEmpty())
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        return;
+    }
+    if (content == "CONFIGOK")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_SUCCEEDED, STRING_OK);
+        return;
+    }
+    if (content == "CONFIGER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_FAILED, STRING_OK);
         return;
     }
 }

@@ -54,6 +54,8 @@ public slots:
     // cmd call back
     void OnCmdGetVerId(QByteArray &content);
     void OnCmdReadConfig(QByteArray &content);
+    void OnCmdSetConfig(QByteArray &content);
+    void OnCmdSendConfig(QByteArray &content);
 
 protected:
     void timerEvent(QTimerEvent *);

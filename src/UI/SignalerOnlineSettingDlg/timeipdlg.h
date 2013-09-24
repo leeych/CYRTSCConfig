@@ -27,6 +27,9 @@ public slots:
     // cmd callback
     void OnCmdReadTscTime(QByteArray &array_content);
     void OnCmdReadNetworkingInfo(QByteArray &content);
+    void OnCmdSyncSignalerTime(QByteArray &array_content);
+    void OnCmdWriteIPAddress(QByteArray &array_content);
+
     void OnConnectEstablish();
     void OnConnectError(QAbstractSocket::SocketError);
 

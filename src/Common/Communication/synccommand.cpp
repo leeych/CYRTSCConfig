@@ -63,6 +63,34 @@ void SyncCommand::DeleteEventLog(const std::string &param, QObject *target, cons
     socket_->write((Command::ClearEventInfo + param).c_str());
 }
 
+void SyncCommand::SyncSignalerTime(unsigned int seconds, QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    char temp[11] = {'C','Y','T','7','\0','\0','\0','\0','E','N','D'};
+    memcpy(temp+4, &seconds, sizeof(seconds));
+    socket_->write(temp);
+}
+
+void SyncCommand::ConfigNetwork(const QStringList &net_info, QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    QString cmd_str("CYT8,DHCP=\"%1\",DefaultGateway=\"%2\",IPAddress=\"%3\",SubnetMask=\"%4\",END");
+    cmd_str.arg(net_info.at(0)).arg(net_info.at(1)).arg(net_info.at(2)).arg(net_info.at(3));
+    socket_->write(cmd_str.toStdString().c_str());
+}
+
+void SyncCommand::SetConfiguration(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::SetConfigure.c_str());
+}
+
+void SyncCommand::SendConfigData(const char *content, QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(content);
+}
+
 void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
