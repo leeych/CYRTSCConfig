@@ -57,9 +57,10 @@ void EventLogHandler::init_from_file(const QString &file_name)
         return;
     }
     QByteArray array = file.readAll();
-//    EventLog_t *loginfo = (*(static_cast<EventLog*>(array.data()))).log_info;
     EventLog_t loginfo;
-    memcpy(&loginfo, array.data(), sizeof(loginfo));
+    EventLog event_log;
+    memcpy(&event_log, array.data(), sizeof(loginfo));
+    memcpy(&loginfo, &event_log.log_info, sizeof(event_log.log_info));
     init(loginfo);
     file.close();
 }
