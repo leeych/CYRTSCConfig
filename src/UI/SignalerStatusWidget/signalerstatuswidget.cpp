@@ -113,6 +113,7 @@ void SignalerStatusWidget::OnAdvancedActionClicked()
 		return;
 	}
     QString ip = signaler_table_->item(row, 3)->text().trimmed();
+    ip = Trimmed(ip);
     unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
     signaler_online_dlg_->Initialize(ip, port);
 }
@@ -278,6 +279,16 @@ void SignalerStatusWidget::InitContextMenu()
                     "QMenu::item{background-color:transparent;color:#000000}"
                     "QMenu::item:selected{background-color:rgb(164,209,251);color:rgb(255,101,3)}";
     context_menu_->setStyleSheet(menu_qss);
+}
+
+QString SignalerStatusWidget::Trimmed(QString &str)
+{
+    int index = str.indexOf(" ");
+    if (index < 0)
+    {
+        return str;
+    }
+    return Trimmed(str);
 }
 
 QString SignalerStatusWidget::get_status_desc(SignalerParam::SignalerStatus status)
