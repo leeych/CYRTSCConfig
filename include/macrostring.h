@@ -22,7 +22,7 @@
 #define STRING_FONT_SONGTI              QObject::tr("Song ti")
 
 #define STRING_SYMBOL_ARROW             QObject::tr("->")
-#define STRING_DOWN_ARROW               QObject::tr("︾")
+#define STRING_DOWN_ARROW               QObject::tr("|")
 
 #define STRING_CONNECT_HOST_REFUSED     QObject::tr("Connected host refused")
 #define STRING_CONNECT_HOST_CLOSED      QObject::tr("Remote host closed")
