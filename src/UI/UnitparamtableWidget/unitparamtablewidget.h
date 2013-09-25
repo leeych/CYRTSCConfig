@@ -26,7 +26,7 @@ public:
 signals:
 
 public slots:
-    void OnOkButtonClicked();
+    bool OnOkButtonClicked();
     void OnCancelButtonClicked();
     void OnUpdateDataSlot();
     void OnInitDatabase(void *ptr);

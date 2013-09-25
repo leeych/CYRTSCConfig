@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTcpSocket>
+//#include <QStackedLayout>
 #include "signaleronlinesettingdlg_global.h"
 
 #include "mtabwidget.h"
@@ -48,6 +49,8 @@ public slots:
     void OnLogButtonClicked();
     void OnFlowButtonClicked();
     void OnSettingButtonClicked();
+    void OnSaveAsbuttonClicked();
+    void OnMoreButtonToggled(bool toggled);
 
     void OnConnectedSlot();
     void OnDisconnectedSlot();
@@ -91,6 +94,8 @@ private:
     QByteArray config_byte_array_;
 
 private:
+//    QStackedLayout *stk_layout_;
+    QWidget *more_widget_;
     MTabWidget *dialog_tab_;
 //    QTabWidget *dialog_tab_;
 
@@ -108,6 +113,7 @@ private:
     QPushButton *conn_button_, *read_button_, *update_button_;
     QPushButton *send_button_, *monitor_button_, *log_button_;
     QPushButton *flow_button_, *setting_button_;
+    QPushButton *saveas_button_, *more_button_;
 
     TimeIPDlg *time_ip_dlg_;
     DetectorFlowDlg *flow_dlg_;

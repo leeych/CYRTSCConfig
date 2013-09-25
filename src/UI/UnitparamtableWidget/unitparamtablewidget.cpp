@@ -30,16 +30,17 @@ const QString &UnitparamtableWidget::widget_name()
     return widget_name_;
 }
 
-void UnitparamtableWidget::OnOkButtonClicked()
+bool UnitparamtableWidget::OnOkButtonClicked()
 {
     if (!ValidateUI())
     {
-        return;
+        return false;
     }
 	if (SaveData())
 	{
 		handler_->save_data();
 	}
+    return true;
 }
 
 void UnitparamtableWidget::OnCancelButtonClicked()
@@ -276,12 +277,12 @@ bool UnitparamtableWidget::ValidateUI()
 {
     if (flash_time_spinbox_->value() < 10)
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_FLASH_TIME_ERR, STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_FLASH_TIME_ERR + QString::number(10) + " !", STRING_OK);
         return false;
     }
     if (all_red_time_spinbox_->value() < 5)
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_ALL_RED_TIME_ERR, STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_ALL_RED_TIME_ERR + QString::number(5) + " !", STRING_OK);
         return false;
     }
     return true;

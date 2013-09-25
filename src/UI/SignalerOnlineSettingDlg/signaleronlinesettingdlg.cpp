@@ -142,6 +142,45 @@ void SignalerOnlineSettingDlg::OnSettingButtonClicked()
     time_ip_dlg_->Initialize();
 }
 
+void SignalerOnlineSettingDlg::OnSaveAsbuttonClicked()
+{
+    bool u_status = unitparam_widget_->OnOkButtonClicked();
+    if (!u_status)
+    {
+        return;
+    }
+    schedule_widget_->OnSaveActionClicked();
+    timesection_widget_->OnSaveActionClicked();
+    stage_timing_widget_->OnSaveActionClicked();
+    timing_widget_->OnSaveActionClicked();
+    phase_err_widget_->OnSaveButtonClicked();
+    phase_widget_->OnSaveActionClicked();
+    channel_widget_->OnSaveActionClicked();
+    detector_widget_->OnSaveActionClicked();
+
+    QString file_name = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "user/config/cy_tsc.dat", "Data(*.dat);;All File(*.*)");
+    if (file_name.isNull() || file_name.isEmpty())
+    {
+        return;
+    }
+    FileReaderWriter writer;
+    writer.InitDatabase(db_ptr_);
+    bool status = writer.WriteFile(file_name.toStdString().c_str());
+    if (!status)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED, STRING_OK);
+    }
+    else
+    {
+        conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_SUCCESS);
+    }
+}
+
+void SignalerOnlineSettingDlg::OnMoreButtonToggled(bool toggled)
+{
+    more_widget_->setHidden(!toggled);
+}
+
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     UpdateConnectStatus(true);
@@ -149,7 +188,7 @@ void SignalerOnlineSettingDlg::OnConnectedSlot()
 //    if (ver_check_id_ == 0)
 //    {
 //        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
-    //    }
+//    }
 }
 
 void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
@@ -337,23 +376,49 @@ void SignalerOnlineSettingDlg::InitPage()
     flow_button_ = new QPushButton(STRING_UI_SIGNALER_FLOW_READ);
     setting_button_ = new QPushButton(STRING_UI_SIGNALER_SETTING);
 
+    saveas_button_ = new QPushButton(STRING_UI_SIGNALER_SAVEAS);
+
+    more_button_ = new QPushButton(STRING_DOWN_ARROW);
+    more_button_->setCheckable(true);
+
     QHBoxLayout *button_hlayout = new QHBoxLayout;
-    button_hlayout->addStretch(1);
     button_hlayout->addWidget(conn_button_);
-    button_hlayout->addWidget(read_button_);
-    button_hlayout->addWidget(update_button_);
-    button_hlayout->addWidget(send_button_);
-    button_hlayout->addWidget(monitor_button_);
-    button_hlayout->addWidget(log_button_);
-    button_hlayout->addWidget(flow_button_);
-    button_hlayout->addWidget(setting_button_);
     button_hlayout->addStretch(1);
+    button_hlayout->addWidget(read_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(update_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(saveas_button_);
+    button_hlayout->addStretch(1);
+    button_hlayout->addWidget(more_button_);
+
+    more_widget_ = new QWidget(this);
+    QHBoxLayout *more_hlayout = new QHBoxLayout;
+    more_hlayout->addWidget(send_button_);
+    more_hlayout->addStretch(1);
+    more_hlayout->addWidget(monitor_button_);
+    more_hlayout->addStretch(1);
+    more_hlayout->addWidget(setting_button_);
+    more_hlayout->addStretch(1);
+    more_hlayout->addWidget(log_button_);
+    more_hlayout->addStretch(1);
+    more_hlayout->addWidget(flow_button_);
+    more_hlayout->setSpacing(0);
+    more_hlayout->setMargin(0);
+
+    more_widget_->setLayout(more_hlayout);
+    more_widget_->hide();
+
+    QVBoxLayout *button_vlayout = new QVBoxLayout;
+    button_vlayout->addLayout(button_hlayout);
+    button_vlayout->addWidget(more_widget_);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addWidget(dialog_tab_);
-    vlayout->addLayout(button_hlayout);
-    conn_tip_label_ = new QLabel;
+    vlayout->addLayout(button_vlayout);
+    conn_tip_label_ = new QLabel(this);
     vlayout->addWidget(conn_tip_label_);
+    vlayout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(vlayout);
 
     setWindowFlags(windowFlags() & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);
@@ -369,6 +434,9 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(log_button_, SIGNAL(clicked()), this, SLOT(OnLogButtonClicked()));
     connect(flow_button_, SIGNAL(clicked()), this, SLOT(OnFlowButtonClicked()));
     connect(setting_button_, SIGNAL(clicked()), this, SLOT(OnSettingButtonClicked()));
+
+    connect(saveas_button_, SIGNAL(clicked()), this, SLOT(OnSaveAsbuttonClicked()));
+    connect(more_button_, SIGNAL(toggled(bool)), this, SLOT(OnMoreButtonToggled(bool)));
 
     connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
 
@@ -446,11 +514,12 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
     log_button_->setEnabled(enable);
     flow_button_->setEnabled(enable);
     setting_button_->setEnabled(enable);
+    saveas_button_->setEnabled(enable);
+    more_button_->setEnabled(enable);
 }
 
 void SignalerOnlineSettingDlg::UpdateTabPage()
 {
-//    db_ptr_ = new MDatabase;
     FileReaderWriter param_reader;
     param_reader.InitDatabase(db_ptr_);
     if (!param_reader.ReadFile(cfg_file_.toStdString().c_str()))

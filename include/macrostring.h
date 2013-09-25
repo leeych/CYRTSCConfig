@@ -21,6 +21,9 @@
 #define STRING_GATEWAY                  QObject::tr("Gateway")
 #define STRING_FONT_SONGTI              QObject::tr("Song ti")
 
+#define STRING_SYMBOL_ARROW             QObject::tr("->")
+#define STRING_DOWN_ARROW               QObject::tr("︾")
+
 #define STRING_CONNECT_HOST_REFUSED     QObject::tr("Connected host refused")
 #define STRING_CONNECT_HOST_CLOSED      QObject::tr("Remote host closed")
 #define STRING_CONNECT_HOST_NOTFIND     QObject::tr("Host not found")
@@ -76,8 +79,6 @@
 #define STRING_UI_OPEN_FILE             QObject::tr("Open file")
 #define STRING_UI_NEW_FILE              QObject::tr("New file")
 #define STRING_UI_DELETE_FILE           QObject::tr("Delete file from disk failed.")
-
-#define STRING_SYMBOL_ARROW             QObject::tr("->")
 
 #define STRING_MAIN_TITLE				QObject::tr("ChaoYuan centralize coordinate traffic siganler setting")
 #define STRING_MAIN_COMMUNICATION       QObject::tr("Communication")
@@ -348,6 +349,8 @@
 #define STRING_UI_SIGNALER_FLOW_READ        QObject::tr("Read flow")
 #define STRING_UI_SIGNALER_SETTING          QObject::tr("Settings")
 #define STRING_UI_SIGNALER_SAVE_FAILED	    QObject::tr("Save Failed")
+#define STRING_UI_SIGNALER_SAVE_SUCCESS     QObject::tr("Save Succeeded")
+#define STRING_UI_SIGNALER_SAVEAS           QObject::tr("Plan save as ...")
 
 #define STRING_UI_SIGNALER_TIP_CONNECT      QObject::tr("Connected to the signaler")
 #define STRING_UI_SIGNALER_TIP_VERCHECK     QObject::tr("TCP connected succeeded, check version now")
