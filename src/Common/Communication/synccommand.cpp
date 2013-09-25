@@ -85,10 +85,10 @@ void SyncCommand::SetConfiguration(QObject *target, const std::string &slot)
     socket_->write(Command::SetConfigure.c_str());
 }
 
-void SyncCommand::SendConfigData(const char *content, QObject *target, const std::string &slot)
+void SyncCommand::SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
-    socket_->write(content);
+    socket_->write(byte_array);
 }
 
 void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)

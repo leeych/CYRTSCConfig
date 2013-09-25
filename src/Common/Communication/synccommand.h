@@ -32,7 +32,7 @@ public:
     void ConfigNetwork(const QStringList &netinfo, QObject *target, const std::string &slot);
 
     void SetConfiguration(QObject *target, const std::string &slot);
-    void SendConfigData(const char *content, QObject *target, const std::string &slot);
+    void SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot);
 
     void ReadEventLogFile(QObject *target, const std::string &slot);
     void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);

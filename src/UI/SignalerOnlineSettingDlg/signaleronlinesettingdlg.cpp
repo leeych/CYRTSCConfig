@@ -69,7 +69,17 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Update", STRING_OK);
+    // TODO: send file to signaler
+    QString file_name("user/config/" + ip_ + ".dat");
+    QFile file(file_name);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
+        return;
+    }
+    QByteArray array = file.readAll();
+    file.close();
+    SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
 }
 
 void SignalerOnlineSettingDlg::OnSendButtonClicked()
@@ -93,7 +103,7 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
     }
     QByteArray array = file.readAll();
     file.close();
-    SyncCommand::GetInstance()->SendConfigData(array.data(), this, SLOT(OnCmdSendConfig(QByteArray&)));
+    SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
