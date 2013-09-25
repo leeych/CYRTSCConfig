@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QTcpSocket>
+#include <QMap>
 
 #define CONNECT_WAIT_TIME   (2000)
 #define WRITE_WAIT_TIME     (30000)
@@ -19,6 +20,7 @@ class SyncCommand : public QObject
 
 public:
     static SyncCommand *GetInstance();
+    void DistroyInstance();
     QTcpSocket *getSocket();
 
     void connectToHost(const QString &ip, unsigned int port);
@@ -40,7 +42,7 @@ public:
 signals:
     void connectedSignal();
     void connectErrorSignal();
-    void connectErrorStrSignal(QString);
+    void connectErrorStrSignal(const QString&);
     void disconnectedSignal();
 
     void readyRead(QByteArray &content);
@@ -60,6 +62,7 @@ private:
     void RegParseHandler();
     void UnRegParseHandler();
     void InitParseHandler(QObject *target, const std::string &slot);
+    void GenConnectErrDesc();
 
 private:
     SyncCommand(QObject *parent = 0);
@@ -74,6 +77,8 @@ private:
 
     QObject *target_obj_;
     std::string slot_;
+
+    QMap<QAbstractSocket::SocketError, QString> socket_err_desc_;
 };
 
 #endif // SYNCCOMMAND_H

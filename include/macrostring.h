@@ -21,6 +21,27 @@
 #define STRING_GATEWAY                  QObject::tr("Gateway")
 #define STRING_FONT_SONGTI              QObject::tr("Song ti")
 
+#define STRING_CONNECT_HOST_REFUSED     QObject::tr("Connected host refused")
+#define STRING_CONNECT_HOST_CLOSED      QObject::tr("Remote host closed")
+#define STRING_CONNECT_HOST_NOTFIND     QObject::tr("Host not found")
+#define STRING_CONNECT_SOCK_ACCESS_ERR  QObject::tr("Socket access error")
+#define STRING_CONNECT_SOCK_RESOURCE_E  QObject::tr("Socket resource error")
+#define STRING_CONNECT_SOCK_TIMEOUT     QObject::tr("Socket timeout error")
+#define STRING_CONNECT_DATA_TOO_LARGE   QObject::tr("Datagram is too large")
+#define STRING_CONNECT_NETWORK_ERR      QObject::tr("Network error")
+#define STRING_CONNECT_ADDRESS_INUSE    QObject::tr("Address is in use")
+#define STRING_CONNECT_ADDR_NOT_ABLE    QObject::tr("Socket address not available")
+#define STRING_CONNECT_UNSUPPORTED     QObject::tr("Unsupported socket operation")
+#define STRING_CONNECT_UNFINISHED       QObject::tr("Unfinished socket operation")
+#define STRING_CONNECT_PROXY_AUTH       QObject::tr("Proxy authentication required")
+#define STRING_CONNECT_SSL_ERROR        QObject::tr("SSL handshake failed")
+#define STRING_CONNECT_PROXY_REFUSED    QObject::tr("Proxy connection refused")
+#define STRING_CONNECT_PROXY_CLOSED     QObject::tr("Proxy connection closed")
+#define STRING_CONNECT_PROXY_TIMEOUT    QObject::tr("Proxy connection timeout")
+#define STRING_CONNECT_PROXY_NOTFIND    QObject::tr("Proxy not found")
+#define STRING_CONNECT_PROXY_PROTOCOL   QObject::tr("Proxy protocol error")
+#define STRING_CONNECT_UNKNOWN          QObject::tr("Unknown error")
+
 #define STRING_UI_ADD                   QObject::tr("Add")
 #define STRING_UI_EDIT                  QObject::tr("Edit")
 #define STRING_UI_DELETE                QObject::tr("Delete")
@@ -330,6 +351,10 @@
 #define STRING_UI_SIGNALER_TIP_DISCONN      QObject::tr("Disconnected from the signaler")
 #define STRING_UI_SIGNALER_TIP_VERERROR     QObject::tr("Signaler version incorrect")
 
+#define STRING_UI_SIGNALER_CONNECTING_TIP   QObject::tr("Connecting ...")
+#define STRING_UI_SIGNALER_CONN_REJECT      QObject::tr("Connection was rejected by host")
+#define STRING_UI_SIGNALER_CONN_NONE        QObject::tr("Has not connected")
+
 #define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
 
 #define STRING_UI_SIGNALER_TIME_NETWORK_TITLE       QObject::tr("Signaler Time-Network setting")
@@ -346,6 +371,7 @@
 
 #define STRING_UI_SIGNALER_READ_FILE_FAILED         QObject::tr("Read signaler configure file failed")
 #define STRING_UI_SIGNALER_READ_FILE_SUCCESS        QObject::tr("Read signaler configure file succeeded")
+#define STRING_UI_SIGNALER_PARSE_FILE_CONFIG        QObject::tr("Parse signaler configuration file")
 #define STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED     QObject::tr("Save temp signaler configure file failed")
 #define STRING_UI_SIGNALER_SOCKET_ERROR     QObject::tr("Socket return package is null")
 #define STRING_UI_SIGNALER_CONFIG           QObject::tr("Configuration file send and set")

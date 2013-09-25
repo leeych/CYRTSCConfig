@@ -131,6 +131,7 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
     if (col == 1)
     {
         QString ip = signaler_table_->item(row, 3)->text().trimmed();
+        ip = Trimmed(ip);
         unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
         signaler_online_dlg_->Initialize(ip, port);
         return;

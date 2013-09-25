@@ -1,6 +1,7 @@
 #include "synccommand.h"
 #include "request.h"
 #include "command.h"
+#include "macrostring.h"
 
 SyncCommand *SyncCommand::instance_ = NULL;
 
@@ -11,6 +12,11 @@ SyncCommand *SyncCommand::GetInstance()
         instance_ = new SyncCommand;
     }
     return instance_;
+}
+
+void SyncCommand::DistroyInstance()
+{
+    this->~SyncCommand();
 }
 
 QTcpSocket *SyncCommand::getSocket()
@@ -110,8 +116,8 @@ void SyncCommand::OnDisconnected()
 
 void SyncCommand::OnConnectError(QAbstractSocket::SocketError err)
 {
-    Q_UNUSED(err);
     emit connectErrorSignal();
+    emit connectErrorStrSignal(socket_err_desc_.value(err));
 }
 
 void SyncCommand::parseReply()
@@ -134,6 +140,30 @@ void SyncCommand::socketReadyReadSlot()
     emit readyRead(sock_array_);
 }
 
+void SyncCommand::GenConnectErrDesc()
+{
+    socket_err_desc_.insert(QAbstractSocket::ConnectionRefusedError, STRING_CONNECT_HOST_REFUSED);
+    socket_err_desc_.insert(QAbstractSocket::RemoteHostClosedError, STRING_CONNECT_HOST_CLOSED);
+    socket_err_desc_.insert(QAbstractSocket::HostNotFoundError, STRING_CONNECT_HOST_NOTFIND);
+    socket_err_desc_.insert(QAbstractSocket::SocketAccessError, STRING_CONNECT_SOCK_ACCESS_ERR);
+    socket_err_desc_.insert(QAbstractSocket::SocketResourceError, STRING_CONNECT_SOCK_RESOURCE_E);
+    socket_err_desc_.insert(QAbstractSocket::SocketTimeoutError, STRING_CONNECT_SOCK_TIMEOUT);
+    socket_err_desc_.insert(QAbstractSocket::DatagramTooLargeError, STRING_CONNECT_DATA_TOO_LARGE);
+    socket_err_desc_.insert(QAbstractSocket::NetworkError, STRING_CONNECT_NETWORK_ERR);
+    socket_err_desc_.insert(QAbstractSocket::AddressInUseError, STRING_CONNECT_ADDRESS_INUSE);
+    socket_err_desc_.insert(QAbstractSocket::SocketAddressNotAvailableError, STRING_CONNECT_ADDR_NOT_ABLE);
+    socket_err_desc_.insert(QAbstractSocket::UnsupportedSocketOperationError, STRING_CONNECT_UNSUPPORTED);
+    socket_err_desc_.insert(QAbstractSocket::UnfinishedSocketOperationError, STRING_CONNECT_UNFINISHED);
+    socket_err_desc_.insert(QAbstractSocket::ProxyAuthenticationRequiredError, STRING_CONNECT_PROXY_AUTH);
+    socket_err_desc_.insert(QAbstractSocket::SslHandshakeFailedError, STRING_CONNECT_SSL_ERROR);
+    socket_err_desc_.insert(QAbstractSocket::ProxyConnectionRefusedError, STRING_CONNECT_PROXY_REFUSED);
+    socket_err_desc_.insert(QAbstractSocket::ProxyConnectionClosedError, STRING_CONNECT_PROXY_CLOSED);
+    socket_err_desc_.insert(QAbstractSocket::ProxyConnectionTimeoutError, STRING_CONNECT_PROXY_TIMEOUT);
+    socket_err_desc_.insert(QAbstractSocket::ProxyNotFoundError, STRING_CONNECT_PROXY_NOTFIND);
+    socket_err_desc_.insert(QAbstractSocket::ProxyProtocolError, STRING_CONNECT_PROXY_PROTOCOL);
+    socket_err_desc_.insert(QAbstractSocket::UnknownSocketError, STRING_CONNECT_UNKNOWN);
+}
+
 SyncCommand::SyncCommand(QObject *parent) :
     QObject(parent)
 {
@@ -144,6 +174,8 @@ SyncCommand::SyncCommand(QObject *parent) :
     connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnConnectError(QAbstractSocket::SocketError)));
     connect(socket_, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
     connect(socket_, SIGNAL(readyRead()), this, SLOT(socketReadyReadSlot()));
+
+    GenConnectErrDesc();
 }
 
 SyncCommand::~SyncCommand()

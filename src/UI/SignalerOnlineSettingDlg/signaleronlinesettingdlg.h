@@ -78,12 +78,14 @@ private:
     SyncCommand *sync_cmd_;
     EventLogHandler *handler_;
     QString ip_;
+    QString cfg_file_;
     unsigned int port_;
     bool conn_status_;
     QTcpSocket *socket_;
 
     bool is_ver_correct_;
     int ver_check_id_;  // check version
+    int ui_lock_id_;    // enable ui except for buttons
 
     QByteArray config_byte_array_;
 

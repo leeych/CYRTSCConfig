@@ -11,6 +11,8 @@ QT       -= gui
 TARGET = Communication
 TEMPLATE = lib
 
+INCLUDEPATH += $$PWD/../../../include/
+
 DESTDIR = $$PWD/../../../lib/
 
 DEFINES += COMMUNICATION_LIBRARY

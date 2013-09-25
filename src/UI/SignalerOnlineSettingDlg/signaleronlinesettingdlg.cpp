@@ -26,7 +26,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     conn_status_ = false;
     is_ver_correct_ = false;
     ver_check_id_ = 0;
-    db_ptr_ = NULL;
+    db_ptr_ = new MDatabase;
 
     InitPage();
     InitSignalSlots();
@@ -34,12 +34,27 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
 
 SignalerOnlineSettingDlg::~SignalerOnlineSettingDlg()
 {
+    if (handler_ != NULL)
+    {
+        delete handler_;
+        handler_ = NULL;
+    }
+    if (db_ptr_ != NULL)
+    {
+        delete db_ptr_;
+        db_ptr_ = NULL;
+    }
+    if (sync_cmd_ != NULL)
+    {
+        sync_cmd_->DistroyInstance();
+    }
 }
 
 void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
 {
     ip_ = ip;
     port_ = port;
+    cfg_file_ = "user/config/" + ip_ + ".dat";
     UpdateUI();
     exec();
 }
@@ -58,6 +73,7 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     else
     {
         sync_cmd_->connectToHost(ip_, port_);
+        conn_tip_label_->setText(STRING_UI_SIGNALER_CONNECTING_TIP);
     }
 }
 
@@ -69,9 +85,7 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 {
-    // TODO: send file to signaler
-    QString file_name("user/config/" + ip_ + ".dat");
-    QFile file(file_name);
+    QFile file(cfg_file_);
     if (!file.open(QIODevice::ReadOnly))
     {
         QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
@@ -80,6 +94,8 @@ void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
     QByteArray array = file.readAll();
     file.close();
     SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
+    UpdateButtonStatus(false);
+    ui_lock_id_ = startTimer(READ_WAIT_TIME);
 }
 
 void SignalerOnlineSettingDlg::OnSendButtonClicked()
@@ -133,12 +149,11 @@ void SignalerOnlineSettingDlg::OnConnectedSlot()
 //    if (ver_check_id_ == 0)
 //    {
 //        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
-//    }
+    //    }
 }
 
 void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
 {
-    qDebug() << "on cmd ready read";
     char ver[12] = {'\0'};
     memcpy(ver, content.data(), 11);
     if (strcmp(ver, "CYT0V100END") != 0)
@@ -163,12 +178,11 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
-    QString file_name = "user/config/" + ip_ + ".dat";
     if (content.isEmpty())
     {
         conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
         config_byte_array_.clear();
-        QFile::remove(file_name);
+        QFile::remove(cfg_file_);
         return;
     }
     config_byte_array_.append(content);
@@ -178,24 +192,28 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     }
 
     bool status = ParseConfigArray(config_byte_array_);
+    conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
     if (status)
     {
         TSCParam tscparam;
         memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
         FileReaderWriter writer;
-        bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
+        bool status = writer.WriteFile(tscparam, cfg_file_.toStdString().c_str());
         if (!status)
         {
             conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
-            QFile::remove(file_name);
+            QFile::remove(cfg_file_);
+        }
+        else
+        {
+            UpdateTabPage();
         }
     }
     else
     {
-        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
-        UpdateTabPage();
-        // TODO: update tab page
+        conn_tip_label_->setText(STRING_UI_SIGNALER_PARSE_FILE_CONFIG);
+//        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
     }
     config_byte_array_.clear();
 }
@@ -205,19 +223,27 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
     if (content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
     if (content.length() != 8)
     {
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
     if (content == "CONFIGYS")
     {
-        QString file_name("user/config/" + ip_ + ".dat");
-        QFile file(file_name);
+        QFile file(cfg_file_);
         if (!file.open(QIODevice::ReadOnly))
         {
             QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
+            killTimer(ui_lock_id_);
+            ui_lock_id_ = 0;
+            UpdateButtonStatus(true);
             return;
         }
         QByteArray array = file.readAll();
@@ -229,6 +255,9 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
     if (content == "CONFIGNO")
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG_BUSY_WAIT, STRING_OK);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
 }
@@ -238,20 +267,32 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
     if (content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
     if (content.length() < 8)
     {
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
     if (content == "CONFIGOK")
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_SUCCEEDED, STRING_OK);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
     if (content == "CONFIGER")
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_FAILED, STRING_OK);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
         return;
     }
 }
@@ -261,6 +302,12 @@ void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
     if (ver_check_id_ != 0)
     {
         OnConnectedSlot();
+    }
+    else if (ui_lock_id_ != 0)
+    {
+        UpdateButtonStatus(true);
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
     }
 }
 
@@ -308,6 +355,8 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(log_button_, SIGNAL(clicked()), this, SLOT(OnLogButtonClicked()));
     connect(flow_button_, SIGNAL(clicked()), this, SLOT(OnFlowButtonClicked()));
     connect(setting_button_, SIGNAL(clicked()), this, SLOT(OnSettingButtonClicked()));
+
+    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
 
     // tab page slots
     connect(this, SIGNAL(updateTabPageSignal(void *)), unitparam_widget_, SLOT(OnInitDatabase(void*)));
@@ -387,11 +436,10 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
 
 void SignalerOnlineSettingDlg::UpdateTabPage()
 {
-    QString file_name("user/config/" + ip_ + ".dat");
-    db_ptr_ = new MDatabase;
+//    db_ptr_ = new MDatabase;
     FileReaderWriter param_reader;
     param_reader.InitDatabase(db_ptr_);
-    if (!param_reader.ReadFile(file_name.toStdString().c_str()))
+    if (!param_reader.ReadFile(cfg_file_.toStdString().c_str()))
     {
         return;
     }
@@ -427,18 +475,20 @@ void SignalerOnlineSettingDlg::UpdateTabPage()
 
 bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)
 {
-    char *header = byte_array.left(4).data();
-    char tail[4] = {'\0'};
-    memcpy(tail, byte_array.right(3).data(), sizeof(byte_array.right(3).data()));
-    if ((strncmp(header, "CTY4", sizeof("CTY4")) != 0) || (strncmp(tail, "END", sizeof("END")) != 0))
+    QString header(byte_array.left(4));
+    QString tail(byte_array.right(3));
+    if (header != QString("CYT4") || tail != QString("END"))
     {
         return false;
     }
     byte_array.remove(0, 4);    // remove "CTY4"
-    unsigned int len = 0;
+    qDebug() << byte_array.left(4);
+    unsigned int len = byte_array.left(4).toUInt();
     memcpy(&len, byte_array.left(4).data(), 4);
     byte_array.remove(0, 4);    // remove content length
     int index = byte_array.indexOf("END");
+    qDebug() << byte_array.right(3);
     byte_array.remove(index, sizeof("END"));
+    qDebug() << byte_array.right(3);
     return true;
 }
