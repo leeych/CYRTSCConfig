@@ -349,6 +349,7 @@
 #define STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED     QObject::tr("Save temp signaler configure file failed")
 #define STRING_UI_SIGNALER_SOCKET_ERROR     QObject::tr("Socket return package is null")
 #define STRING_UI_SIGNALER_CONFIG           QObject::tr("Configuration file send and set")
+#define STRING_UI_SIGNALER_CONFIG_BUSY_WAIT         QObject::tr("Signaler is busy, wait for a while and retry later")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
 

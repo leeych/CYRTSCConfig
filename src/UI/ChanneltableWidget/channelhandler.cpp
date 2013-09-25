@@ -13,10 +13,20 @@ ChannelHandler::~ChannelHandler()
 {
 }
 
+void ChannelHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void ChannelHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void ChannelHandler::init()
 {
     channel_list_ = db_->get_channel_table();
-	qSort(channel_list_.begin(), channel_list_.end(), channel_less_than);
+    qSort(channel_list_.begin(), channel_list_.end(), channel_less_than);
 }
 
 unsigned char ChannelHandler::get_current_channel_id()

@@ -11,6 +11,16 @@ FileReaderWriter::~FileReaderWriter()
 {
 }
 
+void FileReaderWriter::InitDatabase(MDatabase *db_ptr)
+{
+    db_ = db_ptr;
+}
+
+void FileReaderWriter::ResetDatabase()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 bool FileReaderWriter::ReadFile(const char* file_path)
 {
 	open_file_path_ = std::string(file_path);

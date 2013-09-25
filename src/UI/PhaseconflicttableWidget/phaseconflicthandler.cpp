@@ -9,6 +9,16 @@ PhaseconflictHandler::~PhaseconflictHandler()
 {
 }
 
+void PhaseconflictHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void PhaseconflictHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void PhaseconflictHandler::init()
 {
     phase_conflict_list_ = db_->get_phase_conflict_table();

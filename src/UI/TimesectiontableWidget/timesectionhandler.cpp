@@ -11,6 +11,16 @@ TimesectionHandler::~TimesectionHandler()
 {
 }
 
+void TimesectionHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void TimesectionHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void TimesectionHandler::init()
 {
     time_section_event_list_ = db_->get_timesection_table();

@@ -14,6 +14,9 @@ public:
     PhasetimingHandler();
     ~PhasetimingHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     bool is_phasetiming_exists(unsigned char phase_timing_id, unsigned char stage_id);

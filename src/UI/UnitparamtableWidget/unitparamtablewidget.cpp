@@ -48,6 +48,11 @@ void UnitparamtableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void UnitparamtableWidget::OnInitDatabase(void *ptr)
+{
+    handler_->init_database(ptr);
+}
+
 void UnitparamtableWidget::InitPage()
 {
     // QLabel* signaler_ip_label = new QLabel(STRING_UI_UNIT_SIGNAL_IP + ":");

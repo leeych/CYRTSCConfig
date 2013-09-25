@@ -32,8 +32,9 @@ public slots:
     void OnTableCellDoubleClicked(int row, int col);
     void OnUpdateTableRowSlot(unsigned char id);
     void OnUpdateDataSlot();
-
     void OnUpdateTimingCycleSlot();
+
+    void OnInitDatabase(void *db_ptr);
 
 protected:
     void resizeEvent(QResizeEvent *);

@@ -10,6 +10,16 @@ PhasetimingHandler::~PhasetimingHandler()
 {
 }
 
+void PhasetimingHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void PhasetimingHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void PhasetimingHandler::init()
 {
     timing_list_ = db_->get_timeconfig_table();

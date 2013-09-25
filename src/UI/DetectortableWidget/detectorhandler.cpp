@@ -4,28 +4,20 @@
 DetectorHandler::DetectorHandler()
 {
     db_ = MDatabase::GetInstance();
-
-    //detector_type_map_.insert(0x080, STRING_UI_DETECTOR_REQUEST);
-    //detector_type_map_.insert(0x040, STRING_UI_DETECTOR_INDUCTION);
-    //detector_type_map_.insert(0x020, STRING_UI_DETECTOR_TACTICS);
-    //detector_type_map_.insert(0x010, STRING_UI_DETECTOR_STRATEGY);
-    //detector_type_map_.insert(0x008, STRING_UI_DETECTOR_MAN);
-    //detector_type_map_.insert(0x004, STRING_UI_DETECTOR_BUS);
-    //detector_type_map_.insert(0x002, STRING_UI_DETECTOR_BIKE);
-    //detector_type_map_.insert(0x001, STRING_UI_DETECTOR_MOTOR);
-
-    //detector_direction_map_.insert(0x080, STRING_UI_CHANNEL_NORTH_WEST);
-    //detector_direction_map_.insert(0x040, STRING_UI_CHANNEL_WEST);
-    //detector_direction_map_.insert(0x020, STRING_UI_CHANNEL_SOUTH_WEST);
-    //detector_direction_map_.insert(0x010, STRING_UI_CHANNEL_SOUTH);
-    //detector_direction_map_.insert(0x008, STRING_UI_CHANNEL_SOUTH_EAST);
-    //detector_direction_map_.insert(0x004, STRING_UI_CHANNEL_EAST);
-    //detector_direction_map_.insert(0x002, STRING_UI_CHANNEL_NORTH_EAST);
-    //detector_direction_map_.insert(0x001, STRING_UI_CHANNEL_NORTH);
 }
 
 DetectorHandler::~DetectorHandler()
 {
+}
+
+void DetectorHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void DetectorHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
 }
 
 void DetectorHandler::init()

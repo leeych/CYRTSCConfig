@@ -12,8 +12,10 @@ public:
     ChannelHandler();
     ~ChannelHandler();
 
-    void init();
+    void init_database(void *db_ptr);
+    void reset_database();
 
+    void init();
     unsigned char get_current_channel_id();
     bool get_channel(unsigned char channel_id, ChannelParam&);
     void set_channel(unsigned char channel_id, const ChannelParam& channel);

@@ -9,6 +9,9 @@ public:
     UnitparamHandler();
     ~UnitparamHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     bool get_unitparam(Unit_t &unitparam);

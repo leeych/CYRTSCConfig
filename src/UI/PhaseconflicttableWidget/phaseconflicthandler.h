@@ -10,6 +10,9 @@ public:
     PhaseconflictHandler();
     ~PhaseconflictHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     void set_phase_conflict(unsigned char phase_id, unsigned int conflict_ids);

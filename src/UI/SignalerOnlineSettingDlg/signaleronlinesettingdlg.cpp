@@ -16,17 +16,17 @@
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     : QDialog(parent)
 {
-    conn_status_ = false;
     sync_cmd_ = SyncCommand::GetInstance();
     handler_ = new EventLogHandler;
-
     time_ip_dlg_ = new TimeIPDlg(this);
     flow_dlg_ = new DetectorFlowDlg(this);
     event_log_dlg_ = new EventLogDlg(this);
     monitor_dlg_ = new RealtimeMonitorDlg(this);
 
+    conn_status_ = false;
     is_ver_correct_ = false;
     ver_check_id_ = 0;
+    db_ptr_ = NULL;
 
     InitPage();
     InitSignalSlots();
@@ -153,7 +153,7 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
-    QString file_name = "user/tmp/" + ip_ + ".dat";
+    QString file_name = "user/config/" + ip_ + ".dat";
     if (content.isEmpty())
     {
         conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
@@ -162,33 +162,65 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         return;
     }
     config_byte_array_.append(content);
-    if (config_byte_array_.right(3).endsWith("END"))
+    if (!config_byte_array_.right(3).endsWith("END"))
     {
-        bool status = ParseConfigArray(config_byte_array_);
-        if (status)
-        {
-            TSCParam tscparam;
-            memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
-            FileReaderWriter writer;
-            bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
-            if (!status)
-            {
-                conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
-                QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
-                QFile::remove(file_name);
-            }
-        }
-        else
-        {
-            conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
-        }
-        config_byte_array_.clear();
         return;
     }
+
+    bool status = ParseConfigArray(config_byte_array_);
+    if (status)
+    {
+        TSCParam tscparam;
+        memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
+        FileReaderWriter writer;
+        bool status = writer.WriteFile(tscparam, file_name.toStdString().c_str());
+        if (!status)
+        {
+            conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
+            QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+            QFile::remove(file_name);
+        }
+    }
+    else
+    {
+        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
+        UpdateTabPage();
+        // TODO: update tab page
+    }
+    config_byte_array_.clear();
 }
 
 void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
 {
+    if (content.isEmpty())
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        return;
+    }
+    if (content.length() != 8)
+    {
+        return;
+    }
+    if (content == "CONFIGYS")
+    {
+        QString file_name("user/config/" + ip_ + ".dat");
+        QFile file(file_name);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
+            return;
+        }
+        QByteArray array = file.readAll();
+        file.close();
+
+        SyncCommand::GetInstance()->SendConfigData(array.data(), this, SLOT(OnCmdSendConfig(QByteArray&)));
+        return;
+    }
+    if (content == "CONFIGNO")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG_BUSY_WAIT, STRING_OK);
+        return;
+    }
 }
 
 void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
@@ -196,6 +228,10 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
     if (content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        return;
+    }
+    if (content.length() < 8)
+    {
         return;
     }
     if (content == "CONFIGOK")
@@ -262,6 +298,17 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(log_button_, SIGNAL(clicked()), this, SLOT(OnLogButtonClicked()));
     connect(flow_button_, SIGNAL(clicked()), this, SLOT(OnFlowButtonClicked()));
     connect(setting_button_, SIGNAL(clicked()), this, SLOT(OnSettingButtonClicked()));
+
+    // tab page slots
+    connect(this, SIGNAL(updateTabPageSignal(void *)), unitparam_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), schedule_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), timesection_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), timing_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), stage_timing_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), phase_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), phase_err_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), channel_widget_, SLOT(OnInitDatabase(void*)));
+    connect(this, SIGNAL(updateTabPageSignal(void *)), detector_widget_, SLOT(OnInitDatabase(void*)));
 }
 
 void SignalerOnlineSettingDlg::InitTabPage()
@@ -326,6 +373,46 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
     log_button_->setEnabled(enable);
     flow_button_->setEnabled(enable);
     setting_button_->setEnabled(enable);
+}
+
+void SignalerOnlineSettingDlg::UpdateTabPage()
+{
+    QString file_name("user/config/" + ip_ + ".dat");
+    db_ptr_ = new MDatabase;
+    FileReaderWriter param_reader;
+    param_reader.InitDatabase(db_ptr_);
+    if (!param_reader.ReadFile(file_name.toStdString().c_str()))
+    {
+        return;
+    }
+    emit updateTabPageSignal((void *)db_ptr_);
+
+    unitparam_widget_->OnUpdateDataSlot();
+    unitparam_widget_->UpdateUI();
+
+    schedule_widget_->OnUpdateDataSlot();
+    schedule_widget_->UpdateTable();
+
+    timesection_widget_->OnUpdateDataSlot();
+    timesection_widget_->UpdateTree();
+
+    timing_widget_->OnUpdateDataSlot();
+    timing_widget_->UpdateTable();
+
+    stage_timing_widget_->OnUpdateDataSlot();
+    stage_timing_widget_->UpdateTree();
+
+    phase_widget_->OnUpdateDataSlot();
+    phase_widget_->UpdateTree();
+
+    phase_err_widget_->OnUpdateDataSlot();
+    phase_err_widget_->UpdateTable();
+
+    channel_widget_->OnUpdateDataSlot();
+    channel_widget_->UpdateTable();
+
+    detector_widget_->OnUpdateDataSlot();
+    detector_widget_->UpdateTable();
 }
 
 bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)

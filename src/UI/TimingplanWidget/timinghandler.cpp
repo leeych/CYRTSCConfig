@@ -9,6 +9,16 @@ TimingHandler::~TimingHandler()
 {
 }
 
+void TimingHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void TimingHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void TimingHandler::init()
 {
     timing_list_ = db_->get_timing_table();

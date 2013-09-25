@@ -150,6 +150,11 @@ void ScheduleTableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void ScheduleTableWidget::OnInitDatabase(void *db_ptr)
+{
+    handler_->init_database(db_ptr);
+}
+
 void ScheduleTableWidget::InitPage()
 {
     InitContextMenu();

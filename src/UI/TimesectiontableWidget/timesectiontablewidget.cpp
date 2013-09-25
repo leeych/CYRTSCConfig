@@ -190,6 +190,11 @@ void TimesectiontableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void TimesectiontableWidget::OnInitDatabase(void *db_ptr)
+{
+    handler_->init_database(db_ptr);
+}
+
 void TimesectiontableWidget::InitPage()
 {
     InitTree();

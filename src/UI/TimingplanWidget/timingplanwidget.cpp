@@ -160,6 +160,11 @@ void TimingplanWidget::OnUpdateTimingCycleSlot()
     UpdateCycletime();
 }
 
+void TimingplanWidget::OnInitDatabase(void *db_ptr)
+{
+    handler_->init_database(db_ptr);
+}
+
 void TimingplanWidget::InitPage()
 {
     InitTable();

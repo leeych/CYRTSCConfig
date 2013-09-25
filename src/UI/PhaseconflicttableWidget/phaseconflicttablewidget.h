@@ -29,6 +29,7 @@ public slots:
     void OnCustomContextMenuRequested(QPoint);
 
     void OnUpdateDataSlot();
+    void OnInitDatabase(void *db_ptr);
 
 private:
     void InitPage();

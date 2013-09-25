@@ -14,6 +14,9 @@ public:
     TimesectionHandler();
     ~TimesectionHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     bool is_timesection_exists(unsigned char time_section_id, unsigned char event_id);

@@ -288,6 +288,7 @@ QString SignalerStatusWidget::Trimmed(QString &str)
     {
         return str;
     }
+    str.remove(index, 1);
     return Trimmed(str);
 }
 

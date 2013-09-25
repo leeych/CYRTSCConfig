@@ -37,6 +37,7 @@ public:
     void Initialize(const QString &ip, unsigned int port);
 
 signals:
+    void updateTabPageSignal(void *);
 
 public slots:
     void OnConnectButtonClicked();
@@ -68,10 +69,12 @@ private:
 
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
+    void UpdateTabPage();
 
     bool ParseConfigArray(QByteArray &byte_array);
 
 private:
+    MDatabase *db_ptr_;
     SyncCommand *sync_cmd_;
     EventLogHandler *handler_;
     QString ip_;

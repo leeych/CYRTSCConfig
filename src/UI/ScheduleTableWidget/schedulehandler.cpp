@@ -10,6 +10,16 @@ ScheduleHandler::~ScheduleHandler()
 {
 }
 
+void ScheduleHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void ScheduleHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void ScheduleHandler::init()
 {
     schedule_list_ = db_->get_schedule_table();

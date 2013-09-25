@@ -11,6 +11,9 @@ public:
     PhaseHandler();
     ~PhaseHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     bool addNewPhase();

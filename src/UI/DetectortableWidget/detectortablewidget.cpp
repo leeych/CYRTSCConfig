@@ -217,6 +217,11 @@ void DetectortableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void DetectortableWidget::OnInitDatabase(void *db_ptr)
+{
+    handler_->init_database(db_ptr);
+}
+
 void DetectortableWidget::InitPage()
 {
     InitTable();

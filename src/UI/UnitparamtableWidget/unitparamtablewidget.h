@@ -28,8 +28,8 @@ signals:
 public slots:
     void OnOkButtonClicked();
     void OnCancelButtonClicked();
-
     void OnUpdateDataSlot();
+    void OnInitDatabase(void *ptr);
 
 private:
     void InitPage();

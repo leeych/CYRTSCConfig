@@ -104,6 +104,11 @@ void PhaseconflicttableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void PhaseconflicttableWidget::OnInitDatabase(void *db_ptr)
+{
+    handler_->init_database(db_ptr);
+}
+
 void PhaseconflicttableWidget::InitPage()
 {
     InitTable();

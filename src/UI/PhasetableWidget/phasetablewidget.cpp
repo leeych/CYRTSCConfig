@@ -192,6 +192,11 @@ void PhasetableWidget::OnUpdateDataSlot()
     handler_->init();
 }
 
+void PhasetableWidget::OnInitDatabase(void *ptr)
+{
+    handler_->init_database(ptr);
+}
+
 void PhasetableWidget::InitPage()
 {
     InitTree();

@@ -13,6 +13,9 @@ public:
     DetectorHandler();
     ~DetectorHandler();
 
+    void init_database(void *db_ptr);
+    void reset_database();
+
     void init();
 
     bool add_detector(const DetectorParam& detector);

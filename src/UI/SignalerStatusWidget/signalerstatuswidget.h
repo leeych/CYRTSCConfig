@@ -53,7 +53,7 @@ private:
     void AddTableRow(int index, const SignalerParam &signaler);
     void InitContextMenu();
 
-    QString trimmed(QString &str);
+    QString Trimmed(QString &str);
     QString get_status_desc(SignalerParam::SignalerStatus status);
     QColor get_status_text_color(SignalerParam::SignalerStatus status);
 

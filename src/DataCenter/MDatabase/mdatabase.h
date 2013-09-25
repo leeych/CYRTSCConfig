@@ -86,10 +86,10 @@ public:
 
 //    SignalerMap &get_signaler_map();
 
-private:
     MDatabase();
     ~MDatabase();
 
+private:
 	unsigned char get_phasetiming_phase_id(unsigned int phase_id_bits);
     QList<unsigned char> get_id_list_by_bits_op(unsigned int phase_ids);
 	int index_of_channel_hint_table(unsigned char channel_id);

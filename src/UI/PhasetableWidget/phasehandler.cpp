@@ -11,6 +11,16 @@ PhaseHandler::~PhaseHandler()
 {
 }
 
+void PhaseHandler::init_database(void *db_ptr)
+{
+    db_ = static_cast<MDatabase *>(db_ptr);
+}
+
+void PhaseHandler::reset_database()
+{
+    db_ = MDatabase::GetInstance();
+}
+
 void PhaseHandler::init()
 {
     phase_list_ = db_->get_phase_table();
