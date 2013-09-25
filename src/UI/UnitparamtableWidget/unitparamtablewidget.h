@@ -36,6 +36,7 @@ private:
     void InitSignalSlots();
 
     bool SaveData();
+    bool ValidateUI();
 
 private:
     UnitparamHandler *handler_;

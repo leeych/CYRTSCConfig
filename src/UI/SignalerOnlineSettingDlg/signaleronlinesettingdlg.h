@@ -77,11 +77,12 @@ private:
     MDatabase *db_ptr_;
     SyncCommand *sync_cmd_;
     EventLogHandler *handler_;
-    QString ip_;
+    QTcpSocket *socket_;
+
     QString cfg_file_;
+    QString ip_;
     unsigned int port_;
     bool conn_status_;
-    QTcpSocket *socket_;
 
     bool is_ver_correct_;
     int ver_check_id_;  // check version

@@ -195,6 +195,20 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
     if (status)
     {
+        QFile file(cfg_file_);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            config_byte_array_.clear();
+            return;
+        }
+        qint64 sz = file.write(config_byte_array_);
+        if (sz != config_byte_array_.size())
+        {
+            conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
+            QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+            QFile::remove(cfg_file_);
+        }
+        /*
         TSCParam tscparam;
         memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
         FileReaderWriter writer;
@@ -204,7 +218,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
             conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
             QFile::remove(cfg_file_);
-        }
+        }*/
         else
         {
             UpdateTabPage();
@@ -482,13 +496,10 @@ bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)
         return false;
     }
     byte_array.remove(0, 4);    // remove "CTY4"
-    qDebug() << byte_array.left(4);
-    unsigned int len = byte_array.left(4).toUInt();
+    unsigned int len = 0;
     memcpy(&len, byte_array.left(4).data(), 4);
     byte_array.remove(0, 4);    // remove content length
     int index = byte_array.indexOf("END");
-    qDebug() << byte_array.right(3);
     byte_array.remove(index, sizeof("END"));
-    qDebug() << byte_array.right(3);
     return true;
 }

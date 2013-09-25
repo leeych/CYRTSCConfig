@@ -32,6 +32,10 @@ const QString &UnitparamtableWidget::widget_name()
 
 void UnitparamtableWidget::OnOkButtonClicked()
 {
+    if (!ValidateUI())
+    {
+        return;
+    }
 	if (SaveData())
 	{
 		handler_->save_data();
@@ -90,8 +94,8 @@ void UnitparamtableWidget::InitPage()
 	flash_time_spinbox_->setMinimumWidth(120);
 	all_red_time_spinbox_->setMinimumWidth(120);
 
-    flash_time_spinbox_->setRange(10, 255);
-    all_red_time_spinbox_->setRange(5, 255);
+    flash_time_spinbox_->setRange(0, 255);
+    all_red_time_spinbox_->setRange(0, 255);
 
     signal_status_cmb_ = new QComboBox;
     signal_status_cmb_->addItem(STRING_UI_UNIT_AUTO_CONTORL);
@@ -265,6 +269,21 @@ bool UnitparamtableWidget::SaveData()
     param.StartUpRed = all_red_time_spinbox_->value();
     handler_->set_unitparam(param);
 
+    return true;
+}
+
+bool UnitparamtableWidget::ValidateUI()
+{
+    if (flash_time_spinbox_->value() < 10)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_FLASH_TIME_ERR, STRING_OK);
+        return false;
+    }
+    if (all_red_time_spinbox_->value() < 5)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_UNIT_ALL_RED_TIME_ERR, STRING_OK);
+        return false;
+    }
     return true;
 }
 

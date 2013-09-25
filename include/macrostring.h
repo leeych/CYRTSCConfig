@@ -327,6 +327,9 @@
 #define STRING_UI_UNIT_MANUALLY_CTRL        QObject::tr("Manuall control")
 #define STRING_UI_UNIT_SYS_FAILURE_FLASH    QObject::tr("System failure yellow flash")
 
+#define STRING_UI_UNIT_FLASH_TIME_ERR       QObject::tr("Flash time can not less than ")
+#define STRING_UI_UNIT_ALL_RED_TIME_ERR     QObject::tr("All red time can not less than ")
+
 #define STRING_UI_FILEMANAGER_NEW_FILE_FAILED      QObject::tr("Create new file failed.")
 #define STRING_UI_FILEMANAGER_ADD_FILE_FAILED      QObject::tr("Add file failed.")
 #define STRING_UI_FILEMANAGER_REMOVE_FILE_FAILED   QObject::tr("Remove file failed.")
