@@ -56,6 +56,7 @@ void EventLogDlg::OnExportLogButtonClicked()
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED, STRING_OK);
         return;
     }
+    tip_label_->setText(STRING_UI_SIGNALER_EVENT_EXPORT_LOG + STRING_SUCCEEDED);
 }
 
 void EventLogDlg::OnExportReportButtonClicked()
@@ -71,6 +72,7 @@ void EventLogDlg::OnExportReportButtonClicked()
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_HTML_FAILED, STRING_OK);
         return;
     }
+    tip_label_->setText(STRING_UI_SIGNALER_EVENT_EXPORT_REPORT + STRING_SUCCEEDED);
 }
 
 void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
@@ -239,7 +241,7 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     char head[4] = {'\0'};
     char const *content = byte_arr.data();
     memcpy(head, content, 4);
-    if (strcmp(head, "CYT6") != 0)
+    if (strncmp(head, "CYT6", 4) != 0)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_INCORRECT, STRING_OK);
         return;

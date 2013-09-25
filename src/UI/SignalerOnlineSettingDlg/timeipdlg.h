@@ -43,6 +43,8 @@ private:
 
     void EnableButtonExcept(bool enable, QPushButton *btn_ptr);
 
+    QString Trimmed(QString &str);
+
 private:
     QString dialog_name_;
     QList<QPushButton *> button_list_;

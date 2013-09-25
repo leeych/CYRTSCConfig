@@ -49,8 +49,10 @@ void TimeIPDlg::OnRefreshButtonClicked()
 void TimeIPDlg::OnWriteIPButtonClicked()
 {
     QStringList param_list;
-    param_list << "0" << gateway_lineedit_->text().trimmed()
-               << ip_lineedit_->text().trimmed() << mask_lineedit_->text().trimmed();
+    QString ip = ip_lineedit_->text().trimmed();
+    QString netmask = mask_lineedit_->text().trimmed();
+    QString gateway = gateway_lineedit_->text().trimmed();
+    param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
 }
 
@@ -244,4 +246,14 @@ void TimeIPDlg::EnableButtonExcept(bool enable, QPushButton *btn_ptr)
             button_list_.at(i)->setEnabled(enable);
         }
     }
+}
+
+QString TimeIPDlg::Trimmed(QString &str)
+{
+    int index = str.indexOf(" ");
+    if (index < 0)
+    {
+        return str;
+    }
+    return Trimmed(str);
 }
