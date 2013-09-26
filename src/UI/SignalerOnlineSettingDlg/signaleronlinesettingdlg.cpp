@@ -235,7 +235,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     if (status)
     {
         QFile file(cfg_file_);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
             config_byte_array_.clear();
             return;

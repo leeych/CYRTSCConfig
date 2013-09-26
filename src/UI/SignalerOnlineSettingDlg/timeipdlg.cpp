@@ -58,15 +58,14 @@ void TimeIPDlg::OnWriteIPButtonClicked()
 
 void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
 {
-    char head[4] = {'\0'};
-    char *content = array_content.data();
-    memcpy(head, content, 4);
-    if (strcmp(head, "CYT7") != 0)
+	QString head(array_content.left(4));
+    if (head != QString("CYT7"))
     {
         return;
     }
+	array_content.remove(0, 4);
     unsigned int sec = 0;
-    memcpy(&sec, content + 4, 4);
+    memcpy(&sec, array_content.data(), 4);
     if (sec >= 60 * 60 * 8)     // east 8 time-zoon
     {
         sec -= 60 * 60 * 8;
