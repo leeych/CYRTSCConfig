@@ -69,6 +69,18 @@ void SyncCommand::DeleteEventLog(const std::string &param, QObject *target, cons
     socket_->write((Command::ClearEventInfo + param).c_str());
 }
 
+void SyncCommand::StartMonitoring(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::BeginMonitor.c_str());
+}
+
+void SyncCommand::StopMonitoring(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::EndMonitor.c_str());
+}
+
 void SyncCommand::SyncSignalerTime(unsigned int seconds, QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

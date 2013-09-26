@@ -39,6 +39,9 @@ public:
     void ReadEventLogFile(QObject *target, const std::string &slot);
     void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);
 
+    void StartMonitoring(QObject *target, const std::string &slot);
+    void StopMonitoring(QObject *target, const std::string &slot);
+
 signals:
     void connectedSignal();
     void connectErrorSignal();

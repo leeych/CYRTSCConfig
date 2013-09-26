@@ -9,12 +9,20 @@
 #include <QPixmap>
 #include <QStackedLayout>
 #include <QTreeWidget>
-#include <QList>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QImage>
 #include <QFrame>
+
+#include <QMap>
+#include <QList>
+
+// 1. GetConfigure
+// 2. BegineMonitor
+// 3. GetLampStatus
+
+class SyncCommand;
 
 class RealtimeMonitorDlg : public QDialog
 {
@@ -32,19 +40,43 @@ public slots:
     void OnDriverButtonToggled(bool checked);
     void OnDetectorButtonToggled(bool checked);
 
+    void OnConnectError(QString);
+
+    // on cmd
+    void OnCmdReadSignalerConfigFile(QByteArray &array);
+    void OnCmdStartMonitoring(QByteArray &array);
+    void OnCmdStopMonitoring(QByteArray &array);
+    void OnCmdGetLightParam(QByteArray &array);
+    // Parse all the tcp socket command return result
+    void OnCmdParseArray(QByteArray &array);
+
+protected:
+    void closeEvent(QCloseEvent *);
+
 private:
     void InitPage();
     void InitSignalSlots();
     void InitPixmap();
-
     void InitTree(QTreeWidget *tree, const QStringList &header);
 
     void UpdateUI();
     void ResetButtonStatus(const QPushButton *self_btn);
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
+    void InitCtrlModeDesc();
+
+    void ReadSignalerConfigFile();
+    bool ParseConfigContent(QByteArray &array);
+
+    void StartMonitoring();
+    void StopMonitoring();
 
 private:
+    SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
+
+    QByteArray cfg_array_;
+
+    QMap<unsigned char, QString> ctrl_mode_desc_map_;
 
 private:
     QStackedLayout *stk_layout_;

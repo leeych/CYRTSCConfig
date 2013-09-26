@@ -23,6 +23,8 @@
 
 #define STRING_SYMBOL_ARROW             QObject::tr("->")
 #define STRING_DOWN_ARROW               QObject::tr("|")
+#define STRING_PACKAGE_LEN_ERROR        QObject::tr("Network package length error")
+#define STRING_PACKAGE_INCOMPLETE       QObject::tr("Network package package incomplete")
 
 #define STRING_CONNECT_HOST_REFUSED     QObject::tr("Connected host refused")
 #define STRING_CONNECT_HOST_CLOSED      QObject::tr("Remote host closed")
@@ -44,6 +46,27 @@
 #define STRING_CONNECT_PROXY_NOTFIND    QObject::tr("Proxy not found")
 #define STRING_CONNECT_PROXY_PROTOCOL   QObject::tr("Proxy protocol error")
 #define STRING_CONNECT_UNKNOWN          QObject::tr("Unknown error")
+
+#define STRING_CTRL_AUTONOMOUS          QObject::tr("Autonomous ctrl")
+#define STRING_CTRL_CLOSE_LIGHT         QObject::tr("Close lights ctrl")
+#define STRING_CTRL_YELLOW_FLASH        QObject::tr("Yellow flash ctrl")
+#define STRING_CTRL_ALL_RED             QObject::tr("All red ctrl")
+#define STRING_CTRL_COORDINATE          QObject::tr("Coordinate ctrl")
+#define STRING_CTRL_FULL_INDUCTION      QObject::tr("Full induction ctrl")
+#define STRING_CTRL_MAIN_HALF_INDUCTION QObject::tr("Main road half induction ctrl")
+#define STRING_CTRL_SECOND_HALF_INDUC   QObject::tr("Secondary road half induction ctrl")
+#define STRING_CTRL_SINGLE_ADAPT        QObject::tr("Single point adapt ctrl")
+#define STRING_CTRL_CROSS_STREET        QObject::tr("Pedestrian crossing")
+#define STRING_CTRL_COOR_INDUCTION      QObject::tr("Coordinate induction")
+#define STRING_CTRL_BUS_FIRST           QObject::tr("Bus first")
+#define STRING_CTRL_TRAFFIC_CTRL        QObject::tr("Traffic control")
+#define STRING_CTRL_MANUAL_CTRL         QObject::tr("Manual control")
+#define STRING_CTRL_SYS_FAULT_YELLOW    QObject::tr("System fault cause to yellow flash")
+
+#define STRING_LIGHT_RED                QObject::tr("Red")
+#define STRING_LIGHT_GREEN              QObject::tr("Green")
+#define STRING_LIGHT_YELLOW             QObject::tr("Yellow")
+#define STRING_LIGHT_OFF                QObject::tr("Off")
 
 #define STRING_UI_ADD                   QObject::tr("Add")
 #define STRING_UI_EDIT                  QObject::tr("Edit")
@@ -516,6 +539,9 @@
 #define STRING_UI_SIGNALER_MONITOR_PHASE_ID         QObject::tr("Current phase id")
 #define STRING_UI_SIGNALER_MONITOR_PHASE_TIME       QObject::tr("Phase time")
 #define STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME    QObject::tr("Signaler time")
+
+#define STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR    QObject::tr("Signaler network disconnected")
+#define STRING_UI_SIGNALER_MONITOR_PARSE_CFG        QObject::tr("Parse signaler configuration file")
 
 
 #endif // MACROSTRING_H

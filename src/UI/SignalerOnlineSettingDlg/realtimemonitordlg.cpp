@@ -1,6 +1,7 @@
 #include "realtimemonitordlg.h"
 #include "macrostring.h"
 #include "mutility.h"
+#include "synccommand.h"
 
 #include <QPixmap>
 #include <QHBoxLayout>
@@ -13,8 +14,10 @@
 RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     QDialog(parent)
 {
+    sync_cmd_ = SyncCommand::GetInstance();
     InitPage();
     InitSignalSlots();
+    InitCtrlModeDesc();
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
@@ -33,8 +36,6 @@ void RealtimeMonitorDlg::OnSignalerRecordButtonToggled(bool checked)
     if (checked)
     {
         UpdateTreeGroupBox(STRING_UI_SIGNALER_MONITOR_SIGNALER_RECORD, signaler_tree_);
-//        resize(QSize(960, 532));
-//        tree_grp_->setHidden(false);
         ResetButtonStatus(signaler_record_button_);
     }
     tree_grp_->setHidden(!checked);
@@ -69,6 +70,63 @@ void RealtimeMonitorDlg::OnDetectorButtonToggled(bool checked)
         ResetButtonStatus(detector_button_);
     }
     tree_grp_->setHidden(!checked);
+}
+
+void RealtimeMonitorDlg::OnConnectError(QString str)
+{
+    QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR + ":\n" + str, STRING_OK);
+    // TODO: network exception handler
+}
+
+void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
+{
+    cfg_array_.append(array);
+    if (!cfg_array_.left(4).contains("CYT4"))
+    {
+        cfg_array_.clear();
+        sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
+        return;
+    }
+    // TODO: parse signaler configuration file
+    bool res = ParseConfigContent(array);
+    if (!res)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED, STRING_OK);
+        // repeat request
+        cfg_array_.clear();
+        sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
+        return;
+    }
+    else
+    {
+        sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+    }
+}
+
+void RealtimeMonitorDlg::OnCmdStartMonitoring(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void RealtimeMonitorDlg::OnCmdStopMonitoring(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void RealtimeMonitorDlg::OnCmdGetLightParam(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void RealtimeMonitorDlg::OnCmdParseArray(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
+{
+    StopMonitoring();
+    // TODO: window closed handler
 }
 
 void RealtimeMonitorDlg::InitPage()
@@ -222,15 +280,17 @@ void RealtimeMonitorDlg::InitPage()
 
 void RealtimeMonitorDlg::InitSignalSlots()
 {
+    button_list_.append(signaler_record_button_);
+    button_list_.append(light_status_button_);
+    button_list_.append(driver_button_);
+    button_list_.append(detector_button_);
+
     connect(signaler_record_button_, SIGNAL(toggled(bool)), this, SLOT(OnSignalerRecordButtonToggled(bool)));
     connect(light_status_button_, SIGNAL(toggled(bool)), this, SLOT(OnLightStatusButtonToggled(bool)));
     connect(driver_button_, SIGNAL(toggled(bool)), this, SLOT(OnDriverButtonToggled(bool)));
     connect(detector_button_, SIGNAL(toggled(bool)), this, SLOT(OnDetectorButtonToggled(bool)));
 
-    button_list_.append(signaler_record_button_);
-    button_list_.append(light_status_button_);
-    button_list_.append(driver_button_);
-    button_list_.append(detector_button_);
+    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void RealtimeMonitorDlg::InitPixmap()
@@ -334,4 +394,73 @@ void RealtimeMonitorDlg::UpdateTreeGroupBox(const QString &title, QWidget *tree)
 {
     tree_grp_->setTitle(title);
     stk_layout_->setCurrentWidget(tree);
+}
+
+void RealtimeMonitorDlg::InitCtrlModeDesc()
+{
+    ctrl_mode_desc_map_.insert(0, STRING_CTRL_AUTONOMOUS);
+    ctrl_mode_desc_map_.insert(1, STRING_CTRL_CLOSE_LIGHT);
+    ctrl_mode_desc_map_.insert(2, STRING_CTRL_YELLOW_FLASH);
+    ctrl_mode_desc_map_.insert(3, STRING_CTRL_ALL_RED);
+    ctrl_mode_desc_map_.insert(4, STRING_CTRL_COORDINATE);
+    ctrl_mode_desc_map_.insert(5, STRING_CTRL_FULL_INDUCTION);
+    ctrl_mode_desc_map_.insert(6, STRING_CTRL_MAIN_HALF_INDUCTION);
+    ctrl_mode_desc_map_.insert(7, STRING_CTRL_SECOND_HALF_INDUC);
+    ctrl_mode_desc_map_.insert(8, STRING_CTRL_SINGLE_ADAPT);
+    ctrl_mode_desc_map_.insert(9, STRING_CTRL_CROSS_STREET);
+    ctrl_mode_desc_map_.insert(10, STRING_CTRL_COOR_INDUCTION);
+    ctrl_mode_desc_map_.insert(27, STRING_CTRL_BUS_FIRST);
+    ctrl_mode_desc_map_.insert(28, STRING_CTRL_TRAFFIC_CTRL);
+    ctrl_mode_desc_map_.insert(29, STRING_CTRL_MANUAL_CTRL);
+    ctrl_mode_desc_map_.insert(30, STRING_CTRL_SYS_FAULT_YELLOW);
+}
+
+void RealtimeMonitorDlg::ReadSignalerConfigFile()
+{
+    sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
+}
+
+bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
+{
+    if (array.isEmpty())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
+        return false;
+    }
+    QString head(array.left(4));
+    QString tail(array.right(3));
+    if (head != QString("CYT4") || tail != QString("END"))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_INCOMPLETE, STRING_OK);
+        array.clear();
+        return false;
+    }
+    array.remove(0, head.count());
+    unsigned char temp[4] = {'\0'};
+    for (int i = 0; i < 4; i++)
+    {
+        temp[i] = array.at(i);
+    }
+    int len = 0;
+    memcpy(&len, temp, 4);
+    array.remove(0, sizeof(len));
+    int idx = array.indexOf(tail);
+    array.remove(idx, tail.count());
+    if (len != array.count())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_LEN_ERROR, STRING_TIP);
+        array.clear();
+        return false;
+    }
+    return true;
+}
+
+void RealtimeMonitorDlg::StartMonitoring()
+{
+    sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+}
+
+void RealtimeMonitorDlg::StopMonitoring()
+{
+    sync_cmd_->StopMonitoring(this, SLOT(OnCmdStopMonitoring(QByteArray&)));
 }
