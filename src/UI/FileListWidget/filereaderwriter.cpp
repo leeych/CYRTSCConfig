@@ -55,7 +55,33 @@ bool FileReaderWriter::ReadFile(const char* file_path)
 	db_->set_detector_table(tsc_param_.detector_table_);
 
 	fclose(fp);
-	return true;
+    return true;
+}
+
+bool FileReaderWriter::ReadFile(const char *file_path, TSCParam &param)
+{
+    open_file_path_ = std::string(file_path);
+    FILE *fp = fopen(file_path, "rb");
+    if (fp == NULL)
+    {
+        return false;
+    }
+    ResetParam();
+    fseek(fp, 0, SEEK_SET);
+    fread(&param.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
+    fread(&param.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
+    fread(&param.sched_table_, sizeof(tsc_param_.sched_table_), 1, fp);
+    fread(&param.time_section_table_, sizeof(tsc_param_.time_section_table_), 1, fp);
+    fread(&param.timing_plan_table_, sizeof(tsc_param_.timing_plan_table_), 1, fp);
+    fread(&param.stage_timing_table_, sizeof(tsc_param_.stage_timing_table_), 1, fp);
+    fread(&param.phase_table_, sizeof(tsc_param_.phase_table_), 1, fp);
+    fread(&param.phase_conflict_table_, sizeof(tsc_param_.phase_conflict_table_), 1, fp);
+    fread(&param.channel_table_, sizeof(tsc_param_.channel_table_), 1, fp);
+    fread(&param.channel_hint_table_, sizeof(tsc_param_.channel_hint_table_), 1, fp);
+    fread(&param.detector_table_, sizeof(tsc_param_.detector_table_), 1, fp);
+
+    fclose(fp);
+    return true;
 }
 
 bool FileReaderWriter::WriteFile(const char* file_path)

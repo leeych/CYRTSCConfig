@@ -124,7 +124,7 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 {
-    monitor_dlg_->Initialize();
+    monitor_dlg_->Initialize(ip_);
 }
 
 void SignalerOnlineSettingDlg::OnLogButtonClicked()

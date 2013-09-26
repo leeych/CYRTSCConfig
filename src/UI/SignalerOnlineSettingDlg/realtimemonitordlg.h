@@ -18,6 +18,8 @@
 #include <QMap>
 #include <QList>
 
+#include "tscparam.h"
+
 // 1. GetConfigure
 // 2. BegineMonitor
 // 3. GetLampStatus
@@ -30,7 +32,7 @@ class RealtimeMonitorDlg : public QDialog
 public:
     explicit RealtimeMonitorDlg(QWidget *parent = 0);
     ~RealtimeMonitorDlg();
-    void Initialize();
+    void Initialize(const QString &ip);
 
 signals:
     
@@ -64,6 +66,8 @@ private:
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();
 
+    bool InitTscParam();
+
     void ReadSignalerConfigFile();
     bool ParseConfigContent(QByteArray &array);
 
@@ -73,10 +77,12 @@ private:
 private:
     SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
-
     QByteArray cfg_array_;
-
     QMap<unsigned char, QString> ctrl_mode_desc_map_;
+    QString ip_;
+    QString cfg_file_;
+
+    TSCParam tsc_param_;
 
 private:
     QStackedLayout *stk_layout_;

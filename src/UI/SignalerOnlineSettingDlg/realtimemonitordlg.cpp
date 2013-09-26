@@ -2,6 +2,7 @@
 #include "macrostring.h"
 #include "mutility.h"
 #include "synccommand.h"
+#include "filereaderwriter.h"
 
 #include <QPixmap>
 #include <QHBoxLayout>
@@ -24,9 +25,11 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
 {
 }
 
-void RealtimeMonitorDlg::Initialize()
+void RealtimeMonitorDlg::Initialize(const QString &ip)
 {
-    setWindowTitle(STRING_UI_SIGNALER_MONITOR);
+    ip_ = ip;
+    cfg_file_ = "user/monitor/" + ip_ + ".mdat";
+    setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
     exec();
 }
@@ -87,19 +90,47 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
         sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
         return;
     }
+    if (cfg_array_.right(3).endsWith("END"))
+    {
+        return;
+    }
     // TODO: parse signaler configuration file
-    bool res = ParseConfigContent(array);
+    bool res = ParseConfigContent(cfg_array_);
+    int ret = -1;
     if (!res)
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED, STRING_OK);
-        // repeat request
-        cfg_array_.clear();
-        sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
-        return;
+        ret = QMessageBox::question(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
+        if (ret == 0)
+        {
+            // repeat request
+            cfg_array_.clear();
+            sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
+        }
+        else if (ret == 1)
+        {
+            cfg_array_.clear();
+            return;
+        }
     }
     else
     {
-        sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+        QFile file(cfg_file_);
+retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            ret = QMessageBox::question(this, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
+            if (ret == 0)
+            {
+                goto retry;
+            }
+            else
+            {
+                QFile::remove(cfg_file_);
+            }
+        }
+        else
+        {
+            sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+        }
     }
 }
 
@@ -415,6 +446,18 @@ void RealtimeMonitorDlg::InitCtrlModeDesc()
     ctrl_mode_desc_map_.insert(30, STRING_CTRL_SYS_FAULT_YELLOW);
 }
 
+bool RealtimeMonitorDlg::InitTscParam()
+{
+    FileReaderWriter reader;
+    bool res = reader.ReadFile(cfg_file_.toStdString().c_str(), tsc_param_);
+    if (!res)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_MONITOR_PARSE_CFG, STRING_OK);
+        return false;
+    }
+    return true;
+}
+
 void RealtimeMonitorDlg::ReadSignalerConfigFile()
 {
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
@@ -431,8 +474,8 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     QString tail(array.right(3));
     if (head != QString("CYT4") || tail != QString("END"))
     {
-        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_INCOMPLETE, STRING_OK);
-        array.clear();
+//        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_INCOMPLETE, STRING_OK);
+//        array.clear();
         return false;
     }
     array.remove(0, head.count());
@@ -448,8 +491,8 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     array.remove(idx, tail.count());
     if (len != array.count())
     {
-        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_LEN_ERROR, STRING_TIP);
-        array.clear();
+//        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_LEN_ERROR, STRING_TIP);
+//        array.clear();
         return false;
     }
     return true;

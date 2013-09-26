@@ -19,6 +19,7 @@ public:
     void ResetDatabase();
 
     bool ReadFile(const char* file_path);
+    bool ReadFile(const char *file_path, TSCParam &param);
     bool WriteFile(const char* file_path);
     bool WriteFile(const TSCParam &param, const char *file_path);
     void SetTSCParam(const TSCParam &param);

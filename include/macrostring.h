@@ -15,6 +15,7 @@
 
 #define STRING_SUCCEEDED                QObject::tr("succeeded")
 #define STRING_FAILED                   QObject::tr("failed")
+#define STRING_RETRY                    QObject::tr("Retry")
 
 #define STRING_IP                       QObject::tr("IP Address")
 #define STRING_MASK                     QObject::tr("Mask")
