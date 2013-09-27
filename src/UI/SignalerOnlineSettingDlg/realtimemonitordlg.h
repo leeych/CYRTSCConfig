@@ -28,6 +28,21 @@
 
 class SyncCommand;
 
+typedef struct BeginMonitorTag
+{
+    unsigned char channel_id;
+    unsigned char status;
+}BeginMonitorInfo;
+
+typedef struct CountDownTag
+{
+    unsigned char ctrl_mode;
+    unsigned char stage_id;
+    unsigned char light_corlor;
+    unsigned char light_time;
+    unsigned int phase_id;
+}CountDownInfo;
+
 class RealtimeMonitorDlg : public QDialog
 {
     Q_OBJECT
@@ -91,18 +106,21 @@ private:
 private:
     SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
-    QByteArray cfg_array_;
     QMap<unsigned char, QString> ctrl_mode_desc_map_;
-    QString ip_;
-    QString cfg_file_;
 
     TSCParam tsc_param_;
+    QByteArray cfg_array_;
+    QByteArray recv_array_;
+    QString ip_;
+    QString cfg_file_;
 
     // used for signaler time display
     bool is_inited_;
     unsigned int second_count_;
     QDateTime date_time_;
     QTimer *signaler_timer_;
+
+    BeginMonitorInfo begin_monitor_res_;
 
 private:
     QStackedLayout *stk_layout_;

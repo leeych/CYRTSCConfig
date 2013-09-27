@@ -32,6 +32,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
 {
     ip_ = ip;
     cfg_file_ = "user/monitor/" + ip_ + ".mdat";
+    sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
     exec();
@@ -138,7 +139,7 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         }
         else
         {
-            sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+//            sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
         }
     }
 }
@@ -166,7 +167,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         return;
     }
 
-    if (array.left(3).contains("CYT") && array.right(3).endsWith("END"))
+    if (!(array.left(3).contains("CYT") && array.right(3).endsWith("END")))
     {
         array.clear();
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
@@ -180,6 +181,10 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         break;
     case '1':
         status = ParseBeginMonitorContent(array);
+        if (!status)
+        {
+            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        }
         break;
     case '2':
         break;
@@ -462,6 +467,7 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 
 void RealtimeMonitorDlg::UpdateUI()
 {
+//    sync_cmd_->ReadSignalerTime(this, SLOT(OnCmdParseParam(QByteArray&)));
     phase_time_lcd_->display("0-12-0");
 
     QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss ddd");
@@ -710,7 +716,15 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
 
 bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    if ((unsigned int)array.size() < sizeof(begin_monitor_res_))
+    {
+        return false;
+    }
+    memcpy(&begin_monitor_res_, array.data(), sizeof(begin_monitor_res_));
+    // TODO: left to be done.
     return true;
 }
 

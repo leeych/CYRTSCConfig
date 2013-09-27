@@ -241,13 +241,17 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     char head[4] = {'\0'};
     char const *content = byte_arr.data();
     memcpy(head, content, 4);
-    if (strncmp(head, "CYT6", 4) != 0)
+    QString head_str(head);
+//    if (strncmp(head, "CYT6", 4) != 0)
+    if (head_str != QString("CYT6"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_INCORRECT, STRING_OK);
         return;
     }
+    // package len considered to validate
     unsigned int len = 0;
     memcpy(&len, content + 4, 4);
+    len = len-4-3;
     char cy_header[18] = {'\0'};
     memcpy(cy_header, content + 8, sizeof(cy_header));
     byte_arr.remove(0, 4+4+18);
