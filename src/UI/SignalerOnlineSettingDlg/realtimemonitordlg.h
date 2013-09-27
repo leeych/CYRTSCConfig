@@ -17,6 +17,8 @@
 
 #include <QMap>
 #include <QList>
+#include <QTimer>
+#include <QDateTime>
 
 #include "tscparam.h"
 
@@ -43,6 +45,7 @@ public slots:
     void OnDetectorButtonToggled(bool checked);
 
     void OnConnectError(QString);
+    void OnSignalerTimeTimerOut();
 
     // on cmd
     void OnCmdReadSignalerConfigFile(QByteArray &array);
@@ -50,7 +53,7 @@ public slots:
     void OnCmdStopMonitoring(QByteArray &array);
     void OnCmdGetLightParam(QByteArray &array);
     // Parse all the tcp socket command return result
-    void OnCmdParseArray(QByteArray &array);
+    void OnCmdParseParam(QByteArray &array);
 
 protected:
     void closeEvent(QCloseEvent *);
@@ -62,17 +65,28 @@ private:
     void InitTree(QTreeWidget *tree, const QStringList &header);
 
     void UpdateUI();
+    void UpdateScheduleInfo();
+
     void ResetButtonStatus(const QPushButton *self_btn);
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();
-
     bool InitTscParam();
+    bool CheckPackage(const QByteArray &array);
 
     void ReadSignalerConfigFile();
-    bool ParseConfigContent(QByteArray &array);
 
     void StartMonitoring();
     void StopMonitoring();
+
+    bool ParseConfigContent(QByteArray &array);
+    bool ParseBeginMonitorContent(QByteArray &array);
+    bool ParseLightStatusContent(QByteArray &array);
+    bool ParseCountDownContent(QByteArray &array);
+    bool ParseTSCTimeContent(QByteArray &array);
+    bool ParseSysFaultContent(QByteArray &array);
+    bool ParseDriverStatusContent(QByteArray &array);
+    bool ParseDetectorContent(QByteArray &array);
+    bool ParseDetectorRealTimeContent(QByteArray &array);
 
 private:
     SyncCommand *sync_cmd_;
@@ -83,6 +97,12 @@ private:
     QString cfg_file_;
 
     TSCParam tsc_param_;
+
+    // used for signaler time display
+    bool is_inited_;
+    unsigned int second_count_;
+    QDateTime date_time_;
+    QTimer *signaler_timer_;
 
 private:
     QStackedLayout *stk_layout_;
@@ -101,10 +121,8 @@ private:
     QPixmap dd_pix_, dr_pix_, dy_pix_, dg_pix_;
     QPixmap circle_d_pix_, circle_r_pix_, circle_g_pix_;
 
-
     QTreeWidget *signaler_tree_, *light_tree_;
     QTreeWidget *driver_tree_, *detector_tree_;
-    
     QLabel *sched_id_label_, *event_id_label_;
     QLabel *start_time_label_, *cycle_time_label_;
     QLabel *ctrl_mode_label_, *stage_id_label_, *phase_id_label_;

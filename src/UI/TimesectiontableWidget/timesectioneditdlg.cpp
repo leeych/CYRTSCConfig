@@ -475,7 +475,7 @@ void TimesectioneditDlg::UpdateTree(const QList<TimeSection>& time_section_list)
         str.sprintf("%d", time_section_list.at(i).event_id);
         item->setText(0, str);
 
-        str.sprintf("%d:%d", time_section_list.at(i).start_hour, time_section_list.at(i).start_minute);
+        str.sprintf("%02d:%02d", time_section_list.at(i).start_hour, time_section_list.at(i).start_minute);
         item->setText(1, str);
 
         str = handler_->get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);

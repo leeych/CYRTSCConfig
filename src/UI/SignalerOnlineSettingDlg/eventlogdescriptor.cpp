@@ -192,6 +192,74 @@ QString EventLogDescriptor::get_event_type_log_desc(unsigned char event_type_id)
     return desc;
 }
 
+QString EventLogDescriptor::get_ctrl_mode_desc(unsigned char ctrl_mode)
+{
+    QString str;
+    switch (ctrl_mode)
+    {
+    case 0:
+        str = STRING_UI_UNIT_AUTO_CONTORL;
+        break;
+    case 1:
+        str = STRING_UI_UNIT_CLOSE_LIGHTS;
+        break;
+    case 2:
+        str = STRING_UI_UNIT_FLASH;
+        break;
+    case 3:
+        str = STRING_UI_UNIT_ALLRED;
+        break;
+    case 4:
+        str = STRING_UI_UNIT_COORDINATE;
+        break;
+    case 5:
+        str = STRING_UI_UNIT_INDUCTION;
+        break;
+    case 6:
+        str = STRING_UI_UNIT_MAIN_INDUCTION;
+        break;
+    case 7:
+        str = STRING_UI_UNIT_SECOND_INDUCTION;
+        break;
+    case 8:
+        str = STRING_UI_UNIT_SINGLE_OPTIONAL;
+        break;
+    case 9:
+        str = STRING_UI_UNIT_CROSS_STREET;
+        break;
+    case 10:
+        str = STRING_UI_UNIT_COORDINATE_INDUCTION;
+        break;
+
+//    case 11:
+//        str = STRING_UI_UNIT_MASTER_SLAVE;
+//        break;
+//    case 12:
+//        str = STRING_UI_UNIT_SYSTEM_OPTIONAL;
+//        break;
+//    case 13:
+//        str = STRING_UI_UNIT_INTERVENTION;
+//        break;
+    // addtional selections
+    case 27:
+        str = STRING_UI_UNIT_BUS_FIRST;
+        break;
+    case 28:
+        str = STRING_UI_UNIT_TRAFFIC_CTRL;
+        break;
+    case 29:
+        str = STRING_UI_UNIT_MANUALLY_CTRL;
+        break;
+    case 30:
+        str = STRING_UI_UNIT_SYS_FAILURE_FLASH;
+        break;
+    default:
+        str = "-";
+        break;
+    }
+    return str;
+}
+
 void EventLogDescriptor::DisposeDescriptor()
 {
     if (instance_ != NULL)

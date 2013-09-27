@@ -3,13 +3,13 @@
 #include "mutility.h"
 #include "synccommand.h"
 #include "filereaderwriter.h"
+#include "eventlogdescriptor.h"
 
 #include <QPixmap>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QHeaderView>
-#include <QDateTime>
 #include <QMessageBox>
 
 RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
@@ -19,6 +19,9 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     InitPage();
     InitSignalSlots();
     InitCtrlModeDesc();
+
+    signaler_timer_ = new QTimer(this);
+    is_inited_ = false;
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
@@ -79,6 +82,12 @@ void RealtimeMonitorDlg::OnConnectError(QString str)
 {
     QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR + ":\n" + str, STRING_OK);
     // TODO: network exception handler
+}
+
+void RealtimeMonitorDlg::OnSignalerTimeTimerOut()
+{
+    date_time_ = date_time_.addSecs(1);
+    signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
 }
 
 void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
@@ -149,9 +158,66 @@ void RealtimeMonitorDlg::OnCmdGetLightParam(QByteArray &array)
     Q_UNUSED(array);
 }
 
-void RealtimeMonitorDlg::OnCmdParseArray(QByteArray &array)
+void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 {
-    Q_UNUSED(array);
+    if (!CheckPackage(array))
+    {
+        array.clear();
+        return;
+    }
+
+    if (array.left(3).contains("CYT") && array.right(3).endsWith("END"))
+    {
+        array.clear();
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        return;
+    }
+    bool status = false;
+    char cmd_id = array.at(4);
+    switch (cmd_id)
+    {
+    case '0':
+        break;
+    case '1':
+        status = ParseBeginMonitorContent(array);
+        break;
+    case '2':
+        break;
+    case '3':
+        status = ParseLightStatusContent(array);
+        break;
+    case '4':
+        status = ParseConfigContent(array);
+        break;
+    case '5':
+        status = ParseCountDownContent(array);
+        if (!status)
+        {
+            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        }
+        break;
+    case '6':
+        break;
+    case '7':
+        status = ParseTSCTimeContent(array);
+        break;
+    case '8':
+        break;
+    case '9':
+        status = ParseDetectorContent(array);
+        break;
+    case 'A':
+        status = ParseSysFaultContent(array);
+        break;
+    case 'B':
+        status = ParseDetectorRealTimeContent(array);
+        break;
+    case 'C':
+        status = ParseDriverStatusContent(array);
+        break;
+    default:
+        break;
+    }
 }
 
 void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
@@ -321,6 +387,8 @@ void RealtimeMonitorDlg::InitSignalSlots()
     connect(driver_button_, SIGNAL(toggled(bool)), this, SLOT(OnDriverButtonToggled(bool)));
     connect(detector_button_, SIGNAL(toggled(bool)), this, SLOT(OnDetectorButtonToggled(bool)));
 
+    connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOut()));
+
     connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
@@ -394,20 +462,147 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 
 void RealtimeMonitorDlg::UpdateUI()
 {
-    sched_id_label_->setText("1");
-    event_id_label_->setText("2");
-    start_time_label_->setText("16:02");
-    cycle_time_label_->setText("82");
-    ctrl_mode_label_->setText("Ctrl mode");
-    stage_id_label_->setText("10");
-    phase_id_label_->setText("3");
     phase_time_lcd_->display("0-12-0");
 
-    QDateTime datetime = QDateTime::currentDateTime();
-    QString str = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+    QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss ddd");
     signaler_time_label_->setText(str);
-
     tree_grp_->hide();
+
+    UpdateScheduleInfo();
+}
+
+void RealtimeMonitorDlg::UpdateScheduleInfo()
+{
+    if (!InitTscParam())
+    {
+        return;
+    }
+    unsigned char sched_id = 0;
+    unsigned char time_section_id = 0;
+    QDate curr_date = QDate::currentDate();
+    QTime curr_time = QTime::currentTime();
+    int m = 0;
+    for (m = 0; m < tsc_param_.sched_table_.FactScheduleNum; m++)
+    {
+        if ((tsc_param_.sched_table_.ScheduleList[m].ScheduleMonth & (0x01 << curr_date.month())) == 0)
+        {
+            continue;
+        }
+        if (curr_date.dayOfWeek() == 7)
+        {
+            if ((tsc_param_.sched_table_.ScheduleList[m].ScheduleWeek & (0x01 << 1)) == 0)
+            {
+                continue;
+            }
+        }
+        else
+        {
+            if ((tsc_param_.sched_table_.ScheduleList[m].ScheduleDay & (0x01 << curr_date.day())) == 0)
+            {
+                continue;
+            }
+        }
+        if ((tsc_param_.sched_table_.ScheduleList[m].ScheduleDay & (0x01 << curr_date.day())) == 0)
+        {
+            continue;
+        }
+        sched_id = tsc_param_.sched_table_.ScheduleList[m].ScheduleId;
+        time_section_id = tsc_param_.sched_table_.ScheduleList[m].TimeSectionId;
+        sched_id_label_->setText(QString::number(sched_id));
+        break;
+    }   //:~ schedule id
+
+    QString str;
+    int n = 0;
+    unsigned char pattern_id = 0;
+    for (m = 0; m < tsc_param_.time_section_table_.FactTimeSectionNum; m++)
+    {
+        if (tsc_param_.time_section_table_.TimeSectionList[m][0].TimeSectionId != time_section_id)
+        {
+            continue;
+        }
+        for (n = 0; n < tsc_param_.time_section_table_.FactEventNum; n++)
+        {
+            unsigned char start_hour = tsc_param_.time_section_table_.TimeSectionList[m][n].StartHour;
+            unsigned char start_min = tsc_param_.time_section_table_.TimeSectionList[m][n].StartMinute;
+            if (start_hour >= curr_time.hour() && start_min > curr_time.minute())
+            {
+                if (n == 0)
+                {
+                    event_id_label_->setText(" -");
+                    start_time_label_->setText("--:-");
+                    ctrl_mode_label_->setText(" -");
+                    pattern_id = 0;
+                }
+                else
+                {
+                    unsigned char event_id = tsc_param_.time_section_table_.TimeSectionList[m][n-1].EventId;
+                    start_hour = tsc_param_.time_section_table_.TimeSectionList[m][n-1].StartHour;
+                    start_min = tsc_param_.time_section_table_.TimeSectionList[m][n-1].StartMinute;
+                    unsigned char ctrl_mode = tsc_param_.time_section_table_.TimeSectionList[m][n-1].ControlMode;
+                    QString str;
+                    event_id_label_->setText(str.sprintf("%d", event_id));
+                    str.sprintf("%02d:%02d", start_hour, start_min);
+                    start_time_label_->setText(str);
+                    str = EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
+                    ctrl_mode_label_->setText(str);
+                    pattern_id = tsc_param_.time_section_table_.TimeSectionList[m][n-1].PatternId;
+                }
+                break;
+            }
+            if (tsc_param_.time_section_table_.TimeSectionList[m][n+1].EventId == 0)
+            {
+                unsigned char event_id = tsc_param_.time_section_table_.TimeSectionList[m][n].EventId;
+                str.sprintf("%d", event_id);
+                event_id_label_->setText(str);
+                start_hour = tsc_param_.time_section_table_.TimeSectionList[m][n].StartHour;
+                start_min = tsc_param_.time_section_table_.TimeSectionList[m][n].StartMinute;
+                str.sprintf("%02d:%02d", start_hour, start_min);
+                start_time_label_->setText(str);
+                unsigned char ctrl_mode = tsc_param_.time_section_table_.TimeSectionList[m][n].ControlMode;
+                str = EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
+                pattern_id = tsc_param_.time_section_table_.TimeSectionList[m][n].PatternId;
+                break;
+            }
+        }
+        break;
+    }   //:~ event id, start time, control mode desc
+
+    unsigned char time_config_id = 0;
+    for (m = 0; m < tsc_param_.timing_plan_table_.FactPatternNum; m++)
+    {
+        if (tsc_param_.timing_plan_table_.PatternList[m].PatternId == pattern_id)
+        {
+            unsigned short circle_time = tsc_param_.timing_plan_table_.PatternList[m].CycleTime;
+            str.sprintf("%d", circle_time);
+            cycle_time_label_->setText(str);
+            time_config_id = tsc_param_.timing_plan_table_.PatternList[m].TimeConfigId;
+        }
+    }
+    unsigned char stage_count = 0;
+//    unsigned int stage_phase_buff[32] = { 0 };
+    for (m = 0; m < tsc_param_.stage_timing_table_.FactTimeConfigNum; m++)
+    {
+        if (tsc_param_.stage_timing_table_.TimeConfigList[m][0].TimeConfigId != time_config_id)
+        {
+            continue;
+        }
+        for (n = 0; n < tsc_param_.stage_timing_table_.FactStageNum; n++)
+        {
+//            stage_phase_buff[n] = tsc_param_.stage_timing_table_.TimeConfigList[m][n].PhaseId;
+            if (tsc_param_.stage_timing_table_.TimeConfigList[m][n+1].TimeConfigId == 0)
+            {
+                stage_count = n+1;
+                break;
+            }
+        }
+        break;
+    }
+
+    unsigned char curr_stage_id = stage_count;
+    str.sprintf("%d / %d", 0, curr_stage_id);
+    stage_id_label_->setText(str);
+    //:~ stage id
 }
 
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
@@ -458,6 +653,21 @@ bool RealtimeMonitorDlg::InitTscParam()
     return true;
 }
 
+bool RealtimeMonitorDlg::CheckPackage(const QByteArray &array)
+{
+    if (array == "DETECTDATAER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
+        return false;
+    }
+    if (array == "DRIVEINFOER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS + STRING_FAILED, STRING_OK);
+        return false;
+    }
+    return true;
+}
+
 void RealtimeMonitorDlg::ReadSignalerConfigFile()
 {
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
@@ -495,6 +705,79 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
 //        array.clear();
         return false;
     }
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
+{
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    if (array.size() < 4)
+    {
+        return false;
+    }
+    unsigned char temp[4] = {'\0'};
+    temp[0] = array.at(0);
+    temp[1] = array.at(1);
+    temp[2] = array.at(2);
+    temp[3] = array.at(3);
+    unsigned int seconds = 0;
+    memcpy(&seconds, temp, sizeof(seconds));
+    if (seconds >= 60 * 60 * 8)     // east 8 time-zoon
+    {
+        seconds -= 60 * 60 * 8;
+    }
+    date_time_ = QDateTime::fromTime_t(seconds).toLocalTime();
+    signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!is_inited_)
+    {
+        signaler_timer_->start(1000);
+        is_inited_ = true;
+    }
+
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseSysFaultContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseDetectorContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseDetectorRealTimeContent(QByteArray &array)
+{
+    Q_UNUSED(array);
     return true;
 }
 

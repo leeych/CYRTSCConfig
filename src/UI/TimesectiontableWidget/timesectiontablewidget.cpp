@@ -53,7 +53,7 @@ void TimesectiontableWidget::UpdateTree()
                 item_sub->setText(1, str);
                 item_sub->setTextAlignment(1, Qt::AlignCenter);
 
-                str.sprintf("%d:%d", section_list.at(k).start_hour, section_list.at(k).start_minute);
+                str.sprintf("%02d:%02d", section_list.at(k).start_hour, section_list.at(k).start_minute);
                 item_sub->setText(2, str);
                 item_sub->setTextAlignment(2, Qt::AlignCenter);
 

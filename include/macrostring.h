@@ -543,6 +543,9 @@
 
 #define STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR    QObject::tr("Signaler network disconnected")
 #define STRING_UI_SIGNALER_MONITOR_PARSE_CFG        QObject::tr("Parse signaler configuration file")
+#define STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR   QObject::tr("Parse socket package error")
+#define STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA    QObject::tr("Require vehicle detector data")
+#define STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS  QObject::tr("Require detector status info data")
 
 
 #endif // MACROSTRING_H

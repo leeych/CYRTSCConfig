@@ -10,6 +10,7 @@ public:
     static EventLogDescriptor *GetInstance();
     QString get_log_desc(unsigned char event_type_id, unsigned int log_value);
     QString get_event_type_log_desc(unsigned char event_type_id);
+    QString get_ctrl_mode_desc(unsigned char ctrl_mode);
     void DisposeDescriptor();
 
 private:
