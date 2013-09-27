@@ -653,7 +653,7 @@ bool RealtimeMonitorDlg::InitTscParam()
     bool res = reader.ReadFile(cfg_file_.toStdString().c_str(), tsc_param_);
     if (!res)
     {
-        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_MONITOR_PARSE_CFG, STRING_OK);
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED, STRING_OK);
         return false;
     }
     return true;

@@ -7,6 +7,8 @@
 #include <QLineEdit>
 #include <QDateTimeEdit>
 
+class SyncCommand;
+
 class DetectorFlowDlg : public QDialog
 {
     Q_OBJECT
@@ -19,14 +21,23 @@ signals:
     
 public slots:
     void OnReadFlowButtonClicked();
-    void onClearFowButtonClicked();
+    void OnClearFowButtonClicked();
     void OnOkButtonClicked();
+
+    void OnCmdGetDetectorData(QByteArray &array);
+    void OnCmdClearDetectorInfo(QByteArray &array);
+    void OnCmdGetDetectorRealTimeInfo(QByteArray &array);
+
+    void OnConnectError(const QString &str);
 
 private:
     void InitPage();
     void InitSignalSlots();
     void UpdateUI();
     void InitTree(QTreeWidget *tree, const QStringList &header);
+
+private:
+    SyncCommand *sync_cmd_;
 
 private:
     QTreeWidget *detector_tree_, *flow_tree_;

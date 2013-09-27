@@ -42,6 +42,10 @@ public:
     void StartMonitoring(QObject *target, const std::string &slot);
     void StopMonitoring(QObject *target, const std::string &slot);
 
+    void GetDetectorFlowData(QObject *target, const std::string &slot);
+    void ClearDetectorFlowInfo(QObject *target, const std::string &slot);
+    void GetDriverBoardInfo(QObject *target, const std::string &slot);
+
 signals:
     void connectedSignal();
     void connectErrorSignal();

@@ -1,5 +1,7 @@
 #include "detectorflowdlg.h"
 #include "macrostring.h"
+#include "synccommand.h"
+
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -10,6 +12,7 @@
 DetectorFlowDlg::DetectorFlowDlg(QWidget *parent) :
     QDialog(parent)
 {
+    sync_cmd_ = SyncCommand::GetInstance();
     InitPage();
     InitSignalSlots();
 }
@@ -26,17 +29,38 @@ void DetectorFlowDlg::Initialize()
 
 void DetectorFlowDlg::OnReadFlowButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Read flow", STRING_OK);
+    sync_cmd_->GetDetectorFlowData(this, SLOT(OnCmdGetDetectorData(QByteArray&)));
 }
 
-void DetectorFlowDlg::onClearFowButtonClicked()
+void DetectorFlowDlg::OnClearFowButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Clear flow", STRING_OK);
+    sync_cmd_->ClearDetectorFlowInfo(this, SLOT(OnCmdClearDetectorInfo(QByteArray&)));
 }
 
 void DetectorFlowDlg::OnOkButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "OK", STRING_OK);
+    accept();
+}
+
+void DetectorFlowDlg::OnCmdGetDetectorData(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void DetectorFlowDlg::OnCmdClearDetectorInfo(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void DetectorFlowDlg::OnCmdGetDetectorRealTimeInfo(QByteArray &array)
+{
+    Q_UNUSED(array);
+}
+
+void DetectorFlowDlg::OnConnectError(const QString &str)
+{
+    QMessageBox::information(this, STRING_TIP, str, STRING_OK);
+    return;
 }
 
 void DetectorFlowDlg::InitPage()
@@ -98,8 +122,10 @@ void DetectorFlowDlg::InitPage()
 void DetectorFlowDlg::InitSignalSlots()
 {
     connect(read_flow_button_, SIGNAL(clicked()), this, SLOT(OnReadFlowButtonClicked()));
-    connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(onClearFowButtonClicked()));
+    connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
+
+    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void DetectorFlowDlg::UpdateUI()
