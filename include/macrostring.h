@@ -540,6 +540,7 @@
 #define STRING_UI_SIGNALER_MONITOR_PHASE_ID         QObject::tr("Current phase id")
 #define STRING_UI_SIGNALER_MONITOR_PHASE_TIME       QObject::tr("Phase time")
 #define STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME    QObject::tr("Signaler time")
+#define STRING_UI_SIGNALER_MONITOR_LCD_TIP          QObject::tr("Green-Yellow-Red")
 
 #define STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR    QObject::tr("Signaler network disconnected")
 #define STRING_UI_SIGNALER_MONITOR_PARSE_CFG        QObject::tr("Parse signaler configuration file")

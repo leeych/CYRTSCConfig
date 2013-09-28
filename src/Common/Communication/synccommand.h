@@ -42,7 +42,9 @@ public:
     void StartMonitoring(QObject *target, const std::string &slot);
     void StopMonitoring(QObject *target, const std::string &slot);
     void StopMonitoring();
+    void GetLightStatus(QObject *target, const std::string &slot);
     void GetLightStatus();
+    void GetTscTime();
 
     void GetDetectorFlowData(QObject *target, const std::string &slot);
     void ClearDetectorFlowInfo(QObject *target, const std::string &slot);

@@ -87,11 +87,25 @@ void SyncCommand::StopMonitoring()
     socket_->write(Command::EndMonitor.c_str());
 }
 
+void SyncCommand::GetLightStatus(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    socket_->write(Command::GetLampStatus.c_str());
+}
+
 void SyncCommand::GetLightStatus()
 {
     if (target_obj_ != NULL && !slot_.empty())
     {
         socket_->write(Command::GetLampStatus.c_str());
+    }
+}
+
+void SyncCommand::GetTscTime()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        socket_->write(Command::GetTSCtime.c_str());
     }
 }
 

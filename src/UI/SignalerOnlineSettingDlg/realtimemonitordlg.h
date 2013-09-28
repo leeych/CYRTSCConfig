@@ -107,7 +107,7 @@ private:
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();
     bool InitTscParam();
-    bool CheckPackage(const QByteArray &array);
+    bool CheckPackage(QByteArray &array);
 
     void ReadSignalerConfigFile();
 
@@ -141,10 +141,26 @@ private:
     QDateTime date_time_;
     QTimer *signaler_timer_;
 
+    enum LightStatus
+    {
+        Red = 0,
+        Yellow,
+        Green,
+        Off
+    };
+    typedef struct ChannelStatusInfoTag
+    {
+        QVector<LightStatus> channel_vec;
+        unsigned char work_mode;
+        unsigned char plan_id;
+        unsigned int phase_id;
+    }ChannelStatusInfo;
+
     // request reply
     BeginMonitorInfo begin_monitor_info_;
     CountDownInfo count_down_info_;
     LightStatusInfo lights_status_info_;
+    ChannelStatusInfo channel_status_info_;
 
 private:
     QStackedLayout *stk_layout_;

@@ -100,7 +100,7 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
         sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
         return;
     }
-    if (!cfg_array_.right(3).endsWith("END"))
+    if (!cfg_array_.contains("END"))
     {
         return;
     }
@@ -139,8 +139,8 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         }
         else
         {
-            sync_cmd_->StartMonitoring(this, SLOT(OnCmdParseParam(QByteArray&)));
-            sync_cmd_->GetLightStatus();
+            UpdateScheduleInfo();
+            sync_cmd_->GetLightStatus(this, SLOT(OnCmdParseParam(QByteArray&)));
         }
     }
 }
@@ -163,73 +163,89 @@ void RealtimeMonitorDlg::OnCmdGetLightParam(QByteArray &array)
 void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 {
     recv_array_.append(array);
-    if (!CheckPackage(array))
+    if (!CheckPackage(recv_array_))
     {
-        array.clear();
         return;
     }
-
-    if (!(array.left(3).contains("CYT") && array.right(3).endsWith("END")))
+    if (!(recv_array_.left(3).contains("CYT") && recv_array_.contains("END")))
     {
-        array.clear();
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+//        array.clear();
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
         return;
     }
     bool status = false;
-    char cmd_id = array.at(3);
-    switch (cmd_id)
+    char cmd_id = 0;
+    while (true)
     {
-    case '0':
-        break;
-    case '1':
-        status = ParseBeginMonitorContent(array);
-        if (!status)
+        if (recv_array_.size() < 4)
         {
-            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            break;
         }
-        break;
-    case '2':
-        break;
-    case '3':
-        status = ParseLightStatusContent(array);
-        break;
-    case '4':
-        status = ParseConfigContent(array);
-        break;
-    case '5':
-        status = ParseCountDownContent(array);
-        if (!status)
+        cmd_id = recv_array_.at(3);
+        switch (cmd_id)
         {
-            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        case '0':
+            break;
+        case '1':
+            status = ParseBeginMonitorContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            break;
+        case '2':
+            break;
+        case '3':
+            status = ParseLightStatusContent(recv_array_);
+            break;
+        case '4':
+    //        status = ParseConfigContent(array);
+            break;
+        case '5':
+            status = ParseCountDownContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            break;
+        case '6':
+            break;
+        case '7':
+            status = ParseTSCTimeContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            else
+            {
+                sync_cmd_->GetLightStatus();
+            }
+            break;
+        case '8':
+            break;
+        case '9':
+    //        status = ParseDetectorContent(recv_array_);
+            break;
+        case 'A':
+            status = ParseSysFaultContent(recv_array_);
+            break;
+        case 'B':
+            status = ParseDetectorRealTimeContent(recv_array_);
+            break;
+        case 'C':
+            status = ParseDriverStatusContent(recv_array_);
+            break;
+        default:
+            break;
         }
-        break;
-    case '6':
-        break;
-    case '7':
-        status = ParseTSCTimeContent(array);
-        break;
-    case '8':
-        break;
-    case '9':
-//        status = ParseDetectorContent(array);
-        break;
-    case 'A':
-        status = ParseSysFaultContent(array);
-        break;
-    case 'B':
-        status = ParseDetectorRealTimeContent(array);
-        break;
-    case 'C':
-        status = ParseDriverStatusContent(array);
-        break;
-    default:
-        break;
     }
 }
 
 void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
 {
     StopMonitoring();
+    signaler_timer_->stop();
+    is_inited_ = false;
     // TODO: window closed handler
 }
 
@@ -307,6 +323,7 @@ void RealtimeMonitorDlg::InitPage()
     phase_time_lcd_->setMode(QLCDNumber::Dec);
     phase_time_lcd_->setSegmentStyle(QLCDNumber::Flat);
     phase_time_lcd_->setProperty("intValue", QVariant(0));
+    phase_time_lcd_->setStatusTip(STRING_UI_SIGNALER_MONITOR_LCD_TIP);
 
     QLabel *signaler_time_label = new QLabel(STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME + ":");
     signaler_time_label_ = new QLabel;
@@ -470,7 +487,7 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 void RealtimeMonitorDlg::UpdateUI()
 {
 //    sync_cmd_->ReadSignalerTime(this, SLOT(OnCmdParseParam(QByteArray&)));
-    phase_time_lcd_->display("0-12-0");
+    phase_time_lcd_->display("00-00-00");
 
     QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss ddd");
     signaler_time_label_->setText(str);
@@ -661,16 +678,20 @@ bool RealtimeMonitorDlg::InitTscParam()
     return true;
 }
 
-bool RealtimeMonitorDlg::CheckPackage(const QByteArray &array)
+bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
 {
-    if (array == "DETECTDATAER")
+    if (array.contains("DETECTDATAER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
+        int index = array.indexOf("DETECTDATAER");
+        array.remove(index, QString("DETECTDATAER").size());
         return false;
     }
     if (array == "DRIVEINFOER")
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS + STRING_FAILED, STRING_OK);
+        int index = array.indexOf("DRIVEINFOER");
+        array.remove(index, QString("DRIVEINFOER").size());
         return false;
     }
     return true;
@@ -723,9 +744,11 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
     array.remove(index, 3);
     if ((unsigned int)array.size() < sizeof(begin_monitor_info_))
     {
+        array.remove(0, 2);
         return false;
     }
     memcpy(&begin_monitor_info_, array.data(), sizeof(begin_monitor_info_));
+    array.remove(0, 2);
     // TODO: left to be done. update ui
     return true;
 }
@@ -736,6 +759,7 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
     int index = array.indexOf("END");
     array.remove(index, 3);
     memcpy(&count_down_info_, array.data(), sizeof(count_down_info_));
+    array.remove(0, 8);
     // TODO: update ui
     return true;
 }
@@ -747,6 +771,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     array.remove(index, 3);
     if (array.size() < 4)
     {
+        array.remove(0, array.size());
         return false;
     }
     unsigned char temp[4] = {'\0'};
@@ -754,6 +779,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     temp[1] = array.at(1);
     temp[2] = array.at(2);
     temp[3] = array.at(3);
+    array.remove(0, 4);
     unsigned int seconds = 0;
     memcpy(&seconds, temp, sizeof(seconds));
     if (seconds >= 60 * 60 * 8)     // east 8 time-zoon
@@ -774,15 +800,16 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 {
     array.remove(0, 4);
-    qint16 array_size = 0;
-    qint16 num_1 = 0;
-    memcpy(&array_size, array.data(), 2);
-    array.remove(0, 2);
-    memcpy(&num_1, array.data(), 2);
+    char array_size = 0;
+    char num_1 = 0;
+    memcpy(&array_size, array.data(), 1);
+    array_size -= '0';
+    array.remove(0, 1);
+    memcpy(&num_1, array.data(), 1);
     RYGArray ryg;
     for (int i = 0; i < array_size; i++)
     {
-        array.remove(0, 2);
+        array.remove(0, 1);
         memcpy(&ryg, array.data(), 3);
         lights_status_info_.lights[i] = ryg;
         array.remove(0, 3);
@@ -795,6 +822,38 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
+
+    channel_status_info_.work_mode = lights_status_info_.work_mode;
+    channel_status_info_.plan_id = lights_status_info_.plan_id;
+    channel_status_info_.phase_id = lights_status_info_.phase_id;
+    channel_status_info_.channel_vec.clear();
+    unsigned char red_tmp = 0, yellow_tmp = 0, green_tmp = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            red_tmp = lights_status_info_.lights[i].red;
+            yellow_tmp = lights_status_info_.lights[i].yellow;
+            green_tmp = lights_status_info_.lights[i].green;
+            if ((red_tmp & (0x01 << j)) != 0x00)
+            {
+                channel_status_info_.channel_vec.append(Red);
+            }
+            else if ((yellow_tmp & (0x01 << j)) != 0x00)
+            {
+                channel_status_info_.channel_vec.append(Yellow);
+            }
+            else if ((green_tmp & (0x01 << j)) != 0x00)
+            {
+                channel_status_info_.channel_vec.append(Green);
+            }
+            else
+            {
+                channel_status_info_.channel_vec.append(Off);
+            }
+        }
+    }
+
     // TODO: update ui
     return true;
 }
