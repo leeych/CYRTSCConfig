@@ -6,7 +6,7 @@
 class Command
 {
 public:
-    static std::string DetectorInfo;
+//    static std::string DetectorInfo;
     static std::string GetVerId;         // 1
     static std::string BeginMonitor;    // 2
     static std::string EndMonitor;

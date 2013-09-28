@@ -46,7 +46,7 @@ void DetectorFlowDlg::OnCmdGetDetectorData(QByteArray &array)
 {
     Q_UNUSED(array);
 }
-
+// ClearDetectInfo
 void DetectorFlowDlg::OnCmdClearDetectorInfo(QByteArray &array)
 {
     Q_UNUSED(array);
@@ -55,6 +55,37 @@ void DetectorFlowDlg::OnCmdClearDetectorInfo(QByteArray &array)
 void DetectorFlowDlg::OnCmdGetDetectorRealTimeInfo(QByteArray &array)
 {
     Q_UNUSED(array);
+}
+
+void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
+{
+    QString head(array.left(3));
+    QString tail(array.right(3));
+    if (head != QString("CYT") || tail != QString("END"))
+    {
+        return;
+    }
+    bool status = false;
+    unsigned char cmd_id = array.at(4);
+    switch (cmd_id)
+    {
+    case '9':
+        status = ParseDetectorDataContent(array);
+        if (!status)
+        {
+            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        }
+        break;
+    case 'B':
+        status = ParseDetectorRealTimeContent(array);
+        if (!status)
+        {
+            QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void DetectorFlowDlg::OnConnectError(const QString &str)
@@ -148,4 +179,24 @@ void DetectorFlowDlg::InitTree(QTreeWidget *tree, const QStringList &header)
     tree->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
     QHeaderView *header_view = tree->header();
     header_view->setDefaultAlignment(Qt::AlignCenter);
+}
+// CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
+bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
+{
+    Q_UNUSED(array);
+    return true;
+}
+// CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END
+bool DetectorFlowDlg::ParseDetectorRealTimeContent(QByteArray &array)
+{
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    if ((unsigned int)array.size() != sizeof(detector_status_info_))
+    {
+        return false;
+    }
+    memcpy(&detector_status_info_, array.data(), sizeof(detector_status_info_));
+    // TODO: update ui
+    return true;
 }

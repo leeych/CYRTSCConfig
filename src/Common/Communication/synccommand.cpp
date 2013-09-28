@@ -81,10 +81,24 @@ void SyncCommand::StopMonitoring(QObject *target, const std::string &slot)
     socket_->write(Command::EndMonitor.c_str());
 }
 
+void SyncCommand::StopMonitoring()
+{
+    UnRegParseHandler();
+    socket_->write(Command::EndMonitor.c_str());
+}
+
+void SyncCommand::GetLightStatus()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        socket_->write(Command::GetLampStatus.c_str());
+    }
+}
+
 void SyncCommand::GetDetectorFlowData(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
-    socket_->write(Command::DetectorInfo.c_str());
+    socket_->write(Command::GetDetectInfo.c_str());
 }
 
 void SyncCommand::ClearDetectorFlowInfo(QObject *target, const std::string &slot)
@@ -97,6 +111,11 @@ void SyncCommand::GetDriverBoardInfo(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     socket_->write(Command::GetDriverInfo.c_str());
+}
+
+void SyncCommand::ReleaseSignalSlots()
+{
+    UnRegParseHandler();
 }
 
 void SyncCommand::SyncSignalerTime(unsigned int seconds, QObject *target, const std::string &slot)

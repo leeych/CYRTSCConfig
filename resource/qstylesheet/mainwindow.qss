@@ -161,6 +161,11 @@ QSpinBox
     border-radius:3px;
 }
 
+QStatusBar::item
+{
+    border: 0px;
+}
+
 QComboBox
 {
     background-color: rgb(233,246,254);

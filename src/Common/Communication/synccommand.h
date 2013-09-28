@@ -41,10 +41,14 @@ public:
 
     void StartMonitoring(QObject *target, const std::string &slot);
     void StopMonitoring(QObject *target, const std::string &slot);
+    void StopMonitoring();
+    void GetLightStatus();
 
     void GetDetectorFlowData(QObject *target, const std::string &slot);
     void ClearDetectorFlowInfo(QObject *target, const std::string &slot);
     void GetDriverBoardInfo(QObject *target, const std::string &slot);
+
+    void ReleaseSignalSlots();
 
 signals:
     void connectedSignal();

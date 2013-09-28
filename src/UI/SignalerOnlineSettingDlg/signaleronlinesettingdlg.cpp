@@ -208,6 +208,7 @@ void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
     UpdateButtonStatus(true);
     UpdateConnectStatus(true);
     conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
+    sync_cmd_->ReleaseSignalSlots();
 }
 
 void SignalerOnlineSettingDlg::OnDisconnectedSlot()

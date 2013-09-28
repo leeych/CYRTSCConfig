@@ -7,6 +7,14 @@
 #include <QLineEdit>
 #include <QDateTimeEdit>
 
+typedef struct DetectorInfoTag
+{
+    quint32 seconds;
+    quint32 phase_id;
+    quint8 detector_id;
+}DetectorInfo;
+
+
 class SyncCommand;
 
 class DetectorFlowDlg : public QDialog
@@ -27,6 +35,8 @@ public slots:
     void OnCmdGetDetectorData(QByteArray &array);
     void OnCmdClearDetectorInfo(QByteArray &array);
     void OnCmdGetDetectorRealTimeInfo(QByteArray &array);
+    // Parse all the reply content
+    void OnCmdParseParam(QByteArray &array);
 
     void OnConnectError(const QString &str);
 
@@ -36,8 +46,12 @@ private:
     void UpdateUI();
     void InitTree(QTreeWidget *tree, const QStringList &header);
 
+    bool ParseDetectorDataContent(QByteArray &array);
+    bool ParseDetectorRealTimeContent(QByteArray &array);
+
 private:
     SyncCommand *sync_cmd_;
+    DetectorInfo detector_status_info_;
 
 private:
     QTreeWidget *detector_tree_, *flow_tree_;

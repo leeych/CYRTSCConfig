@@ -43,6 +43,27 @@ typedef struct CountDownTag
     unsigned int phase_id;
 }CountDownInfo;
 
+typedef struct RedYellowGreenTag
+{
+    unsigned char red;
+    unsigned char yellow;
+    unsigned char green;
+
+    RedYellowGreenTag() :
+        red(0), yellow(0), green(0)
+    {}
+
+}RYGArray;
+
+typedef struct LightStatusTag
+{
+    RYGArray lights[4];
+    unsigned char work_mode;
+    unsigned char plan_id;
+    unsigned int phase_id;
+}LightStatusInfo;
+
+
 class RealtimeMonitorDlg : public QDialog
 {
     Q_OBJECT
@@ -100,7 +121,7 @@ private:
     bool ParseTSCTimeContent(QByteArray &array);
     bool ParseSysFaultContent(QByteArray &array);
     bool ParseDriverStatusContent(QByteArray &array);
-    bool ParseDetectorContent(QByteArray &array);
+//    bool ParseDetectorContent(QByteArray &array);
     bool ParseDetectorRealTimeContent(QByteArray &array);
 
 private:
@@ -108,11 +129,11 @@ private:
     QList<QPushButton *> button_list_;
     QMap<unsigned char, QString> ctrl_mode_desc_map_;
 
+    QString ip_;
+    QString cfg_file_;
     TSCParam tsc_param_;
     QByteArray cfg_array_;
     QByteArray recv_array_;
-    QString ip_;
-    QString cfg_file_;
 
     // used for signaler time display
     bool is_inited_;
@@ -120,7 +141,10 @@ private:
     QDateTime date_time_;
     QTimer *signaler_timer_;
 
-    BeginMonitorInfo begin_monitor_res_;
+    // request reply
+    BeginMonitorInfo begin_monitor_info_;
+    CountDownInfo count_down_info_;
+    LightStatusInfo lights_status_info_;
 
 private:
     QStackedLayout *stk_layout_;

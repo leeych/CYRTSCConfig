@@ -100,7 +100,7 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
         sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
         return;
     }
-    if (cfg_array_.right(3).endsWith("END"))
+    if (!cfg_array_.right(3).endsWith("END"))
     {
         return;
     }
@@ -139,7 +139,8 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         }
         else
         {
-//            sync_cmd_->StartMonitoring(this, SLOT(OnCmdStartMonitoring(QByteArray&)));
+            sync_cmd_->StartMonitoring(this, SLOT(OnCmdParseParam(QByteArray&)));
+            sync_cmd_->GetLightStatus();
         }
     }
 }
@@ -161,6 +162,7 @@ void RealtimeMonitorDlg::OnCmdGetLightParam(QByteArray &array)
 
 void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 {
+    recv_array_.append(array);
     if (!CheckPackage(array))
     {
         array.clear();
@@ -174,7 +176,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         return;
     }
     bool status = false;
-    char cmd_id = array.at(4);
+    char cmd_id = array.at(3);
     switch (cmd_id)
     {
     case '0':
@@ -209,7 +211,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
     case '8':
         break;
     case '9':
-        status = ParseDetectorContent(array);
+//        status = ParseDetectorContent(array);
         break;
     case 'A':
         status = ParseSysFaultContent(array);
@@ -705,7 +707,7 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     array.remove(0, sizeof(len));
     int idx = array.indexOf(tail);
     array.remove(idx, tail.count());
-    if (len != array.count())
+    if (len-4-3-4 != array.count())
     {
 //        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_LEN_ERROR, STRING_TIP);
 //        array.clear();
@@ -719,18 +721,22 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
-    if ((unsigned int)array.size() < sizeof(begin_monitor_res_))
+    if ((unsigned int)array.size() < sizeof(begin_monitor_info_))
     {
         return false;
     }
-    memcpy(&begin_monitor_res_, array.data(), sizeof(begin_monitor_res_));
-    // TODO: left to be done.
+    memcpy(&begin_monitor_info_, array.data(), sizeof(begin_monitor_info_));
+    // TODO: left to be done. update ui
     return true;
 }
-
+// CYT5+控制模式(1字节)+阶段编号(1字节)+灯色(1字节)+灯时(1字节)+相位编码(4字节)+END
 bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    memcpy(&count_down_info_, array.data(), sizeof(count_down_info_));
+    // TODO: update ui
     return true;
 }
 
@@ -764,34 +770,60 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 
     return true;
 }
-
+// CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
 bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    qint16 array_size = 0;
+    qint16 num_1 = 0;
+    memcpy(&array_size, array.data(), 2);
+    array.remove(0, 2);
+    memcpy(&num_1, array.data(), 2);
+    RYGArray ryg;
+    for (int i = 0; i < array_size; i++)
+    {
+        array.remove(0, 2);
+        memcpy(&ryg, array.data(), 3);
+        lights_status_info_.lights[i] = ryg;
+        array.remove(0, 3);
+    }
+    memcpy(&lights_status_info_.work_mode, array.data(), sizeof(lights_status_info_.work_mode));
+    array.remove(0, 1);
+    memcpy(&lights_status_info_.plan_id, array.data(), sizeof(lights_status_info_.plan_id));
+    array.remove(0, 1);
+    memcpy(&lights_status_info_.phase_id, array.data(), sizeof(lights_status_info_.phase_id));
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    // TODO: update ui
     return true;
 }
-
+// CYTA+故障代码(2字节)+END
 bool RealtimeMonitorDlg::ParseSysFaultContent(QByteArray &array)
 {
     Q_UNUSED(array);
     return true;
 }
-
+// CYTC+数据总长度（4字节）+驱动板状态数据字节流+END
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
     Q_UNUSED(array);
     return true;
 }
 
-bool RealtimeMonitorDlg::ParseDetectorContent(QByteArray &array)
-{
-    Q_UNUSED(array);
-    return true;
-}
-
+//bool RealtimeMonitorDlg::ParseDetectorContent(QByteArray &array)
+//{
+//    Q_UNUSED(array);
+//    return true;
+//}
+// CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorRealTimeContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+//    memcpy(&detector_status_info_, array.data(), sizeof(detector_status_info_));
+    array.remove(0, 4+4+1);
+    array.remove(0, 3);
+    // TODO: update ui
     return true;
 }
 
@@ -802,5 +834,6 @@ void RealtimeMonitorDlg::StartMonitoring()
 
 void RealtimeMonitorDlg::StopMonitoring()
 {
-    sync_cmd_->StopMonitoring(this, SLOT(OnCmdStopMonitoring(QByteArray&)));
+//    sync_cmd_->StopMonitoring(this, SLOT(OnCmdStopMonitoring(QByteArray&)));
+    sync_cmd_->StopMonitoring();
 }
