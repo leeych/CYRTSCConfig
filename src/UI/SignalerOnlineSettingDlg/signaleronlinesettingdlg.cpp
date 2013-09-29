@@ -214,6 +214,7 @@ void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
 void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 {
     UpdateConnectStatus(false);
+    more_button_->setChecked(false);
 }
 
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
@@ -261,6 +262,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         }*/
         else
         {
+            dialog_tab_->setEnabled(true);
             UpdateTabPage();
         }
     }
@@ -507,7 +509,7 @@ void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)
 
 void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
 {
-    dialog_tab_->setEnabled(enable);
+//    dialog_tab_->setEnabled(enable);
     read_button_->setEnabled(enable);
     update_button_->setEnabled(enable);
     send_button_->setEnabled(enable);
@@ -516,7 +518,7 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
     flow_button_->setEnabled(enable);
     setting_button_->setEnabled(enable);
     saveas_button_->setEnabled(enable);
-    more_button_->setEnabled(enable);
+//    more_button_->setEnabled(enable);
 }
 
 void SignalerOnlineSettingDlg::UpdateTabPage()

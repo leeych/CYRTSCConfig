@@ -49,6 +49,7 @@ public:
     void GetDetectorFlowData(QObject *target, const std::string &slot);
     void ClearDetectorFlowInfo(QObject *target, const std::string &slot);
     void GetDriverBoardInfo(QObject *target, const std::string &slot);
+    void GetDriverBoardInfo();
 
     void ReleaseSignalSlots();
 

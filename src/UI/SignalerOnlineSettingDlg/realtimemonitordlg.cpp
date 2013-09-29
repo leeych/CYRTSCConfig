@@ -63,6 +63,7 @@ void RealtimeMonitorDlg::OnDriverButtonToggled(bool checked)
 {
     if (checked)
     {
+        sync_cmd_->GetDriverBoardInfo();
         UpdateTreeGroupBox(STRING_UI_SIGNALER_MONITOR_DRIVER_STATUS, driver_tree_);
         ResetButtonStatus(driver_button_);
     }
@@ -867,6 +868,10 @@ bool RealtimeMonitorDlg::ParseSysFaultContent(QByteArray &array)
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
     Q_UNUSED(array);
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(0, index + 3);
+//    array.remove(index, 3);
     return true;
 }
 

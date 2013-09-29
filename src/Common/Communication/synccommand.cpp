@@ -127,6 +127,14 @@ void SyncCommand::GetDriverBoardInfo(QObject *target, const std::string &slot)
     socket_->write(Command::GetDriverInfo.c_str());
 }
 
+void SyncCommand::GetDriverBoardInfo()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        socket_->write(Command::GetDriverInfo.c_str());
+    }
+}
+
 void SyncCommand::ReleaseSignalSlots()
 {
     UnRegParseHandler();
