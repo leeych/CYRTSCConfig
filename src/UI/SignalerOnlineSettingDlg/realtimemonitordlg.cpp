@@ -18,6 +18,8 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     sync_cmd_ = SyncCommand::GetInstance();
     signaler_timer_ = new QTimer(this);
     is_inited_ = false;
+    ui_timer_id_ = 0;
+    is_uitimer_started_ = false;
 
     InitPage();
     InitSignalSlots();
@@ -186,6 +188,19 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             break;
         case '3':
             status = ParseLightStatusContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            else
+            {
+                sync_cmd_->GetTscTime();
+                if (!is_uitimer_started_)
+                {
+                    ui_timer_id_ = startTimer(3600*1000);
+                    is_uitimer_started_ = true;
+                }
+            }
             break;
         case '4':
     //        status = ParseConfigContent(array);
@@ -205,10 +220,10 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             {
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
             }
-            else
-            {
-                sync_cmd_->GetLightStatus();
-            }
+//            else
+//            {
+//                sync_cmd_->GetLightStatus();
+//            }
             break;
         case '8':
             break;
@@ -235,7 +250,21 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
     StopMonitoring();
     signaler_timer_->stop();
     is_inited_ = false;
+
+    if (ui_timer_id_ != 0)
+    {
+        killTimer(ui_timer_id_);
+        ui_timer_id_ = 0;
+    }
     // TODO: window closed handler
+}
+
+void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
+{
+    if (ui_timer_id_ != 0)
+    {
+        sync_cmd_->GetTscTime();
+    }
 }
 
 void RealtimeMonitorDlg::InitPage()
@@ -539,12 +568,12 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
         {
             unsigned char start_hour = tsc_param_.time_section_table_.TimeSectionList[m][n].StartHour;
             unsigned char start_min = tsc_param_.time_section_table_.TimeSectionList[m][n].StartMinute;
-            if (start_hour >= curr_time.hour() && start_min > curr_time.minute())
+            if (start_hour > curr_time.hour() || (start_hour == curr_time.hour() && start_min > curr_time.minute()))
             {
                 if (n == 0)
                 {
                     event_id_label_->setText(" -");
-                    start_time_label_->setText("--:-");
+                    start_time_label_->setText("--:--");
                     ctrl_mode_label_->setText(" -");
                     pattern_id = 0;
                 }

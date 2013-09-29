@@ -130,12 +130,19 @@ void EventLogDlg::InitPage()
     event_header << STRING_UI_SIGNALER_EVENT_TYPE << STRING_UI_SIGNALER_EVENT_CLEARTIME;
     InitTree(event_tree_, event_header);
     event_tree_->setMaximumWidth(240);
+    event_tree_->setColumnWidth(0, event_tree_->width()*2/3);
+    event_tree_->setColumnWidth(1, event_tree_->width()*1/3);
 
     event_detail_tree_ = new QTreeWidget;
     QStringList detail_header;
     detail_header << STRING_UI_SIGNALER_EVENT_TYPE_ID << STRING_UI_SIGNALER_EVENT_FLOW_ID
                      << STRING_UI_SIGNALER_EVENT_DATETIME << STRING_UI_SIGNALER_EVENT_DESC;
     InitTree(event_detail_tree_, detail_header);
+    int width = event_detail_tree_->width();
+    event_detail_tree_->setColumnWidth(0, width * 1/6);
+    event_detail_tree_->setColumnWidth(1, width * 1/6);
+    event_detail_tree_->setColumnWidth(2, width * 1/3);
+    event_detail_tree_->setColumnWidth(3, width * 1/3);
 
     QHBoxLayout *tree_hlayout = new QHBoxLayout;
     tree_hlayout->addWidget(event_tree_);

@@ -90,6 +90,7 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *);
+    void timerEvent(QTimerEvent *);
 
 private:
     void InitPage();
@@ -137,6 +138,9 @@ private:
     unsigned int second_count_;
     QDateTime date_time_;
     QTimer *signaler_timer_;
+
+    int ui_timer_id_;
+    bool is_uitimer_started_;
 
     enum LightStatus
     {
