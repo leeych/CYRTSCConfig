@@ -112,6 +112,9 @@
 #define STRING_MAIN_READY               QObject::tr("Ready")
 #define STRING_MAIN_INITIALIZE          QObject::tr("Init data status")
 
+#define STRING_MAIN_INIT_USER_DIR       QObject::tr("Initialize system user directory")
+#define STRING_MAIN_INIT_DATA_DIR       QObject::tr("Initialize system data directory")
+
 #define STRING_MAIN_SAVE_FAILED			QObject::tr("Save .dat file failed.")
 #define STRING_MAIN_SAVE_SUCCESS		QObject::tr("Save .dat file succeeded.")
 

@@ -33,7 +33,7 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
 void RealtimeMonitorDlg::Initialize(const QString &ip)
 {
     ip_ = ip;
-    MUtility::getUserDataDir(cfg_file_);
+    MUtility::getUserDir(cfg_file_);
     cfg_file_ += "/monitor/" + ip_ + ".mdat";
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);

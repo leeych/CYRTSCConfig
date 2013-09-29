@@ -1,6 +1,6 @@
 #include "signalerstatuswidget.h"
 #include "macrostring.h"
-
+#include "mutility.h"
 #include "signalerbasiceditdlg.h"
 #include "signalerhandler.h"
 #include "signaleronlinesettingdlg.h"
@@ -21,7 +21,6 @@ SignalerStatusWidget::SignalerStatusWidget(const QString &name, QWidget *parent)
 
     InitPage();
     InitSignalSlots();
-//    UpdateTable();
 }
 
 const QString &SignalerStatusWidget::widget_name()
@@ -114,6 +113,10 @@ void SignalerStatusWidget::OnAdvancedActionClicked()
 	}
     QString ip = signaler_table_->item(row, 3)->text().trimmed();
     ip = Trimmed(ip);
+    if (!MUtility::checkIPString(ip))
+    {
+        return;
+    }
     unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
     signaler_online_dlg_->Initialize(ip, port);
 }
@@ -132,6 +135,10 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
     {
         QString ip = signaler_table_->item(row, 3)->text().trimmed();
         ip = Trimmed(ip);
+        if (!MUtility::checkIPString(ip))
+        {
+            return;
+        }
         unsigned int port = signaler_table_->item(row, 4)->text().toUInt();
         signaler_online_dlg_->Initialize(ip, port);
         return;
@@ -151,7 +158,6 @@ void SignalerStatusWidget::OnTableRowUpdateSlot(int)
 
 void SignalerStatusWidget::OnConnectedSlot()
 {
-    qDebug() << "connected with signaler";
     int row = signaler_table_->currentRow();
     if (row < 0)
     {
@@ -166,7 +172,6 @@ void SignalerStatusWidget::OnConnectedSlot()
 
 void SignalerStatusWidget::OnDisconnectedSlot()
 {
-    qDebug() << "disconnect from signaler";
     int row = signaler_table_->currentRow();
     if (row < 0)
     {
@@ -394,5 +399,9 @@ void SignalerStatusWidget::UpdateTable()
 
 SignalerStatusWidget::~SignalerStatusWidget()
 {
-
+    if (handler_ != NULL)
+    {
+        delete handler_;
+        handler_ = NULL;
+    }
 }

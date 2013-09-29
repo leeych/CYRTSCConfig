@@ -6,4 +6,5 @@ SUBDIRS += \
     SignalerManager \
     Communication \
     CommandCallback \
-    LogExportor
+    LogExportor \
+    SystemIniter

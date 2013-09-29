@@ -10,18 +10,21 @@ public:
     static void getLanguageDir(QString &strDir);
     static void getImageDir(QString& strImageDir);
     static void getStyleSheetDir(QString& strCssDir);
-    static void getUserDataDir(QString &userDir);
+    static void getUserDir(QString &userDir);
     static void getLogDir(QString &strDir);
     static void getReportDir(QString &strDir);
     static void getTempDir(QString &strDir);
     static void getMonitorDir(QString &strDir);
     static void getConfigDir(QString &strDir);
+    static void getDataDir(QString &strDir);
     static void getCurIconDir(QString& strCurIconDir);
     static void getCurseIconDir(QString& strCurseIconDir);
     static void getClickIconDir(QString& strClickIconDir);
     static void GetPolarIconDir(QString& strDir);
     static QByteArray fetchQrc(const QString &fileName);
     static void trimFloatString(QString& strFloat);
+
+    static bool checkIPString(const QString &ip);
 };
 
 #endif // MUTILITY_H

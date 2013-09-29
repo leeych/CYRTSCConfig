@@ -1,4 +1,5 @@
 #include <QtCore>
+#include <QRegExp>
 #include "mutility.h"
 
 
@@ -26,7 +27,7 @@ void MUtility::getStyleSheetDir(QString &strCssDir)
     strCssDir += "/qstylesheet/";
 }
 
-void MUtility::getUserDataDir(QString &userDir)
+void MUtility::getUserDir(QString &userDir)
 {
     userDir = QCoreApplication::applicationDirPath();
     userDir += "/user/";
@@ -55,6 +56,11 @@ void MUtility::getMonitorDir(QString &strDir)
 void MUtility::getConfigDir(QString &strDir)
 {
     strDir = QCoreApplication::applicationDirPath() + "/user/config/";
+}
+
+void MUtility::getDataDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/data/";
 }
 
 void MUtility::getCurIconDir(QString &strCurIconDir)
@@ -119,4 +125,14 @@ void MUtility::trimFloatString(QString &strFloat)
             return;
         }
     }
+}
+
+bool MUtility::checkIPString(const QString &ip)
+{
+    QRegExp reg("^([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])$");
+    if (!reg.exactMatch(ip))
+    {
+        return false;
+    }
+    return true;
 }

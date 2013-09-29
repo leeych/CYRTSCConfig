@@ -2,14 +2,16 @@
 #include "mutility.h"
 #include "login.h"
 #include "macrostring.h"
+#include "systeminiter.h"
+
 #include <QApplication>
 #include <QTranslator>
 #include <QTextCodec>
-#include <QDebug>
 #include <QSplashScreen>
 #include <QTime>
 #include <QCoreApplication>
 #include <QDesktopWidget>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +19,23 @@ int main(int argc, char *argv[])
 
     QTextCodec *tc=QTextCodec::codecForName("utf8");
     QTextCodec::setCodecForCStrings(tc);
+
+    SystemIniter initializer;
+    SystemIniter::DirError err = initializer.InitUserDir();
+    if (err == SystemIniter::None)
+    {
+        err = initializer.InitDataDir();
+        if (err != SystemIniter::None)
+        {
+            QMessageBox::information(NULL, STRING_TIP, STRING_MAIN_INIT_USER_DIR + STRING_FAILED, STRING_OK);
+            return -1;
+        }
+    }
+    else
+    {
+        QMessageBox::information(NULL, STRING_TIP, STRING_MAIN_INIT_DATA_DIR + STRING_FAILED, STRING_OK);
+        return -1;
+    }
 
     QString dir;
     MUtility::getLanguageDir(dir);

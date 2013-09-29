@@ -78,7 +78,6 @@ void TimesectiontableWidget::UpdateTree()
             }
         }
     }
-    //section_tree_widget_->addTopLevelItems(tree_widgetitem_list);
 }
 
 void TimesectiontableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *, int)
@@ -165,16 +164,6 @@ void TimesectiontableWidget::OnUpdateTreeSlot(unsigned char time_section_id)
         return;
     }
 	UpdateTree();
-    //unsigned char event_id = item->text(1).toInt();
-    //if (event_id == 0)  // top level
-    //{
-    //    AddChild(item, time_section_id);
-    //}
-    //else
-    //{
-    //    QTreeWidgetItem* item_parent = item->parent();
-    //    AddChild(item_parent, time_section_id);
-    //}
 }
 
 void TimesectiontableWidget::OnCustomContextMenuRequested(QPoint)
@@ -285,7 +274,6 @@ void TimesectiontableWidget::AddChild(QTreeWidgetItem* item, unsigned char time_
         item_sub->setText(2, str);
         item_sub->setTextAlignment(2, Qt::AlignCenter);
 
-//        str = get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);
         str = handler_->get_ctrl_mode_desc(time_section_list.at(i).ctrl_mode);
         item_sub->setText(3, str);
         item_sub->setTextAlignment(3, Qt::AlignCenter);
