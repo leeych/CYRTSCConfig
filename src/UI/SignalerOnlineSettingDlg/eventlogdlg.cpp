@@ -1,5 +1,6 @@
 #include "eventlogdlg.h"
 #include "macrostring.h"
+#include "mutility.h"
 #include "synccommand.h"
 #include "eventloghandler.h"
 
@@ -24,7 +25,8 @@ EventLogDlg::~EventLogDlg()
 
 void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
 {
-    file_name_ = "user/tmp/" + ip + ".edat";
+    MUtility::getTempDir(file_name_);
+    file_name_ += ip + ".edat";
     ip_ = ip;
     handler_ = handler;
     tip_label_->clear();
@@ -39,13 +41,14 @@ void EventLogDlg::OnReadLogButtonClicked()
 
 void EventLogDlg::OnDeleteEventButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Remove event", STRING_OK);
     SyncCommand::GetInstance()->DeleteEventLog("1 20130924", this, SLOT(OnCmdDeleteEventLog(QByteArray&)));
 }
 
 void EventLogDlg::OnExportLogButtonClicked()
 {
-    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/log/" + ip_ + ".log" , "Log(*.log);;All File(*.*)");
+    QString dir;
+    MUtility::getLogDir(dir);
+    QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, dir + ip_ + ".log" , "Log(*.log);;All File(*.*)");
     if (log_file.isNull() || log_file.isEmpty())
     {
         return;
@@ -245,11 +248,8 @@ void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 
 void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
 {
-    char head[4] = {'\0'};
+    QString head_str(byte_arr.left(4));
     char const *content = byte_arr.data();
-    memcpy(head, content, 4);
-    QString head_str(head);
-//    if (strncmp(head, "CYT6", 4) != 0)
     if (head_str != QString("CYT6"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_INCORRECT, STRING_OK);
@@ -262,6 +262,7 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     char cy_header[18] = {'\0'};
     memcpy(cy_header, content + 8, sizeof(cy_header));
     byte_arr.remove(0, 4+4+18);
+//    byte_arr.remove(0, 4);
     int index = byte_arr.indexOf("END");
     byte_arr.remove(index, 3);
 

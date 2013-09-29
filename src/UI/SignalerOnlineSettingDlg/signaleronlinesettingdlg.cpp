@@ -1,16 +1,16 @@
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QMessageBox>
-
-#include <QFile>
-#include <QFileDialog>
-
 #include "signaleronlinesettingdlg.h"
 #include "macrostring.h"
+#include "mutility.h"
 #include "tscparam.h"
 #include "filereaderwriter.h"
 #include "synccommand.h"
 #include "eventloghandler.h"
+
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -54,7 +54,8 @@ void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
 {
     ip_ = ip;
     port_ = port;
-    cfg_file_ = "user/config/" + ip_ + ".dat";
+    MUtility::getConfigDir(cfg_file_);
+    cfg_file_ += ip_ + ".dat";
     UpdateUI();
     exec();
 }
@@ -269,7 +270,6 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     else
     {
         conn_tip_label_->setText(STRING_UI_SIGNALER_PARSE_FILE_CONFIG);
-//        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
     }
     config_byte_array_.clear();
 }

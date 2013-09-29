@@ -26,6 +26,37 @@ void MUtility::getStyleSheetDir(QString &strCssDir)
     strCssDir += "/qstylesheet/";
 }
 
+void MUtility::getUserDataDir(QString &userDir)
+{
+    userDir = QCoreApplication::applicationDirPath();
+    userDir += "/user/";
+}
+
+void MUtility::getLogDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/user/log/";
+}
+
+void MUtility::getReportDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/user/report/";
+}
+
+void MUtility::getTempDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/user/temp/";
+}
+
+void MUtility::getMonitorDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/user/monitor/";
+}
+
+void MUtility::getConfigDir(QString &strDir)
+{
+    strDir = QCoreApplication::applicationDirPath() + "/user/config/";
+}
+
 void MUtility::getCurIconDir(QString &strCurIconDir)
 {
     strCurIconDir = QCoreApplication::applicationDirPath();

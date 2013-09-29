@@ -33,7 +33,8 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
 void RealtimeMonitorDlg::Initialize(const QString &ip)
 {
     ip_ = ip;
-    cfg_file_ = "user/monitor/" + ip_ + ".mdat";
+    MUtility::getUserDataDir(cfg_file_);
+    cfg_file_ += "/monitor/" + ip_ + ".mdat";
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
@@ -92,6 +93,12 @@ void RealtimeMonitorDlg::OnSignalerTimeTimerOut()
 {
     date_time_ = date_time_.addSecs(1);
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
+    second_count_++;
+    if (second_count_ % 3 == 0)
+    {
+        UpdateScheduleInfo();
+        second_count_ = 0;
+    }
 }
 
 void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
@@ -145,7 +152,10 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
             file.write(cfg_array_);
 //            file.flush();
             file.close();
-            UpdateScheduleInfo();
+            if (InitTscParam())
+            {
+                UpdateScheduleInfo();
+            }
             sync_cmd_->GetLightStatus(this, SLOT(OnCmdParseParam(QByteArray&)));
         }
     }
@@ -511,15 +521,14 @@ void RealtimeMonitorDlg::UpdateUI()
     signaler_time_label_->setText(str);
     tree_grp_->hide();
 
-    UpdateScheduleInfo();
+    if (InitTscParam())
+    {
+        UpdateScheduleInfo();
+    }
 }
 
 void RealtimeMonitorDlg::UpdateScheduleInfo()
 {
-    if (!InitTscParam())
-    {
-        return;
-    }
     unsigned char sched_id = 0;
     unsigned char time_section_id = 0;
     QDate curr_date = QDate::currentDate();

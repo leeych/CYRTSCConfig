@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
+#include <QDateTime>
 
 #include <QTcpSocket>
 
@@ -35,6 +36,7 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *);
+    void timerEvent(QTimerEvent *);
     
 private:
     void InitPage();
@@ -48,6 +50,8 @@ private:
 private:
     QString dialog_name_;
     QList<QPushButton *> button_list_;
+    QDateTime signaler_time_;
+    int timer_id_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

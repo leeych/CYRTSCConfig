@@ -6,7 +6,6 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QDateTime>
 #include <QMessageBox>
 #include <QIODevice>
 
@@ -14,12 +13,18 @@
 TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
 {
+    timer_id_ = 0;
     InitPage();
     InitSignalSlots();
 }
 
 TimeIPDlg::~TimeIPDlg()
 {
+    if (timer_id_ != 0)
+    {
+        killTimer(timer_id_);
+        timer_id_ = 0;
+    }
 }
 
 void TimeIPDlg::Initialize()
@@ -38,6 +43,7 @@ void TimeIPDlg::OnSyncTimeButtonClicked()
     QDateTime datetime = QDateTime::currentDateTime();
     unsigned int seconds = datetime.toTime_t();
     SyncCommand::GetInstance()->SyncSignalerTime(seconds, this, SLOT(OnCmdSyncSignalerTime(QByteArray&)));
+    sync_time_button_->setEnabled(false);
 }
 
 void TimeIPDlg::OnRefreshButtonClicked()
@@ -70,9 +76,12 @@ void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
     {
         sec -= 60 * 60 * 8;
     }
-    QDateTime datetime = QDateTime::fromTime_t(sec).toLocalTime();
-    sys_time_text_label_->setText(datetime.toString("yyyy-MM-dd hh:mm:ss ddd"));
-
+    signaler_time_ = QDateTime::fromTime_t(sec).toLocalTime();
+    sys_time_text_label_->setText(signaler_time_.toString("yyyy-MM-dd hh:mm:ss ddd"));
+    if (timer_id_ == 0)
+    {
+        timer_id_ = startTimer(1000);
+    }
     EnableButtonExcept(true, NULL);
 }
 
@@ -110,6 +119,7 @@ void TimeIPDlg::OnCmdReadNetworkingInfo(QByteArray &content)
 
 void TimeIPDlg::OnCmdSyncSignalerTime(QByteArray &array_content)
 {
+    sync_time_button_->setEnabled(true);
     if (array_content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SYNC_TIME_NULL + STRING_FAILED, STRING_OK);
@@ -152,7 +162,7 @@ void TimeIPDlg::OnConnectEstablish()
 
 void TimeIPDlg::OnConnectError(QAbstractSocket::SocketError)
 {
-    qDebug() << "socket error";
+    QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_TIP_DISCONN, STRING_OK);
 }
 
 void TimeIPDlg::closeEvent(QCloseEvent *)
@@ -161,6 +171,20 @@ void TimeIPDlg::closeEvent(QCloseEvent *)
     ip_lineedit_->clear();
     mask_lineedit_->clear();
     gateway_lineedit_->clear();
+    if (timer_id_ != 0)
+    {
+        killTimer(timer_id_);
+        timer_id_ = 0;
+    }
+}
+
+void TimeIPDlg::timerEvent(QTimerEvent *)
+{
+    if (timer_id_ != 0)
+    {
+        signaler_time_ = signaler_time_.addSecs(1);
+        sys_time_text_label_->setText(signaler_time_.toString("yyyy-MM-dd hh:mm:ss ddd"));
+    }
 }
 
 void TimeIPDlg::InitPage()
