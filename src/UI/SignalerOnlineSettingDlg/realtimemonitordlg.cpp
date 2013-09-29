@@ -140,25 +140,13 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         }
         else
         {
+            file.write(cfg_array_);
+//            file.flush();
+            file.close();
             UpdateScheduleInfo();
             sync_cmd_->GetLightStatus(this, SLOT(OnCmdParseParam(QByteArray&)));
         }
     }
-}
-
-void RealtimeMonitorDlg::OnCmdStartMonitoring(QByteArray &array)
-{
-    Q_UNUSED(array);
-}
-
-void RealtimeMonitorDlg::OnCmdStopMonitoring(QByteArray &array)
-{
-    Q_UNUSED(array);
-}
-
-void RealtimeMonitorDlg::OnCmdGetLightParam(QByteArray &array)
-{
-    Q_UNUSED(array);
 }
 
 void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)

@@ -21,7 +21,6 @@
         <file>qstylesheet/mainwindow.qss</file>
         <file>images/login_icon.png</file>
         <file>images/app.ico</file>
-        <file>images/monitor/road_branch.bmp</file>
         <file>images/monitor/circle_d_img.bmp</file>
         <file>images/monitor/circle_g_img.bmp</file>
         <file>images/monitor/circle_r_img.bmp</file>
@@ -41,5 +40,6 @@
         <file>images/monitor/tg_img.bmp</file>
         <file>images/monitor/tr_img.bmp</file>
         <file>images/monitor/ty_img.bmp</file>
+        <file>images/monitor/road_branch.bmp</file>
     </qresource>
 </RCC>

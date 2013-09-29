@@ -85,9 +85,6 @@ public slots:
 
     // on cmd
     void OnCmdReadSignalerConfigFile(QByteArray &array);
-    void OnCmdStartMonitoring(QByteArray &array);
-    void OnCmdStopMonitoring(QByteArray &array);
-    void OnCmdGetLightParam(QByteArray &array);
     // Parse all the tcp socket command return result
     void OnCmdParseParam(QByteArray &array);
 
