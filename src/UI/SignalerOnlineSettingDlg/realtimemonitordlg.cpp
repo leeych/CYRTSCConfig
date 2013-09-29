@@ -16,12 +16,12 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     QDialog(parent)
 {
     sync_cmd_ = SyncCommand::GetInstance();
+    signaler_timer_ = new QTimer(this);
+    is_inited_ = false;
+
     InitPage();
     InitSignalSlots();
     InitCtrlModeDesc();
-
-    signaler_timer_ = new QTimer(this);
-    is_inited_ = false;
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
