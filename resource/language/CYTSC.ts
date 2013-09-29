@@ -1407,7 +1407,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="404"/>
-        <location filename="../../include/macrostring.h" line="545"/>
+        <location filename="../../include/macrostring.h" line="546"/>
         <source>Parse signaler configuration file</source>
         <translation>解析信号机配置文件</translation>
     </message>
@@ -1962,22 +1962,27 @@
         <translation>信号机时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="544"/>
+        <location filename="../../include/macrostring.h" line="543"/>
+        <source>Green-Yellow-Red</source>
+        <translation>绿灯-黄灯-红灯</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="545"/>
         <source>Signaler network disconnected</source>
         <translation>网络连接已断开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="546"/>
+        <location filename="../../include/macrostring.h" line="547"/>
         <source>Parse socket package error</source>
         <translation>解析网络数据包出错</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="547"/>
+        <location filename="../../include/macrostring.h" line="548"/>
         <source>Require vehicle detector data</source>
         <translation>获取车辆检测器数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="548"/>
+        <location filename="../../include/macrostring.h" line="549"/>
         <source>Require detector status info data</source>
         <translation>获取检测器状态信息</translation>
     </message>
