@@ -172,6 +172,8 @@ private:
     QGraphicsView *graphics_view_;
     QGraphicsScene main_scene_;
     QList<QGraphicsPixmapItem *> pix_item_list_;
+    QList<QGraphicsPixmapItem *> light_list_;
+    QList<QPointF *> channel_point_list_;
 
     QImage main_image_;
     QPixmap ld_pix_, lr_pix_, ly_pix_, lg_pix_;

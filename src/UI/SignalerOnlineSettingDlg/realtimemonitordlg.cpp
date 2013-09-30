@@ -28,6 +28,13 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
 {
+    QPointF *ptr = NULL;
+    for (int i = 0; i < channel_point_list_.size(); i++)
+    {
+        ptr = channel_point_list_.at(i);
+        delete ptr;
+        channel_point_list_[i] = NULL;
+    }
 }
 
 void RealtimeMonitorDlg::Initialize(const QString &ip)
@@ -469,29 +476,68 @@ void RealtimeMonitorDlg::InitPixmap()
     circle_r_pix_.load(dir + "/monitor/circle_r_img.bmp");
     circle_g_pix_.load(dir + "/monitor/circle_g_img.bmp");
 
-    pix_item_list_
-            << main_scene_.addPixmap(dd_pix_) << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_)
-            << main_scene_.addPixmap(ld_pix_) << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_)
-            << main_scene_.addPixmap(td_pix_) << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_)
-            << main_scene_.addPixmap(rd_pix_) << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_)
-            << main_scene_.addPixmap(rd_pix_) << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_)
-            << main_scene_.addPixmap(dd_pix_) << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_)
-            << main_scene_.addPixmap(ld_pix_) << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_)
-            << main_scene_.addPixmap(td_pix_) << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_)
-            << main_scene_.addPixmap(ld_pix_) << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_)
-            << main_scene_.addPixmap(td_pix_) << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_)
-            << main_scene_.addPixmap(rd_pix_) << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_)
-            << main_scene_.addPixmap(dd_pix_) << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_)
-            << main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_r_pix_)<<main_scene_.addPixmap(circle_d_pix_)<<main_scene_.addPixmap(circle_g_pix_);
+    QPointF *pt1 = new QPointF(165, 393);
+    QPointF *pt2 = new QPointF(44, 166);
+    QPointF *pt3 = new QPointF(270, 45);
+    QPointF *pt4 = new QPointF(392, 271);
+    QPointF *pt5 = new QPointF(200, 393);
+    QPointF *pt6 = new QPointF(44, 201);
+    QPointF *pt7 = new QPointF(236, 45);
+    QPointF *pt8 = new QPointF(392, 237);
+    QPointF *pt9 = new QPointF(131, 393);
+    QPointF *pt10 = new QPointF(44, 132);
+    QPointF *pt11 = new QPointF(305, 45);
+    QPointF *pt12 = new QPointF(392, 306);
+    QPointF *pt13 = new QPointF(93, 109);
+    QPointF *pt13_2 = new QPointF(93, 343);
+    QPointF *pt14 = new QPointF(109, 93);
+    QPointF *pt14_2 = new QPointF(343, 93);
+    QPointF *pt15 = new QPointF(358, 110);
+    QPointF *pt15_2 = new QPointF(358, 344);
+    QPointF *pt16_2 = new QPointF(342, 361);
+    QPointF *pt16 = new QPointF(108, 361);
 
-    // TODO: left to be done.
+    channel_point_list_ << pt1 << pt2 << pt3 << pt4 << pt5 << pt6 << pt7 << pt8 << pt9 << pt10
+                        << pt11 << pt12 << pt13 << pt14 << pt15 << pt16 << pt13_2 << pt14_2 << pt15_2 << pt16_2;
+    pix_item_list_
+            << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_) << main_scene_.addPixmap(dd_pix_)
+            << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_) << main_scene_.addPixmap(ld_pix_)
+            << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_) << main_scene_.addPixmap(td_pix_)
+            << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_) << main_scene_.addPixmap(rd_pix_)
+            << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_) << main_scene_.addPixmap(rd_pix_)
+            << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_) << main_scene_.addPixmap(dd_pix_)
+            << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_) << main_scene_.addPixmap(ld_pix_)
+            << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_) << main_scene_.addPixmap(td_pix_)
+            << main_scene_.addPixmap(lr_pix_) << main_scene_.addPixmap(ly_pix_) << main_scene_.addPixmap(lg_pix_) << main_scene_.addPixmap(ld_pix_)
+            << main_scene_.addPixmap(tr_pix_) << main_scene_.addPixmap(ty_pix_) << main_scene_.addPixmap(tg_pix_) << main_scene_.addPixmap(td_pix_)
+            << main_scene_.addPixmap(rr_pix_) << main_scene_.addPixmap(ry_pix_) << main_scene_.addPixmap(rg_pix_) << main_scene_.addPixmap(rd_pix_)
+            << main_scene_.addPixmap(dr_pix_) << main_scene_.addPixmap(dy_pix_) << main_scene_.addPixmap(dg_pix_) << main_scene_.addPixmap(dd_pix_);
+    int count = pix_item_list_.size() / 4;
+    for (int i = 0; i < count; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            pix_item_list_.at(i*4 + j)->setPos(*channel_point_list_.at(i));
+        }
+    }
+
+    light_list_
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_)
+            << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_r_pix_) << main_scene_.addPixmap(circle_d_pix_) << main_scene_.addPixmap(circle_g_pix_);
+    count = light_list_.size() / 4;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            light_list_.at(i*4 + j)->setPos(*channel_point_list_.at(i+12));
+        }
+    }
 }
 
 void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
