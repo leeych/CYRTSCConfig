@@ -129,7 +129,7 @@ void MUtility::trimFloatString(QString &strFloat)
 
 bool MUtility::checkIPString(const QString &ip)
 {
-    QRegExp reg("^([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])/.([1]?/d/d?|2[0-4]/d|25[0-5])$");
+	QRegExp reg("^([1]?\d\d?|2[0-4]\d|25[0-5])\.([1]?\d\d?|2[0-4]\d|25[0-5])\.([1]?\d\d?|2[0-4]\d|25[0-5])\.([1]?\d\d?|2[0-4]\d|25[0-5])$");
     if (!reg.exactMatch(ip))
     {
         return false;
