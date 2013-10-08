@@ -152,7 +152,7 @@ void SyncCommand::ConfigNetwork(const QStringList &net_info, QObject *target, co
 {
     InitParseHandler(target, slot);
     QString cmd_str("CYT8,DHCP=\"%1\",DefaultGateway=\"%2\",IPAddress=\"%3\",SubnetMask=\"%4\",END");
-    cmd_str.arg(net_info.at(0)).arg(net_info.at(1)).arg(net_info.at(2)).arg(net_info.at(3));
+    cmd_str = cmd_str.arg(net_info.at(0)).arg(net_info.at(1)).arg(net_info.at(2)).arg(net_info.at(3));
     socket_->write(cmd_str.toStdString().c_str());
 }
 

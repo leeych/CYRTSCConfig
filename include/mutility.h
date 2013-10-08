@@ -25,6 +25,7 @@ public:
     static void trimFloatString(QString& strFloat);
 
     static bool checkIPString(const QString &ip);
+    static QString trimmedAll(const QString &ip);
 };
 
 #endif // MUTILITY_H
