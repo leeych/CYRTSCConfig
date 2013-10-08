@@ -8,9 +8,11 @@ class EventLogDescriptor
 {
 public:
     static EventLogDescriptor *GetInstance();
+    QList<QString> get_log_desc_list();
     QString get_log_desc(unsigned char event_type_id, unsigned int log_value);
     QString get_event_type_log_desc(unsigned char event_type_id);
     QString get_ctrl_mode_desc(unsigned char ctrl_mode);
+    unsigned char get_event_type_id(const QString &desc);
     void DisposeDescriptor();
 
 private:
@@ -66,7 +68,7 @@ private:
     };
 
     QMap<EventLogTag, QString> log_desc_map_;
-    QMap<unsigned char, QString> log_txt_caption_map_;
+    QMap<unsigned char, QString> export_caption_map_;
 };
 
 #endif // EVENTLOGDESC_H

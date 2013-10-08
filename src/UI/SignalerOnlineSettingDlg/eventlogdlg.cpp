@@ -2,7 +2,6 @@
 #include "macrostring.h"
 #include "mutility.h"
 #include "synccommand.h"
-#include "eventloghandler.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -84,7 +83,10 @@ void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col
     {
         return;
     }
-    UpdateEventDetailTree();
+    QString desc = item->text(0).trimmed();
+    unsigned char event_type_id = handler_->get_event_type_id_by_desc(desc);
+    QList<LogParam> log_param_list = handler_->get_event_log_list(event_type_id);
+    UpdateEventDetailTree(log_param_list);
 }
 
 void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
@@ -207,6 +209,28 @@ void EventLogDlg::UpdateEventDetailTree()
     event_detail_tree_->addTopLevelItems(item_list);
 }
 
+void EventLogDlg::UpdateEventDetailTree(const QList<LogParam> &log_param_list)
+{
+    event_detail_tree_->clear();
+    QList<QTreeWidgetItem *> item_list;
+    item_list.clear();
+    QString desc;
+    for (int i = 0; i < log_param_list.size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(event_detail_tree_);
+        desc.sprintf("%d", log_param_list.at(i).event_type_id);
+        item->setText(0, desc);
+        desc.sprintf("%04d", log_param_list.at(i).log_id);
+        item->setText(1, desc);
+        desc = handler_->get_datetime_desc(log_param_list.at(i).log_time);
+        item->setText(2, desc);
+        desc = handler_->get_log_desc(log_param_list.at(i).event_type_id, log_param_list.at(i).log_value);
+        item->setText(3, desc);
+        item_list.append(item);
+    }
+    event_detail_tree_->addTopLevelItems(item_list);
+}
+
 void EventLogDlg::UpdateUI()
 {
     handler_->init_from_file(file_name_);
@@ -218,7 +242,10 @@ void EventLogDlg::UpdateEventTypeTree()
 {
     event_tree_->clear();
     QList<QTreeWidgetItem *> item_list;
+#if 0
     QList<QString> event_desc_list = handler_->get_event_type_desc_list();
+#endif
+    QList<QString> event_desc_list = handler_->get_all_event_type_desc_list();
     for (int i = 0; i < event_desc_list.size(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(event_tree_);

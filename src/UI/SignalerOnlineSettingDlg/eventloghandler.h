@@ -47,12 +47,14 @@ public:
     void set_log(const LogParam &loginfo);
     bool get_log(unsigned char event_type_id, unsigned int log_value, LogParam &loginfo);
     bool remove_log(unsigned char event_type_id, unsigned int log_value);
-    QList<EventParam> get_event_type_list();
+//    QList<EventParam> get_event_type_list();
+    QList<QString> get_all_event_type_desc_list();
     QList<QString> get_event_type_desc_list();
     QList<LogParam> get_event_log_list(unsigned char event_type_id);
 
     QString get_log_desc(unsigned char event_type_id, unsigned int log_value);
     QString get_datetime_desc(unsigned int seconds);
+    unsigned char get_event_type_id_by_desc(const QString &desc);
 
     bool export_event_log(const QString &file_name);
     bool export_report(const QString &file_name);

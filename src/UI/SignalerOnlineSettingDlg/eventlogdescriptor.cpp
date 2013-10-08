@@ -11,92 +11,124 @@ EventLogDescriptor::EventLogDescriptor()
 
     EventLogTag tag;
     tag.event_type_id = 2;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN_CONFL + STRING_EVENT_LOG_RESTORE));
     tag.log_value = 1;
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN_CONFL + STRING_EVENT_LOG_RESTORE));
 
     tag.event_type_id = 3;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN_CONFL));
     tag.log_value = 1;
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN_CONFL));
 
     tag.event_type_id = 4;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_BRIGHT_TOGETHER + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
-        log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_RESTORE));
+        log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_BRIGHT_TOGETHER + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 5;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RED + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RED + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 6;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RED + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RED + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 7;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 8;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 9;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_OFF_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 10;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_ERR_BRIGHT + STRING_EVENT_LOG_RESTORE));
     }
     tag.event_type_id = 11;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_BRIGHT_TOGETHER));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
-        log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RG_BRIGHT));
+        log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_BRIGHT_TOGETHER));
     }
     tag.event_type_id = 12;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RED + STRING_EVENT_LOG_OFF_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RED + STRING_EVENT_LOG_OFF_BRIGHT));
     }
     tag.event_type_id = 13;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_RED + STRING_EVENT_LOG_ERR_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_RED + STRING_EVENT_LOG_ERR_BRIGHT));
     }
     tag.event_type_id = 14;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_OFF_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_OFF_BRIGHT));
     }
     tag.event_type_id = 15;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_ERR_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_ERR_BRIGHT));
     }
     tag.event_type_id = 16;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_OFF_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
         log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CHANNEL + QString::number(i) + STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_OFF_BRIGHT));
     }
     tag.event_type_id = 17;
+    tag.log_value = 0;
+    log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_ERR_BRIGHT));
     for (int i = 1; i <= Max_Channel_Num; i++)
     {
         tag.log_value = i;
@@ -165,6 +197,23 @@ EventLogDescriptor *EventLogDescriptor::GetInstance()
     return instance_;
 }
 
+QList<QString> EventLogDescriptor::get_log_desc_list()
+{
+    QList<QString> desc_list;
+    EventLogTag tag;
+    QMap<EventLogTag, QString>::ConstIterator const_iter = log_desc_map_.constBegin();
+    while (const_iter != log_desc_map_.constEnd())
+    {
+        tag = const_iter.key();
+        if (tag.log_value == 0)
+        {
+            desc_list.append(const_iter.value());
+        }
+        ++const_iter;
+    }
+    return desc_list;
+}
+
 QString EventLogDescriptor::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
     EventLogTag tag(event_type_id, log_value);
@@ -174,7 +223,7 @@ QString EventLogDescriptor::get_log_desc(unsigned char event_type_id, unsigned i
 
 QString EventLogDescriptor::get_event_type_log_desc(unsigned char event_type_id)
 {
-    QString desc = log_txt_caption_map_.value(event_type_id);
+    QString desc = export_caption_map_.value(event_type_id);
     return desc;
 }
 
@@ -244,6 +293,21 @@ QString EventLogDescriptor::get_ctrl_mode_desc(unsigned char ctrl_mode)
         break;
     }
     return str;
+}
+
+unsigned char EventLogDescriptor::get_event_type_id(const QString &desc)
+{
+    QMap<EventLogTag, QString>::ConstIterator const_iter = log_desc_map_.constBegin();
+    while (const_iter != log_desc_map_.constEnd())
+    {
+        if (const_iter.value() == desc)
+        {
+            EventLogTag tag = const_iter.key();
+            return tag.event_type_id;
+        }
+        ++const_iter;
+    }
+    return 0;
 }
 
 void EventLogDescriptor::DisposeDescriptor()
@@ -316,24 +380,24 @@ void EventLogDescriptor::GenSoftwareDesc()
 
 void EventLogDescriptor::GenLogCaptionDesc()
 {
-    log_txt_caption_map_.insert(1, QString(STRING_EXPORT_SOFTWARE_EVENT));
-    log_txt_caption_map_.insert(2, QString(STRING_EXPORT_GREEN_CONFLICT_RESTORE));
-    log_txt_caption_map_.insert(3, QString(STRING_EXPORT_GREEN_CONFLICT));
-    log_txt_caption_map_.insert(4, QString(STRING_EXPORT_RG_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(5, QString(STRING_EXPORT_RED_OFF_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(6, QString(STRING_EXPORT_RED_ERR_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(7, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(8, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(9, QString(STRING_EXPORT_GREEN_OFF_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(10, QString(STRING_EXPORT_GREEN_ERR_BRIGHT_RESTORE));
-    log_txt_caption_map_.insert(11, QString(STRING_EXPORT_RG_BRIGHT));
-    log_txt_caption_map_.insert(12, QString(STRING_EXPORT_RED_OFF_BRIGHT));
-    log_txt_caption_map_.insert(13, QString(STRING_EXPORT_RED_ERR_BRIGHT));
-    log_txt_caption_map_.insert(14, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT));
-    log_txt_caption_map_.insert(15, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT));
-    log_txt_caption_map_.insert(16, QString(STRING_EXPORT_GREEN_OFF_BRIGHT));
-    log_txt_caption_map_.insert(17, QString(STRING_EXPORT_GREEN_ERR_BRIGHT));
-    log_txt_caption_map_.insert(18, QString(STRING_EXPORT_CAN_COMMUNICATION));
-    log_txt_caption_map_.insert(19, QString(STRING_EXPORT_VEHICLE_FAULT));
-    log_txt_caption_map_.insert(20, QString(STRING_EXPORT_DRIVER_EVENT));
+    export_caption_map_.insert(1, QString(STRING_EXPORT_SOFTWARE_EVENT));
+    export_caption_map_.insert(2, QString(STRING_EXPORT_GREEN_CONFLICT_RESTORE));
+    export_caption_map_.insert(3, QString(STRING_EXPORT_GREEN_CONFLICT));
+    export_caption_map_.insert(4, QString(STRING_EXPORT_RG_BRIGHT_RESTORE));
+    export_caption_map_.insert(5, QString(STRING_EXPORT_RED_OFF_BRIGHT_RESTORE));
+    export_caption_map_.insert(6, QString(STRING_EXPORT_RED_ERR_BRIGHT_RESTORE));
+    export_caption_map_.insert(7, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT_RESTORE));
+    export_caption_map_.insert(8, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT_RESTORE));
+    export_caption_map_.insert(9, QString(STRING_EXPORT_GREEN_OFF_BRIGHT_RESTORE));
+    export_caption_map_.insert(10, QString(STRING_EXPORT_GREEN_ERR_BRIGHT_RESTORE));
+    export_caption_map_.insert(11, QString(STRING_EXPORT_RG_BRIGHT));
+    export_caption_map_.insert(12, QString(STRING_EXPORT_RED_OFF_BRIGHT));
+    export_caption_map_.insert(13, QString(STRING_EXPORT_RED_ERR_BRIGHT));
+    export_caption_map_.insert(14, QString(STRING_EXPORT_YELLOW_OFF_BRIGHT));
+    export_caption_map_.insert(15, QString(STRING_EXPORT_YELLOW_ERR_BRIGHT));
+    export_caption_map_.insert(16, QString(STRING_EXPORT_GREEN_OFF_BRIGHT));
+    export_caption_map_.insert(17, QString(STRING_EXPORT_GREEN_ERR_BRIGHT));
+    export_caption_map_.insert(18, QString(STRING_EXPORT_CAN_COMMUNICATION));
+    export_caption_map_.insert(19, QString(STRING_EXPORT_VEHICLE_FAULT));
+    export_caption_map_.insert(20, QString(STRING_EXPORT_DRIVER_EVENT));
 }

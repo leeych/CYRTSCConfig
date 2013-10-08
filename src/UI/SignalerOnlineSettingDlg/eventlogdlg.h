@@ -7,8 +7,9 @@
 #include <QLabel>
 
 #include "tsc.h"
+#include "eventloghandler.h"
 
-class EventLogHandler;
+//class EventLogHandler;
 
 class EventLogDlg : public QDialog
 {
@@ -37,6 +38,7 @@ private:
     void UpdateUI();
     void UpdateEventTypeTree();
     void UpdateEventDetailTree();
+    void UpdateEventDetailTree(const QList<LogParam> &log_param_list);
 
     void InitTree(QTreeWidget *tree, const QStringList &header);
 

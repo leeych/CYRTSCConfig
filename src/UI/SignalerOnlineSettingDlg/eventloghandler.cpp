@@ -105,11 +105,16 @@ bool EventLogHandler::remove_log(unsigned char event_type_id, unsigned int log_v
     return true;
 }
 
-QList<EventParam> EventLogHandler::get_event_type_list()
+QList<QString> EventLogHandler::get_all_event_type_desc_list()
 {
-    QList<EventParam> event_list;
-    return event_list;
+    return descriptor_->get_log_desc_list();
 }
+
+//QList<EventParam> EventLogHandler::get_event_type_list()
+//{
+//    QList<EventParam> event_list;
+//    return event_list;
+//}
 
 QList<QString> EventLogHandler::get_event_type_desc_list()
 {
@@ -163,6 +168,11 @@ QString EventLogHandler::get_datetime_desc(unsigned int seconds)
     QDateTime datetime = QDateTime::fromTime_t(seconds);
     desc = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
     return desc;
+}
+
+unsigned char EventLogHandler::get_event_type_id_by_desc(const QString &desc)
+{
+    return descriptor_->get_event_type_id(desc);
 }
 
 bool EventLogHandler::export_event_log(const QString &file_name)
