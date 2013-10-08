@@ -140,6 +140,10 @@ void PhasetableWidget::OnDeleteActionClicked()
 
 void PhasetableWidget::OnSaveActionClicked()
 {
+    if (tree_widget_->children().size() > 0)
+    {
+        emit phaseEditedSignal();
+    }
 	handler_->save_data();
     emit updateChannelCtrlsrcSignal();
 }

@@ -138,6 +138,10 @@ void PhasetimingtableWidget::OnDeleteActionClicked()
 
 void PhasetimingtableWidget::OnSaveActionClicked()
 {
+    if (tree_widget_->children().size() > 0)
+    {
+        emit stageTimingEditedSignal();
+    }
 	handler_->save_data();
     emit updateTimingCycleSignal();
 }

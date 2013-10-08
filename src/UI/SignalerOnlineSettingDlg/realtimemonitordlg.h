@@ -107,8 +107,35 @@ private:
     bool InitTscParam();
     bool CheckPackage(QByteArray &array);
 
-    void ReadSignalerConfigFile();
+    enum LightColor
+    {
+        Red = 0,
+        Yellow,
+        Green,
+        Off
+    };
 
+    enum Direction
+    {
+        South = 0,
+        West,
+        North,
+        East,
+        SouthRight,
+        WestDown,
+        NorthLeft,
+        EastUp,
+        SouthLeft,
+        WestUp,
+        NorthRight,
+        EastDown
+    };
+
+    void CloseAllLights();
+    void SetPedestrianLight(LightColor color, int channel_id, bool enable);
+    void SetVehicleLight(LightColor color, int channel_id, bool enable);
+
+    void ReadSignalerConfigFile();
     void StartMonitoring();
     void StopMonitoring();
 
@@ -142,16 +169,10 @@ private:
     int ui_timer_id_;
     bool is_uitimer_started_;
 
-    enum LightStatus
-    {
-        Red = 0,
-        Yellow,
-        Green,
-        Off
-    };
+
     typedef struct ChannelStatusInfoTag
     {
-        QVector<LightStatus> channel_vec;
+        QVector<LightColor> channel_vec;
         unsigned char work_mode;
         unsigned char plan_id;
         unsigned int phase_id;

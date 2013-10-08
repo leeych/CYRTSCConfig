@@ -152,6 +152,10 @@ void TimesectiontableWidget::OnDeleteActionClicked()
 
 void TimesectiontableWidget::OnSaveActionClicked()
 {
+    if (section_tree_widget_->children().size() > 0)
+    {
+        emit timesectionEditedSignal();
+    }
 	handler_->save_data();
 }
 

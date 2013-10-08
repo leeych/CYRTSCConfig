@@ -21,6 +21,7 @@ public:
     void UpdateTable();
 
 signals:
+    void channelEditedSignal();
 
 public slots:
     void OnTableCellDoubleClicked(int row, int col);

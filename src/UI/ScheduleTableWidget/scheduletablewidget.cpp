@@ -121,6 +121,10 @@ void ScheduleTableWidget::OnDeleteActionClicked()
 
 void ScheduleTableWidget::OnSaveActionClicked()
 {
+    if (schedule_table_->rowCount() > 0)
+    {
+        emit schedEditedSignal();
+    }
 	handler_->save_data();
 }
 

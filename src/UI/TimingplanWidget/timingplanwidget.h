@@ -21,6 +21,7 @@ public:
     void UpdateTable();
 
 signals:
+    void timingEditedSignal();
 
 public slots:
     void OnAddActionClicked();

@@ -6,9 +6,11 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    is_edited_ = false;
     CreateTabPages();
     InitPage();
     InitSignalSlots();
+    OnConfigoptSlot(STRING_UI_UNIT_TABLE);
 }
 
 MainWindow::~MainWindow()
@@ -56,6 +58,11 @@ void MainWindow::OnUpdateTabPageSlot()
     detector_tab_page_->UpdateTable();
 }
 
+void MainWindow::OnConfigEditedSlot()
+{
+    is_edited_ = true;
+}
+
 void MainWindow::OnCommunicationToolButtonClicked()
 {
     left_splitter_->setVisible(false);
@@ -78,7 +85,11 @@ void MainWindow::OnHelpToolButtonClicked()
 void MainWindow::OnSaveToolButtonClicked()
 {
 	// make sure that all of the changes have already been saved to the disk
-	unitparam_tab_page_->OnOkButtonClicked();
+    bool state = unitparam_tab_page_->OnOkButtonClicked();
+    if (!state)
+    {
+        return;
+    }
 	schedule_tab_page_->OnSaveActionClicked();
 	time_section_tab_page_->OnSaveActionClicked();
 	phase_timing_tab_page_->OnSaveActionClicked();
@@ -87,14 +98,12 @@ void MainWindow::OnSaveToolButtonClicked()
 	phase_table_tab_page_->OnSaveActionClicked();
 	channel_tab_page_->OnSaveActionClicked();
 	detector_tab_page_->OnSaveActionClicked();
+    if (!is_edited_)
+    {
+        return;
+    }
 
-	bool status = file_list_widget_->SaveDataFile();
-	if (!status)
-	{
-        QMessageBox::information(this, STRING_TIP, STRING_MAIN_SAVE_FAILED, STRING_OK);
-		return;
-	}
-	else
+    if (file_list_widget_->SaveDataFile())
 	{
         QMessageBox::information(this, STRING_TIP, STRING_MAIN_SAVE_SUCCESS, STRING_OK);
 		return;
@@ -160,6 +169,15 @@ void MainWindow::InitSignalSlots()
     connect(file_list_widget_, SIGNAL(updateFilePathSignal(QString)), this, SLOT(OnUpdateStatusBarSlot(QString)));
     connect(phase_timing_tab_page_, SIGNAL(updateTimingCycleSignal()), timing_plan_tab_page_, SLOT(OnUpdateTimingCycleSlot()));
     connect(phase_table_tab_page_, SIGNAL(updateChannelCtrlsrcSignal()), channel_tab_page_, SLOT(OnUpdateChannelCtrlsrcSlot()));
+
+    connect(schedule_tab_page_, SIGNAL(schedEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(time_section_tab_page_, SIGNAL(timesectionEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(timing_plan_tab_page_, SIGNAL(timingEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(phase_timing_tab_page_, SIGNAL(stageTimingEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(phase_table_tab_page_, SIGNAL(phaseEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(phase_conflict_tab_page_, SIGNAL(phaseErrEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(channel_tab_page_, SIGNAL(channelEditedSignal()), this, SLOT(OnConfigEditedSlot()));
+    connect(detector_tab_page_, SIGNAL(detectorEditedSignal()), this, SLOT(OnConfigEditedSlot()));
 }
 
 void MainWindow::CreateToolBar()
@@ -225,13 +243,6 @@ void MainWindow::CreateTabPages()
     tab_page_map_.insert(detector_tab_page_->widget_name(), detector_tab_page_);
     tab_page_map_.insert(unitparam_tab_page_->widget_name(), unitparam_tab_page_);
     tab_page_map_.insert(signaler_tab_page_->widget_name(), signaler_tab_page_);
-
-    QMap<QString, QWidget*>::Iterator iter = tab_page_map_.begin();
-    while (iter != tab_page_map_.end())
-    {
-        qDebug() << iter.key() << endl;
-        ++iter;
-    }
 }
 
 void MainWindow::CreateStatusBar()

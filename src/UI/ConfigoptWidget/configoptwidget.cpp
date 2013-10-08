@@ -158,16 +158,6 @@ void ConfigoptWidget::ResetButtonStatus(const QPushButton *self_btn)
             button_list_.at(i)->setChecked(false);
         }
     }
-//    schedule_plan_button_->setChecked(false);
-//    time_table_button_->setChecked(false);
-//    timing_plan_button_->setChecked(false);
-//    phase_timing_button_->setChecked(false);
-//    phase_table_button_->setChecked(false);
-//    phase_table_button_->setChecked(false);
-//    phase_conflict_button_->setChecked(false);
-//    channel_button_->setChecked(false);
-//    detector_button_->setChecked(false);
-//    unit_param_button_->setChecked(false);
 }
 
 void ConfigoptWidget::OnChannelButtonToggled(bool checked)

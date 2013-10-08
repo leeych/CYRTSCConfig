@@ -24,6 +24,7 @@ public:
     void UpdateUI();
 
 signals:
+    void unitparamEditedSignal();
 
 public slots:
     bool OnOkButtonClicked();

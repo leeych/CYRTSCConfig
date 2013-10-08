@@ -20,6 +20,7 @@ public:
     void UpdateTable();
 
 signals:
+    void phaseErrEditedSignal();
 
 public slots:
     void OnTableCellDoubleClicked(int row, int col);

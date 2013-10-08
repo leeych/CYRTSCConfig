@@ -38,6 +38,7 @@ public slots:
 
 private slots:
     void OnUpdateTabPageSlot();
+    void OnConfigEditedSlot();
 
     void OnCommunicationToolButtonClicked();
     void OnConfigurationToolButtonClicked();
@@ -59,6 +60,7 @@ private:
 private:
     QMap<QString, QWidget*> tab_page_map_;
     QString curr_page_name_;
+    bool is_edited_;
 
 private:
     QLabel* tip_;

@@ -21,6 +21,7 @@ public:
 
 signals:
     void updateChannelCtrlsrcSignal();
+    void phaseEditedSignal();
 
 public slots:
     void OnTreeItemDoubleClicked(QTreeWidgetItem*,int);

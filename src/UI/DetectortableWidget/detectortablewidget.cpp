@@ -149,6 +149,10 @@ void DetectortableWidget::OnDeleteActionClicked()
 
 void DetectortableWidget::OnSaveActionClicked()
 {
+    if (detector_table_->rowCount() > 0)
+    {
+        emit detectorEditedSignal();
+    }
 	handler_->save_data();
 }
 

@@ -88,6 +88,17 @@ void PhaseconflicttableWidget::OnEditActionClicked()
 
 void PhaseconflicttableWidget::OnSaveButtonClicked()
 {
+    if (conflict_table_->rowCount() > 0)
+    {
+        for (int i = 0; i < conflict_table_->rowCount(); i++)
+        {
+            if (!conflict_table_->item(i, 1)->text().isEmpty())
+            {
+                emit phaseErrEditedSignal();
+                break;
+            }
+        }
+    }
 	handler_->save_data();
 }
 

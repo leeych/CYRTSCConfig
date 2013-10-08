@@ -21,6 +21,7 @@ public:
     void UpdateTable();
 
 signals:
+    void schedEditedSignal();
 
 public slots:
     void OnAddActionClicked();

@@ -126,6 +126,10 @@ void ChanneltableWidget::OnDeleteActionClicked()
 
 void ChanneltableWidget::OnSaveActionClicked()
 {
+    if (channel_table_->rowCount() > 0)
+    {
+        emit channelEditedSignal();
+    }
 	handler_->save_data();
 }
 

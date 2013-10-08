@@ -45,6 +45,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
+    CloseAllLights();
     exec();
 }
 
@@ -274,6 +275,7 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
         ui_timer_id_ = 0;
     }
     // TODO: window closed handler
+    ResetButtonStatus(NULL);
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
@@ -770,6 +772,63 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
     return true;
 }
 
+void RealtimeMonitorDlg::CloseAllLights()
+{
+    for (int i = 0; i < pix_item_list_.size(); i++)
+    {
+        pix_item_list_.at(i)->hide();
+    }
+
+    for (int i = 0; i < light_list_.size(); i++)
+    {
+        light_list_.at(i)->hide();
+    }
+}
+
+void RealtimeMonitorDlg::SetPedestrianLight(RealtimeMonitorDlg::LightColor color, int channel_id, bool enable)
+{
+    int index = channel_id % 13;
+    switch (color)
+    {
+    case Off:
+        light_list_.at(index*4)->setVisible(enable);
+        light_list_.at(index*4 + 4*4)->setVisible(enable);
+        break;
+    case Red:
+        light_list_.at(index*4 + 1)->setVisible(enable);
+        light_list_.at(index*4 + 1 + 4*4)->setVisible(enable);
+        break;
+    case Green:
+        light_list_.at(index*4 + 3)->setVisible(enable);
+        light_list_.at(index*4 + 3 + 4*4)->setVisible(enable);
+        break;
+    default:
+        break;
+    }
+}
+
+void RealtimeMonitorDlg::SetVehicleLight(RealtimeMonitorDlg::LightColor color, int channel_id, bool enable)
+{
+    int index = (channel_id-1)*4;
+    switch (color)
+    {
+    case Off:
+        pix_item_list_.at(index + Off)->setVisible(enable);
+        break;
+    case Red:
+        pix_item_list_.at(index + Red)->setVisible(enable);
+        break;
+    case Yellow:
+        pix_item_list_.at(index + Yellow)->setVisible(enable);
+        break;
+    case Green:
+        pix_item_list_.at(index + Green)->setVisible(enable);
+        break;
+    default:
+        break;
+    }
+}
+
 void RealtimeMonitorDlg::ReadSignalerConfigFile()
 {
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
@@ -947,11 +1006,6 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
     return true;
 }
 
-//bool RealtimeMonitorDlg::ParseDetectorContent(QByteArray &array)
-//{
-//    Q_UNUSED(array);
-//    return true;
-//}
 // CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorRealTimeContent(QByteArray &array)
 {

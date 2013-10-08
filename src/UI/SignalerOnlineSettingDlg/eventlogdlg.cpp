@@ -186,8 +186,8 @@ void EventLogDlg::InitSignalSlots()
 
 void EventLogDlg::UpdateEventDetailTree()
 {
-    QList<QTreeWidgetItem *> item_list;
     event_detail_tree_->clear();
+    QList<QTreeWidgetItem *> item_list;
     item_list.clear();
     QList<LogParam> log_param_list = handler_->get_event_log_list(0);
     QString desc;
@@ -262,7 +262,6 @@ void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
     char cy_header[18] = {'\0'};
     memcpy(cy_header, content + 8, sizeof(cy_header));
     byte_arr.remove(0, 4+4+18);
-//    byte_arr.remove(0, 4);
     int index = byte_arr.indexOf("END");
     byte_arr.remove(index, 3);
 

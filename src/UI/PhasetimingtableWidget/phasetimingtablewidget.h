@@ -22,6 +22,7 @@ public:
 
 signals:
     void updateTimingCycleSignal();
+    void stageTimingEditedSignal();
 
 public slots:
     void OnAddActionClicked();

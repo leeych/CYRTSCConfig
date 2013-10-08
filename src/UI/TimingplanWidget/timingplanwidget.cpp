@@ -115,6 +115,10 @@ void TimingplanWidget::OnDeleteActionClicked()
 
 void TimingplanWidget::OnSaveActionClicked()
 {
+    if (timing_table_->rowCount() > 0)
+    {
+        emit timingEditedSignal();
+    }
 	handler_->save_data();
 }
 

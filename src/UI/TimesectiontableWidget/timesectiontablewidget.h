@@ -21,6 +21,7 @@ public:
     void UpdateTree();
 
 signals:
+    void timesectionEditedSignal();
 
 public slots:
     void OnTreeItemDoubleClicked(QTreeWidgetItem*, int);
