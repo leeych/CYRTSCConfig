@@ -62,6 +62,16 @@ private:
             return false;
         }
 
+        inline bool operator ==(const EventLogTag &rhs) const
+        {
+            if (this->event_type_id != rhs.event_type_id
+                    || this->log_value != rhs.log_value)
+            {
+                return false;
+            }
+            return true;
+        }
+
     public:
         unsigned char event_type_id;
         unsigned int log_value;

@@ -242,10 +242,12 @@ void EventLogDlg::UpdateEventTypeTree()
 {
     event_tree_->clear();
     QList<QTreeWidgetItem *> item_list;
-#if 0
+#if 1
     QList<QString> event_desc_list = handler_->get_event_type_desc_list();
 #endif
+#if 0
     QList<QString> event_desc_list = handler_->get_all_event_type_desc_list();
+#endif
     for (int i = 0; i < event_desc_list.size(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(event_tree_);

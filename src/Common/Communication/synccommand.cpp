@@ -177,7 +177,6 @@ void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)
 void SyncCommand::OnConnectEstablished()
 {
     emit connectedSignal();
-    qDebug() << "connect succeeded";
 }
 
 void SyncCommand::OnDisconnected()
@@ -193,7 +192,6 @@ void SyncCommand::OnConnectError(QAbstractSocket::SocketError err)
 
 void SyncCommand::parseReply()
 {
-    qDebug() << "parse reply";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
         connect(this, SIGNAL(readyRead()), target_obj_, slot_.c_str());
@@ -258,7 +256,6 @@ SyncCommand::~SyncCommand()
 
 void SyncCommand::RegParseHandler()
 {
-    qDebug() << "register parse handler";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
         connect(this, SIGNAL(readyRead(QByteArray&)), target_obj_, slot_.c_str());
@@ -267,7 +264,6 @@ void SyncCommand::RegParseHandler()
 
 void SyncCommand::UnRegParseHandler()
 {
-    qDebug() << "unregister parse handler";
     if ((target_obj_ != NULL) && (!slot_.empty()))
     {
         disconnect(this, SIGNAL(readyRead(QByteArray&)), target_obj_, slot_.c_str());

@@ -155,7 +155,8 @@ QList<LogParam> EventLogHandler::get_event_log_list(unsigned char event_type_id)
 
 QString EventLogHandler::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
-    return descriptor_->get_log_desc(event_type_id, log_value);
+    QString str = descriptor_->get_log_desc(event_type_id, log_value);
+    return str;
 }
 
 QString EventLogHandler::get_datetime_desc(unsigned int seconds)

@@ -1,5 +1,6 @@
 #include "eventlogdescriptor.h"
 #include "macrostring.h"
+#include <QDebug>
 
 EventLogDescriptor *EventLogDescriptor::instance_ = NULL;
 const int Max_Channel_Num = 64;
@@ -217,8 +218,7 @@ QList<QString> EventLogDescriptor::get_log_desc_list()
 QString EventLogDescriptor::get_log_desc(unsigned char event_type_id, unsigned int log_value)
 {
     EventLogTag tag(event_type_id, log_value);
-    QString desc = log_desc_map_.value(tag);
-    return desc;
+    return log_desc_map_.value(tag);
 }
 
 QString EventLogDescriptor::get_event_type_log_desc(unsigned char event_type_id)
