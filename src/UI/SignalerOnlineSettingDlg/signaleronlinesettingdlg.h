@@ -20,10 +20,10 @@
 #include "channeltablewidget.h"
 #include "detectortablewidget.h"
 
-#include "timeipdlg.h"
-#include "detectorflowdlg.h"
-#include "eventlogdlg.h"
-#include "realtimemonitordlg.h"
+class TimeIPDlg;
+class DetectorFlowDlg;
+class EventLogDlg;
+class RealtimeMonitorDlg;
 
 class SyncCommand;
 class EventLogHandler;
@@ -54,6 +54,7 @@ public slots:
 
     void OnConnectedSlot();
     void OnDisconnectedSlot();
+    void OnConnectErrorSlot(QString err);
 
     // cmd call back
     void OnCmdGetVerId(QByteArray &content);
@@ -62,6 +63,7 @@ public slots:
     void OnCmdSendConfig(QByteArray &content);
 
 protected:
+    void closeEvent(QCloseEvent *);
     void timerEvent(QTimerEvent *);
 
 private:
@@ -73,6 +75,8 @@ private:
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
     void UpdateTabPage();
+
+    void EnableDialogs(bool enable);
 
     bool ParseConfigArray(QByteArray &byte_array);
 

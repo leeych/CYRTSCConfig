@@ -12,7 +12,7 @@
     </signaler>
     <signaler>
         <name>第二信号机</name>
-        <IP>10.88.32.11</IP>
+        <IP>192.168.1.100</IP>
         <port>9000</port>
         <location>大溪地</location>
         <branch>怀宁路</branch>

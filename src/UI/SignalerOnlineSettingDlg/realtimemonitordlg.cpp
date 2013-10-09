@@ -18,7 +18,8 @@
 #define RESET_LIGHT(exp) \
     if(!is_first_light_){exp;}
 #else
-#define RESET_LIGHT(exp)
+#define RESET_LIGHT(exp) \
+    exp
 #endif
 
 
@@ -502,7 +503,7 @@ void RealtimeMonitorDlg::InitSignalSlots()
 
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
-    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void RealtimeMonitorDlg::InitPixmap()

@@ -156,7 +156,7 @@ void DetectorFlowDlg::InitSignalSlots()
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
 
-    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void DetectorFlowDlg::UpdateUI()

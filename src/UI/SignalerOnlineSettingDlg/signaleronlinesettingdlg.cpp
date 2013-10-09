@@ -6,6 +6,11 @@
 #include "synccommand.h"
 #include "eventloghandler.h"
 
+#include "timeipdlg.h"
+#include "detectorflowdlg.h"
+#include "eventlogdlg.h"
+#include "realtimemonitordlg.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFile>
@@ -75,6 +80,7 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     {
         sync_cmd_->connectToHost(ip_, port_);
         conn_tip_label_->setText(STRING_UI_SIGNALER_CONNECTING_TIP);
+        conn_button_->setEnabled(false);
     }
 }
 
@@ -186,6 +192,8 @@ void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     UpdateConnectStatus(true);
     sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(QByteArray&)));
+    conn_button_->setEnabled(true);
+    EnableDialogs(true);
 //    if (ver_check_id_ == 0)
 //    {
 //        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
@@ -217,6 +225,14 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 {
     UpdateConnectStatus(false);
     more_button_->setChecked(false);
+}
+
+void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
+{
+    QMessageBox::information(this, STRING_TIP, err, STRING_OK);
+    conn_button_->setEnabled(true);
+    // disable other dialog
+    EnableDialogs(false);
 }
 
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
@@ -354,6 +370,11 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
     }
 }
 
+void SignalerOnlineSettingDlg::closeEvent(QCloseEvent *)
+{
+    conn_tip_label_->clear();
+}
+
 void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
 {
     if (ver_check_id_ != 0)
@@ -443,6 +464,7 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(more_button_, SIGNAL(toggled(bool)), this, SLOT(OnMoreButtonToggled(bool)));
 
     connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
+    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
 
     // tab page slots
     connect(this, SIGNAL(updateTabPageSignal(void *)), unitparam_widget_, SLOT(OnInitDatabase(void*)));
@@ -460,9 +482,7 @@ void SignalerOnlineSettingDlg::InitTabPage()
 {
     QFont font(STRING_FONT_SONGTI, 11);
     dialog_tab_ = new MTabWidget(this);
-    dialog_tab_->setFont(font);
-//    dialog_tab_ = new QTabWidget;
-//    dialog_tab_->setFont(font);
+    dialog_tab_->setTabBarFont(font);
 
     unitparam_widget_ = new UnitparamtableWidget(STRING_UI_UNIT_TABLE);
     schedule_widget_ = new ScheduleTableWidget(STRING_UI_SCHEDULE_PLAN);
@@ -558,6 +578,14 @@ void SignalerOnlineSettingDlg::UpdateTabPage()
 
     detector_widget_->OnUpdateDataSlot();
     detector_widget_->UpdateTable();
+}
+
+void SignalerOnlineSettingDlg::EnableDialogs(bool enable)
+{
+    flow_dlg_->setEnabled(enable);
+    event_log_dlg_->setEnabled(enable);
+    monitor_dlg_->setEnabled(enable);
+    time_ip_dlg_->setEnabled(enable);
 }
 
 bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)

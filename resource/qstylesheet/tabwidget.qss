@@ -9,5 +9,12 @@ QTabBar::tab
                                  stop: 0 #cee6ff, stop: 1.0 #ffffff);
      border: 1px solid #70a1dc;
      border-bottom-color: transparent; /* same as the pane color */
+     border-top-left-radius: 3px;
+     border-top-right-radius: 3px;
+     min-width: 8ex;
+     padding: 2px;
+     font:12px;
+     margin-top: 2px;
+     margin-left: 2px;
 }
 
