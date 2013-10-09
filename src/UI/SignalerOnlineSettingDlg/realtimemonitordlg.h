@@ -167,6 +167,8 @@ private:
     unsigned char count_down_seconds_;  // used for count_down disp
     unsigned char count_down_light_;
 
+    bool is_first_light_;   // used for update light status
+
     // used for signaler time display
     bool is_inited_;
     unsigned int second_count_;
@@ -191,6 +193,7 @@ private:
     CountDownInfo count_down_info_;
     LightStatusInfo lights_status_info_;
     ChannelStatusInfo channel_status_info_;
+    ChannelStatusInfo channel_status_bak_;  // used for revert lights' status
 
 private:
     QStackedLayout *stk_layout_;

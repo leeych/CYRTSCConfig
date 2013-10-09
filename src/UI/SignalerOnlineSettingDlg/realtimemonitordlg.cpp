@@ -12,6 +12,16 @@
 #include <QHeaderView>
 #include <QMessageBox>
 
+#define RESET_FLAG
+
+#ifdef RESET_FLAG
+#define RESET_LIGHT(exp) \
+    if(!is_first_light_){exp;}
+#else
+#define RESET_LIGHT(exp)
+#endif
+
+
 RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     QDialog(parent)
 {
@@ -20,6 +30,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     count_down_timer_ = new QTimer(this);
 //    count_down_timer_->start(1000);
     is_inited_ = false;
+    is_first_light_ = true;
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
     total_stage_count_ = 0;
@@ -354,9 +365,6 @@ void RealtimeMonitorDlg::InitPage()
     graphics_view_->setRenderHint(QPainter::Antialiasing);
     graphics_view_->setCacheMode(QGraphicsView::CacheBackground);
 
-//    QVBoxLayout *road_pix_vlayout = new QVBoxLayout;
-//    road_pix_vlayout->addWidget(graphics_view_);
-
     param_disp_grp_ = new QGroupBox(STRING_UI_SIGNALER_MONITOR_STATUS_PARAM);
     QLabel *sched_label = new QLabel(STRING_UI_SCHEDULE_ID + ":");
     QLabel *event_label = new QLabel(STRING_UI_TIMESECTION_EVENT_ID + ":");
@@ -494,7 +502,6 @@ void RealtimeMonitorDlg::InitSignalSlots()
 
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
-
     connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
@@ -725,7 +732,6 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
         }
     }
     unsigned char stage_count = 0;
-//    unsigned int stage_phase_buff[32] = { 0 };
     for (m = 0; m < tsc_param_.stage_timing_table_.FactTimeConfigNum; m++)
     {
         if (tsc_param_.stage_timing_table_.TimeConfigList[m][0].TimeConfigId != time_config_id)
@@ -889,8 +895,6 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     QString tail(array.right(3));
     if (head != QString("CYT4") || tail != QString("END"))
     {
-//        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_INCOMPLETE, STRING_OK);
-//        array.clear();
         return false;
     }
     array.remove(0, head.count());
@@ -906,8 +910,6 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     array.remove(idx, tail.count());
     if (len-4-3-4 != array.count())
     {
-//        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_LEN_ERROR, STRING_TIP);
-//        array.clear();
         return false;
     }
     return true;
@@ -929,12 +931,12 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 	unsigned char channel_id = begin_monitor_info_.channel_id;
 	if (channel_id < 12+1)
 	{
-		SetVehicleLight(channel_color_array_[channel_id], channel_id, false);
+        SetVehicleLight(channel_color_array_[channel_id], channel_id, false);
 		SetVehicleLight((LightColor)begin_monitor_info_.status, begin_monitor_info_.channel_id, true);
 	}
 	else if (channel_id < 13+1)
 	{
-		SetPedestrianLight(channel_color_array_[channel_id], channel_id, false);
+        SetPedestrianLight(channel_color_array_[channel_id], channel_id, false);
 		SetPedestrianLight((LightColor)begin_monitor_info_.status, channel_id, true);
 	}
 	channel_color_array_[channel_id] = (LightColor)begin_monitor_info_.status;
@@ -1010,9 +1012,9 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     array.remove(0, 4);
     unsigned int seconds = 0;
     memcpy(&seconds, temp, sizeof(seconds));
-    if (seconds >= 60 * 60 * 8)     // east 8 time-zoon
+    if (seconds >= 60*60*8)     // east 8 time-zoon
     {
-        seconds -= 60 * 60 * 8;
+        seconds -= 60*60*8;
     }
     date_time_ = QDateTime::fromTime_t(seconds).toLocalTime();
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
@@ -1077,18 +1079,27 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
         }
     }
     // TODO: update ui
-//    stage_id_label_->setText(QString::number(channel_status_info_.phase_id));
     for (int i = 1; i < channel_status_info_.channel_vec.size() + 1; i++)
     {
         if (i < 12+1)
         {
+            RESET_LIGHT(SetVehicleLight(channel_status_bak_.channel_vec.at(i-1), i, false));
             SetVehicleLight(channel_status_info_.channel_vec.at(i-1), i, true);
         }
         else if (i < 16+1)
         {
+            RESET_LIGHT(SetPedestrianLight(channel_status_bak_.channel_vec.at(i-1), i, false));
             SetPedestrianLight(channel_status_info_.channel_vec.at(i-1), i, true);
         }
     }
+
+    // back up channel status info
+    channel_status_bak_.channel_vec = channel_status_info_.channel_vec;
+    channel_status_bak_.phase_id = channel_status_info_.phase_id;
+    channel_status_bak_.plan_id = channel_status_info_.plan_id;
+    channel_status_bak_.work_mode = channel_status_info_.work_mode;
+    is_first_light_ = false;
+
     return true;
 }
 // CYTA+故障代码(2字节)+END
@@ -1126,7 +1137,6 @@ void RealtimeMonitorDlg::StartMonitoring()
 
 void RealtimeMonitorDlg::StopMonitoring()
 {
-//    sync_cmd_->StopMonitoring(this, SLOT(OnCmdStopMonitoring(QByteArray&)));
     sync_cmd_->StopMonitoring();
 }
 
