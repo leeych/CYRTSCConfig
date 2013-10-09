@@ -102,6 +102,8 @@ private:
     void UpdateUI();
     void UpdateScheduleInfo();
 
+    void UpdateLightStatus();
+
     void ResetButtonStatus(const QPushButton *self_btn);
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();

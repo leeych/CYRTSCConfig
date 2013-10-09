@@ -755,6 +755,54 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
     //:~ stage id
 }
 
+void RealtimeMonitorDlg::UpdateLightStatus()
+{
+    light_tree_->clear();
+    QList<QTreeWidgetItem *> tree_item_list;
+    QString str;
+    LightColor color;
+    for (int i = 1; i < MAX_CHANNEL+1; i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem;
+        color = channel_color_array_[i];
+        switch (color)
+        {
+        case Red:
+            item->setText(0, str.sprintf("%d", i));
+            str = STRING_LIGHT_RED;
+            item->setText(1, str);
+            item->setTextColor(1, QColor(255,0,0));
+            break;
+        case Yellow:
+            item->setText(0, str.sprintf("%d", i));
+            str = STRING_LIGHT_YELLOW;
+            item->setText(1, str);
+            item->setTextColor(1, QColor(255,255,0));
+            break;
+        case Green:
+            item->setText(0, str.sprintf("%d", i));
+            str = STRING_LIGHT_GREEN;
+            item->setText(1, str);
+            item->setTextColor(1, QColor(0,255,0));
+            break;
+        case Off:
+            item->setText(0, str.sprintf("%d", i));
+            str = STRING_LIGHT_OFF;
+            item->setText(1, str);
+            item->setTextColor(1, QColor(0,0,0));
+            break;
+        default:
+            item->setText(0, str.sprintf("%d", i+1));
+            str = STRING_LIGHT_OFF;
+            item->setText(1, str);
+            item->setTextColor(1, QColor(0,0,0));
+            break;
+        }
+        tree_item_list.append(item);
+    }
+    light_tree_->addTopLevelItems(tree_item_list);
+}
+
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
 {
     for (int i = 0; i < button_list_.size(); i++)
@@ -940,6 +988,7 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 		SetPedestrianLight((LightColor)begin_monitor_info_.status, channel_id, true);
 	}
 	channel_color_array_[channel_id] = (LightColor)begin_monitor_info_.status;
+    UpdateLightStatus();
 
     return true;
 }
@@ -1091,6 +1140,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
             RESET_LIGHT(SetPedestrianLight(channel_status_bak_.channel_vec.at(i-1), i, false));
             SetPedestrianLight(channel_status_info_.channel_vec.at(i-1), i, true);
         }
+        channel_color_array_[i] = channel_status_info_.channel_vec.at(i-1);
     }
 
     // back up channel status info
@@ -1099,6 +1149,8 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     channel_status_bak_.plan_id = channel_status_info_.plan_id;
     channel_status_bak_.work_mode = channel_status_info_.work_mode;
     is_first_light_ = false;
+
+    UpdateLightStatus();
 
     return true;
 }
