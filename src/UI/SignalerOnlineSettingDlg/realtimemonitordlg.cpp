@@ -18,7 +18,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     sync_cmd_ = SyncCommand::GetInstance();
     signaler_timer_ = new QTimer(this);
     count_down_timer_ = new QTimer(this);
-    count_down_timer_->start(1000);
+//    count_down_timer_->start(1000);
     is_inited_ = false;
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
@@ -51,6 +51,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
     CloseAllLights();
+    count_down_timer_->start(1000);
     exec();
 }
 
@@ -124,21 +125,21 @@ void RealtimeMonitorDlg::OnCountDownTimerOutSlot()
         {
             --count_down_seconds_;
         }
-        str.sprintf("00-00-%2d", count_down_seconds_);
+        str.sprintf("00-00-%02d", count_down_seconds_);
         break;
     case Yellow:
         if (count_down_seconds_ != 0)
         {
             --count_down_seconds_;
         }
-        str.sprintf("00-%2d-00", count_down_seconds_);
+        str.sprintf("00-%02d-00", count_down_seconds_);
         break;
     case Green:
         if (count_down_seconds_ != 0)
         {
             --count_down_seconds_;
         }
-        str.sprintf("%2d-00-00", count_down_seconds_);
+        str.sprintf("%02d-00-00", count_down_seconds_);
         break;
     case Off:
         break;
@@ -945,19 +946,19 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
     switch (count_down_info_.light_corlor)
     {
     case Red:
-        count_down_text.sprintf("00-00-%2d", count_down_info_.light_time);
+        count_down_text.sprintf("00-00-%02d", count_down_info_.light_time);
         count_down_timer_->stop();
         phase_time_lcd_->display(count_down_text);
         count_down_timer_->start(1000);
         break;
     case Yellow:
-        count_down_text.sprintf("00-%2d-00", count_down_info_.light_time);
+        count_down_text.sprintf("00-%02d-00", count_down_info_.light_time);
         count_down_timer_->stop();
         phase_time_lcd_->display(count_down_text);
         count_down_timer_->start(1000);
         break;
     case Green:
-        count_down_text.sprintf("%2d-00-00", count_down_info_.light_time);
+        count_down_text.sprintf("%02d-00-00", count_down_info_.light_time);
         count_down_timer_->stop();
         phase_time_lcd_->display(count_down_text);
         count_down_timer_->start(1000);
