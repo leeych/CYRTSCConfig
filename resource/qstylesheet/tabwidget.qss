@@ -13,8 +13,29 @@ QTabBar::tab
      border-top-right-radius: 3px;
      min-width: 8ex;
      padding: 2px;
-     font:12px;
+     font: 13px;
      margin-top: 2px;
      margin-left: 2px;
+}
+
+QTabBar::tab:hover 
+{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #8fc3fb, stop: 1.0 #d4e9ff);
+    border: 1px solid #70a1dc;
+    margin-top: 2px;  
+}
+
+QTabBar::tab:selected 
+{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #ffdcba, stop: 1.0 #fffbee);
+    border: 1px solid #e2aa3e;
+    margin-top: 2px;  
+}
+
+QTabBar::tab:!selected 
+{
+    margin-top: 2px;/*  make non-selected tabs look smaller */
 }
 
