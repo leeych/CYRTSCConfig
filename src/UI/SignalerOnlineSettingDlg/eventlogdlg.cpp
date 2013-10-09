@@ -63,7 +63,7 @@ void EventLogDlg::OnExportLogButtonClicked()
 
 void EventLogDlg::OnExportReportButtonClicked()
 {
-    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/" + ip_ + ".html", "Html(*.html,*.htm);;All File(*.*)");
+    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/" + ip_ + ".html", "Html(*.html);;All File(*.*)");
     if (report_file.isNull() || report_file.isEmpty())
     {
         return;
@@ -242,10 +242,10 @@ void EventLogDlg::UpdateEventTypeTree()
 {
     event_tree_->clear();
     QList<QTreeWidgetItem *> item_list;
-#if 1
+#if 0
     QList<QString> event_desc_list = handler_->get_event_type_desc_list();
 #endif
-#if 0
+#if 1
     QList<QString> event_desc_list = handler_->get_all_event_type_desc_list();
 #endif
     for (int i = 0; i < event_desc_list.size(); i++)

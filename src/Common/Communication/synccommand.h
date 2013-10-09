@@ -40,6 +40,7 @@ public:
     void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);
 
     void StartMonitoring(QObject *target, const std::string &slot);
+    void StartMonitoring();
     void StopMonitoring(QObject *target, const std::string &slot);
     void StopMonitoring();
     void GetLightStatus(QObject *target, const std::string &slot);

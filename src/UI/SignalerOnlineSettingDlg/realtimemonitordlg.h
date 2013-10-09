@@ -81,7 +81,8 @@ public slots:
     void OnDetectorButtonToggled(bool checked);
 
     void OnConnectError(QString);
-    void OnSignalerTimeTimerOut();
+    void OnSignalerTimeTimerOutSlot();
+    void OnCountDownTimerOutSlot();
 
     // on cmd
     void OnCmdReadSignalerConfigFile(QByteArray &array);
@@ -160,15 +161,19 @@ private:
     QByteArray cfg_array_;
     QByteArray recv_array_;
 
+    unsigned char total_stage_count_; // used for stage id disp
+    unsigned char count_down_seconds_;  // used for count_down disp
+    unsigned char count_down_light_;
+
     // used for signaler time display
     bool is_inited_;
     unsigned int second_count_;
     QDateTime date_time_;
     QTimer *signaler_timer_;
+    QTimer *count_down_timer_;
 
     int ui_timer_id_;
     bool is_uitimer_started_;
-
 
     typedef struct ChannelStatusInfoTag
     {

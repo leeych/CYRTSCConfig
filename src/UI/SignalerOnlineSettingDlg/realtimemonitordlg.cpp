@@ -17,9 +17,14 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
 {
     sync_cmd_ = SyncCommand::GetInstance();
     signaler_timer_ = new QTimer(this);
+    count_down_timer_ = new QTimer(this);
+    count_down_timer_->start(1000);
     is_inited_ = false;
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
+    total_stage_count_ = 0;
+    count_down_seconds_ = 0;
+    count_down_light_ = 0;
 
     InitPage();
     InitSignalSlots();
@@ -97,7 +102,7 @@ void RealtimeMonitorDlg::OnConnectError(QString str)
     // TODO: network exception handler
 }
 
-void RealtimeMonitorDlg::OnSignalerTimeTimerOut()
+void RealtimeMonitorDlg::OnSignalerTimeTimerOutSlot()
 {
     date_time_ = date_time_.addSecs(1);
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
@@ -107,6 +112,40 @@ void RealtimeMonitorDlg::OnSignalerTimeTimerOut()
         UpdateScheduleInfo();
         second_count_ = 0;
     }
+}
+
+void RealtimeMonitorDlg::OnCountDownTimerOutSlot()
+{
+    QString str;
+    switch (count_down_light_)
+    {
+    case Red:
+        if (count_down_seconds_ != 0)
+        {
+            --count_down_seconds_;
+        }
+        str.sprintf("00-00-%2d", count_down_seconds_);
+        break;
+    case Yellow:
+        if (count_down_seconds_ != 0)
+        {
+            --count_down_seconds_;
+        }
+        str.sprintf("00-%2d-00", count_down_seconds_);
+        break;
+    case Green:
+        if (count_down_seconds_ != 0)
+        {
+            --count_down_seconds_;
+        }
+        str.sprintf("%2d-00-00", count_down_seconds_);
+        break;
+    case Off:
+        break;
+    default:
+        break;
+    }
+    phase_time_lcd_->display(str);
 }
 
 void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
@@ -178,8 +217,6 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
     }
     if (!(recv_array_.left(3).contains("CYT") && recv_array_.contains("END")))
     {
-//        array.clear();
-//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
         return;
     }
     bool status = false;
@@ -212,6 +249,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             else
             {
+                sync_cmd_->StartMonitoring();
                 sync_cmd_->GetTscTime();
                 if (!is_uitimer_started_)
                 {
@@ -267,6 +305,7 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
 {
     StopMonitoring();
     signaler_timer_->stop();
+    count_down_timer_->stop();
     is_inited_ = false;
 
     if (ui_timer_id_ != 0)
@@ -274,8 +313,8 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
         killTimer(ui_timer_id_);
         ui_timer_id_ = 0;
     }
-    // TODO: window closed handler
     ResetButtonStatus(NULL);
+    // TODO: window closed handler
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
@@ -448,7 +487,8 @@ void RealtimeMonitorDlg::InitSignalSlots()
     connect(driver_button_, SIGNAL(toggled(bool)), this, SLOT(OnDriverButtonToggled(bool)));
     connect(detector_button_, SIGNAL(toggled(bool)), this, SLOT(OnDetectorButtonToggled(bool)));
 
-    connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOut()));
+    connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
+    connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
 
     connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
@@ -698,9 +738,8 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
         }
         break;
     }
-
-    unsigned char curr_stage_id = stage_count;
-    str.sprintf("%d / %d", 0, curr_stage_id);
+    total_stage_count_ = stage_count;
+    str.sprintf("%d / %d", 0, total_stage_count_);
     stage_id_label_->setText(str);
     //:~ stage id
 }
@@ -892,7 +931,45 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
     array.remove(index, 3);
     memcpy(&count_down_info_, array.data(), sizeof(count_down_info_));
     array.remove(0, 8);
-    // TODO: update ui
+
+    QString str;
+    str.sprintf("%d / %d", count_down_info_.stage_id, total_stage_count_);
+    stage_id_label_->setText(str);
+    phase_id_label_->setText(QString::number(count_down_info_.phase_id));
+    ctrl_mode_label_->setText(ctrl_mode_desc_map_.value(count_down_info_.ctrl_mode));
+    // phase id left to be update
+
+    count_down_seconds_ = count_down_info_.light_time;
+    count_down_light_ = count_down_info_.light_corlor;
+    QString count_down_text("00-00-00");
+    switch (count_down_info_.light_corlor)
+    {
+    case Red:
+        count_down_text.sprintf("00-00-%2d", count_down_info_.light_time);
+        count_down_timer_->stop();
+        phase_time_lcd_->display(count_down_text);
+        count_down_timer_->start(1000);
+        break;
+    case Yellow:
+        count_down_text.sprintf("00-%2d-00", count_down_info_.light_time);
+        count_down_timer_->stop();
+        phase_time_lcd_->display(count_down_text);
+        count_down_timer_->start(1000);
+        break;
+    case Green:
+        count_down_text.sprintf("%2d-00-00", count_down_info_.light_time);
+        count_down_timer_->stop();
+        phase_time_lcd_->display(count_down_text);
+        count_down_timer_->start(1000);
+        break;
+    case Off:
+        count_down_text = "00-00-00";
+        count_down_timer_->stop();
+        phase_time_lcd_->display(count_down_text);
+        break;
+    default:
+        break;
+    }
     return true;
 }
 
@@ -985,8 +1062,19 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
             }
         }
     }
-
     // TODO: update ui
+//    stage_id_label_->setText(QString::number(channel_status_info_.phase_id));
+    for (int i = 1; i < channel_status_info_.channel_vec.size() + 1; i++)
+    {
+        if (i < 12+1)
+        {
+            SetVehicleLight(channel_status_info_.channel_vec.at(i-1), i, true);
+        }
+        else if (i < 16+1)
+        {
+            SetPedestrianLight(channel_status_info_.channel_vec.at(i-1), i, true);
+        }
+    }
     return true;
 }
 // CYTA+故障代码(2字节)+END
