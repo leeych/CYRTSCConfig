@@ -106,6 +106,7 @@ private:
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();
     bool InitTscParam();
+	void ResetChannelColor();
     bool CheckPackage(QByteArray &array);
 
     enum LightColor
@@ -161,7 +162,8 @@ private:
     QByteArray cfg_array_;
     QByteArray recv_array_;
 
-    unsigned char total_stage_count_; // used for stage id disp
+    unsigned char total_stage_count_;	// used for stage id disp
+	unsigned char curr_stage_id_;		// used for stage id disp
     unsigned char count_down_seconds_;  // used for count_down disp
     unsigned char count_down_light_;
 
@@ -185,6 +187,7 @@ private:
 
     // request reply
     BeginMonitorInfo begin_monitor_info_;
+	LightColor channel_color_array_[MAX_CHANNEL + 1];
     CountDownInfo count_down_info_;
     LightStatusInfo lights_status_info_;
     ChannelStatusInfo channel_status_info_;

@@ -23,12 +23,14 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
     total_stage_count_ = 0;
+	curr_stage_id_ = 0;
     count_down_seconds_ = 0;
     count_down_light_ = 0;
 
     InitPage();
     InitSignalSlots();
     InitCtrlModeDesc();
+	ResetChannelColor();
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
@@ -51,6 +53,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
     CloseAllLights();
+	ResetChannelColor();
     count_down_timer_->start(1000);
     exec();
 }
@@ -250,7 +253,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             else
             {
-                sync_cmd_->StartMonitoring();
+                //sync_cmd_->StartMonitoring();
                 sync_cmd_->GetTscTime();
                 if (!is_uitimer_started_)
                 {
@@ -277,10 +280,12 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             {
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
             }
-//            else
-//            {
-//                sync_cmd_->GetLightStatus();
-//            }
+            else if (!is_inited_)
+			{
+				signaler_timer_->start(1000);
+				sync_cmd_->StartMonitoring();
+				is_inited_ = true;
+            }
             break;
         case '8':
             break;
@@ -329,9 +334,7 @@ void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
 void RealtimeMonitorDlg::InitPage()
 {
     InitPixmap();
-
     road_monitor_grp_ = new QGroupBox(STRING_UI_SIGNALER_MONITOR_ROAD);
-
     frame_ = new QFrame(road_monitor_grp_);
     frame_->setGeometry(QRect(10, 20, 480, 480));
     frame_->setFocusPolicy(Qt::ClickFocus);
@@ -395,12 +398,13 @@ void RealtimeMonitorDlg::InitPage()
     phase_time_lcd_->setFrameShape(QFrame::Box);
     phase_time_lcd_->setFrameShadow(QFrame::Sunken);
     phase_time_lcd_->setSmallDecimalPoint(false);
-    phase_time_lcd_->setNumDigits(7);
-    phase_time_lcd_->setDigitCount(7);
+    phase_time_lcd_->setNumDigits(8);
+    phase_time_lcd_->setDigitCount(8);
     phase_time_lcd_->setMode(QLCDNumber::Dec);
     phase_time_lcd_->setSegmentStyle(QLCDNumber::Flat);
     phase_time_lcd_->setProperty("intValue", QVariant(0));
     phase_time_lcd_->setStatusTip(STRING_UI_SIGNALER_MONITOR_LCD_TIP);
+	phase_time_lcd_->setToolTip(STRING_UI_SIGNALER_MONITOR_LCD_TIP);
 
     QLabel *signaler_time_label = new QLabel(STRING_UI_SIGNALER_MONITOR_SIGNALER_TIME + ":");
     signaler_time_label_ = new QLabel;
@@ -740,7 +744,7 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
         break;
     }
     total_stage_count_ = stage_count;
-    str.sprintf("%d / %d", 0, total_stage_count_);
+    str.sprintf("%d / %d", curr_stage_id_, total_stage_count_);
     stage_id_label_->setText(str);
     //:~ stage id
 }
@@ -922,6 +926,19 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
     memcpy(&begin_monitor_info_, array.data(), sizeof(begin_monitor_info_));
     array.remove(0, 2);
     // TODO: left to be done. update ui
+	unsigned char channel_id = begin_monitor_info_.channel_id;
+	if (channel_id < 12+1)
+	{
+		SetVehicleLight(channel_color_array_[channel_id], channel_id, false);
+		SetVehicleLight((LightColor)begin_monitor_info_.status, begin_monitor_info_.channel_id, true);
+	}
+	else if (channel_id < 13+1)
+	{
+		SetPedestrianLight(channel_color_array_[channel_id], channel_id, false);
+		SetPedestrianLight((LightColor)begin_monitor_info_.status, channel_id, true);
+	}
+	channel_color_array_[channel_id] = (LightColor)begin_monitor_info_.status;
+
     return true;
 }
 // CYT5+控制模式(1字节)+阶段编号(1字节)+灯色(1字节)+灯时(1字节)+相位编码(4字节)+END
@@ -934,7 +951,8 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
     array.remove(0, 8);
 
     QString str;
-    str.sprintf("%d / %d", count_down_info_.stage_id, total_stage_count_);
+	curr_stage_id_ = count_down_info_.stage_id;
+    str.sprintf("%d / %d", curr_stage_id_, total_stage_count_);
     stage_id_label_->setText(str);
     phase_id_label_->setText(QString::number(count_down_info_.phase_id));
     ctrl_mode_label_->setText(ctrl_mode_desc_map_.value(count_down_info_.ctrl_mode));
@@ -998,11 +1016,6 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     }
     date_time_ = QDateTime::fromTime_t(seconds).toLocalTime();
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
-    if (!is_inited_)
-    {
-        signaler_timer_->start(1000);
-        is_inited_ = true;
-    }
 
     return true;
 }
@@ -1115,4 +1128,12 @@ void RealtimeMonitorDlg::StopMonitoring()
 {
 //    sync_cmd_->StopMonitoring(this, SLOT(OnCmdStopMonitoring(QByteArray&)));
     sync_cmd_->StopMonitoring();
+}
+
+void RealtimeMonitorDlg::ResetChannelColor()
+{
+	for (int i = 0; i < MAX_CHANNEL + 1; i++)
+	{
+		channel_color_array_[i] = Off;
+	}
 }
