@@ -61,7 +61,7 @@ void DetectorFlowDlg::OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *item, int c
     unsigned char id = item->text(0).trimmed().toUInt();
     if (id > MAX_DETECTOR)
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_DETECTOR_ID_OVERFLOW, STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_DETECTOR_ID_OVERFLOW + QString::number(MAX_DETECTOR) + "!", STRING_OK);
         return;
     }
     QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(id);

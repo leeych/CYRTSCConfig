@@ -464,6 +464,7 @@
 #define STRING_EVENT_LOG_RG_BRIGHT              QObject::tr("Red green")
 #define STRING_EVENT_LOG_ERR_BRIGHT             QObject::tr("Error bright")
 #define STRING_EVENT_LOG_OFF_BRIGHT             QObject::tr("off bright")
+#define STRING_EVENT_LOG_CONFLICT               QObject::tr("Conflict")
 
 #define STRING_EVENT_LOG_RED                    QObject::tr("Red light")
 #define STRING_EVENT_LOG_GREEN                  QObject::tr("Green light")
@@ -484,6 +485,7 @@
 #define STRING_EVENT_LOG_YELLOW_FLASH_SEPERATE  QObject::tr("yellow flash seperated")
 #define STRING_EVENT_LOG_OFF                    QObject::tr("(off)")
 #define STRING_EVENT_LOG_CTRL                   QObject::tr("(ctrl)")
+#define STRING_DIRVER_FAULT_NOT_INSTALLED       QObject::tr("Not installed")
 
 // Detector event
 #define STRING_EVENT_LOG_DETECTOR_FAULT         QObject::tr("Vehicle detector fault")

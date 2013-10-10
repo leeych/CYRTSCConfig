@@ -64,6 +64,20 @@ typedef struct LightStatusTag
     unsigned int phase_id;
 }LightStatusInfo;
 
+typedef struct LightFaultTag
+{
+    LightFaultTag():
+        channel_id(0),
+        flag(0),
+        fault_id(0)
+    { }
+
+    unsigned char channel_id;
+    unsigned char flag;
+    unsigned char fault_id;
+
+}LightFaultInfo;
+
 
 class RealtimeMonitorDlg : public QDialog
 {
@@ -102,11 +116,17 @@ private:
 
     void UpdateUI();
     void UpdateScheduleInfo();
-    void UpdateLightStatus();
 
+    void InitFaultDesc();
+    void InitLightTreeContent();
+    void UpdateLightTreeColor();
+    void UpdateLightTreeStatus(const LightFaultInfo &light_fault);
+
+    void InitDriverTreeContent();
+    void UpdateDriverStatusInfo(unsigned char driver_id, unsigned char status);
     void InitDetectorTreeContent();
     void UpdateDetectorFlowInfo(unsigned char detector_id);
-    void UpdateDetectorStatusInfo();
+    void UpdateDetectorStatusInfo(unsigned char detector_id, unsigned char flag);
 
     void ResetButtonStatus(const QPushButton *self_btn);
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
@@ -153,16 +173,20 @@ private:
     bool ParseCountDownContent(QByteArray &array);
     bool ParseTSCTimeContent(QByteArray &array);
     bool ParseDetectorFlowContent(QByteArray &array);
-    bool ParseSysFaultContent(QByteArray &array);
+    bool ParseDetectorFaultContent(QByteArray &array);
     bool ParseDriverStatusContent(QByteArray &array);
     bool ParseRealTimeFlowContent(QByteArray &array);
+    bool ParseDriverRealTimeStatusContent(QByteArray &array);
+    bool ParseLightRealTimeStatusContent(QByteArray &array);
 
 private:
     SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
     QMap<unsigned char, QString> ctrl_mode_desc_map_;
     DetectorFlowHandler *handler_;
+    QList<QTreeWidgetItem *> light_item_list_;
     QList<QTreeWidgetItem *> detector_item_list_;
+    QList<QTreeWidgetItem *> driver_item_list_;
 
     QString ip_;
     QString cfg_file_;
@@ -189,6 +213,7 @@ private:
     QTimer *count_down_timer_;
 
     DetectorData_t *detector_array_;    // used for get detectorinfo
+    driboardstatus_t driver_info_;      // used for driver board
 
     // request reply
     BeginMonitorInfo begin_monitor_info_;
@@ -206,6 +231,11 @@ private:
 
     ChannelStatusInfo channel_status_info_;
     ChannelStatusInfo channel_status_bak_;  // used for revert lights' status
+
+    QMap<unsigned char, QString> light_flag_desc_map_;
+    QMap<unsigned char, QString> light_fault_desc_map_;
+    QMap<unsigned char, QString> driver_fault_desc_map_;
+    QMap<unsigned char, QString> detector_fault_desc_map_;
 
 private:
     QStackedLayout *stk_layout_;

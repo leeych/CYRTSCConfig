@@ -30,7 +30,6 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     sync_cmd_ = SyncCommand::GetInstance();
     signaler_timer_ = new QTimer(this);
     count_down_timer_ = new QTimer(this);
-//    count_down_timer_->start(1000);
     is_inited_ = false;
     is_first_light_ = true;
     ui_timer_id_ = 0;
@@ -44,6 +43,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     InitPage();
     InitSignalSlots();
     InitCtrlModeDesc();
+    InitFaultDesc();
 	ResetChannelColor();
 }
 
@@ -122,7 +122,6 @@ void RealtimeMonitorDlg::OnDetectorButtonToggled(bool checked)
 void RealtimeMonitorDlg::OnConnectError(QString str)
 {
     QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR + ":\n" + str, STRING_OK);
-    // TODO: network exception handler
 }
 
 void RealtimeMonitorDlg::OnSignalerTimeTimerOutSlot()
@@ -316,13 +315,39 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             break;
         case 'A':
-            status = ParseSysFaultContent(recv_array_);
+            status = ParseDetectorFaultContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
             break;
         case 'B':
             status = ParseRealTimeFlowContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
             break;
         case 'C':
             status = ParseDriverStatusContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            break;
+        case 'D':
+            status = ParseDriverRealTimeStatusContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            break;
+        case 'E':
+            status = ParseLightRealTimeStatusContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
             break;
         default:
             break;
@@ -469,14 +494,14 @@ void RealtimeMonitorDlg::InitPage()
     InitTree(light_tree_, light_header);
     light_tree_->setColumnWidth(0, 60);
     light_tree_->setColumnWidth(1, 60);
+    InitLightTreeContent();
 
     driver_tree_ = new QTreeWidget;
     QStringList driver_header;
     driver_header << STRING_UI_SIGNALER_MONITOR_DRIVER_ID << STRING_MAIN_STATUS;
 //                     << STRING_UI_SIGNALER_MONITOR_DRIVER_TYPE;
     InitTree(driver_tree_, driver_header);
-//    driver_tree_->setColumnWidth(0, 60);
-//    driver_tree_->setColumnWidth(1, 60);
+    InitDriverTreeContent();
 
     detector_tree_ = new QTreeWidget;
     QStringList detector_header;
@@ -774,7 +799,50 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
     //:~ stage id
 }
 
-void RealtimeMonitorDlg::UpdateLightStatus()
+void RealtimeMonitorDlg::InitFaultDesc()
+{
+    light_flag_desc_map_.insert(0, STRING_EVENT_LOG_RESTORE);
+    light_flag_desc_map_.insert(1, STRING_EVENT_LOG_FAULT);
+
+    light_fault_desc_map_.insert(1, STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_CONFLICT);
+    light_fault_desc_map_.insert(2, STRING_EVENT_LOG_RG_BRIGHT + STRING_EVENT_LOG_BRIGHT_TOGETHER);
+    light_fault_desc_map_.insert(3, STRING_EVENT_LOG_RED + STRING_EVENT_LOG_OFF_BRIGHT);
+    light_fault_desc_map_.insert(4, STRING_EVENT_LOG_RED + STRING_EVENT_LOG_ERR_BRIGHT);
+    light_fault_desc_map_.insert(5, STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_OFF_BRIGHT);
+    light_fault_desc_map_.insert(6, STRING_EVENT_LOG_YELLOW + STRING_EVENT_LOG_ERR_BRIGHT);
+    light_fault_desc_map_.insert(7, STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_OFF_BRIGHT);
+    light_fault_desc_map_.insert(8, STRING_EVENT_LOG_GREEN + STRING_EVENT_LOG_ERR_BRIGHT);
+
+    driver_fault_desc_map_.insert(0, STRING_DIRVER_FAULT_NOT_INSTALLED);
+    driver_fault_desc_map_.insert(1, STRING_EVENT_LOG_RUN);
+    driver_fault_desc_map_.insert(2, STRING_UI_NORMAL);
+    driver_fault_desc_map_.insert(3, STRING_EVENT_LOG_YELLOW_FLASH_FAULT);
+    driver_fault_desc_map_.insert(4, STRING_EVENT_LOG_YELLOW_FLASH_SEPERATE + STRING_EVENT_LOG_OFF);
+    driver_fault_desc_map_.insert(5, STRING_EVENT_LOG_YELLOW_FLASH_SEPERATE + STRING_EVENT_LOG_CTRL);
+
+    detector_fault_desc_map_.insert(0, STRING_EVENT_LOG_FAULT);
+    detector_fault_desc_map_.insert(1, STRING_UI_NORMAL);
+}
+
+void RealtimeMonitorDlg::InitLightTreeContent()
+{
+    QString str;
+    for (int i = 0; i < MAX_CHANNEL; i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(light_tree_);
+        str.sprintf("%d", i+1);
+        item->setText(0, str);
+        str = STRING_LIGHT_OFF;
+        item->setText(1, str);
+        item->setTextColor(1, QColor(0,0,0));
+        str = "-";
+        item->setText(2, str);
+        light_item_list_.append(item);
+    }
+    light_tree_->addTopLevelItems(light_item_list_);
+}
+
+void RealtimeMonitorDlg::UpdateLightTreeColor()
 {
     light_tree_->clear();
     QList<QTreeWidgetItem *> tree_item_list;
@@ -822,12 +890,57 @@ void RealtimeMonitorDlg::UpdateLightStatus()
     light_tree_->addTopLevelItems(tree_item_list);
 }
 
+void RealtimeMonitorDlg::UpdateLightTreeStatus(const LightFaultInfo &light_fault)
+{
+    if (light_fault.channel_id <= 0 || light_fault.flag > 1
+            || light_fault.fault_id > 8 || light_fault.fault_id <= 0)
+    {
+        return;
+    }
+    QString str;
+    QTreeWidgetItem *item = light_item_list_.at(light_fault.channel_id-1);
+    str = light_fault_desc_map_.value(light_fault.fault_id) + light_flag_desc_map_.value(light_fault.flag);
+    item->setText(2, str);
+}
+
+void RealtimeMonitorDlg::InitDriverTreeContent()
+{
+    QString str;
+    for (int i = 0; i < DRIBOARDNUM; i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(driver_tree_);
+        str.sprintf("%d", i+1);
+        item->setText(0, str);
+        str = "-";
+        item->setText(1, str);
+        driver_item_list_.append(item);
+    }
+    driver_tree_->addTopLevelItems(driver_item_list_);
+}
+
+void RealtimeMonitorDlg::UpdateDriverStatusInfo(unsigned char driver_id, unsigned char status)
+{
+    if (driver_id <= 0 || driver_id > DRIBOARDNUM || status > 5)
+    {
+        return;
+    }
+    QTreeWidgetItem *item = driver_item_list_.at(driver_id-1);
+    QString str = driver_fault_desc_map_.value(status);
+    item->setText(1, str);
+}
+
 void RealtimeMonitorDlg::InitDetectorTreeContent()
 {
+    QString str;
     for (int i = 0; i < MAX_DETECTOR; i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(detector_tree_);
-        item->setText(i, QString::number(i+1));
+        str.sprintf("%d", i+1);
+        item->setText(0, str);
+        str = "-";
+        item->setText(1, str);
+        str = "";
+        item->setText(2, str);
         detector_item_list_.append(item);
     }
     detector_tree_->addTopLevelItems(detector_item_list_);
@@ -844,16 +957,15 @@ void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
     item->setText(2, QString::number(++flow_count));
 }
 
-void RealtimeMonitorDlg::UpdateDetectorStatusInfo()
+void RealtimeMonitorDlg::UpdateDetectorStatusInfo(unsigned char detector_id, unsigned char flag)
 {
-    unsigned char id = 0;
-    QTreeWidgetItem *item = NULL;
-    for (int i = 0; i < MAX_DETECTOR; i++)
+    if (detector_id <= 0 || detector_id > MAX_DETECTOR)
     {
-        item = detector_tree_->topLevelItem(i);
-        id = item->text(0).toInt();
-        // TODO: update detector status
+        return;
     }
+    QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
+    QString str = detector_fault_desc_map_.value(flag);
+    item->setText(1, str);
 }
 
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
@@ -1041,7 +1153,7 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 		SetPedestrianLight((LightColor)begin_monitor_info_.status, channel_id, true);
 	}
 	channel_color_array_[channel_id] = (LightColor)begin_monitor_info_.status;
-    UpdateLightStatus();
+    UpdateLightTreeColor();
 
     return true;
 }
@@ -1149,7 +1261,12 @@ bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
         detector_array_ = NULL;
     }
     // TODO: update ui
-    UpdateDetectorStatusInfo();
+    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow_list();
+    for (int i = 0; i < flow_list.size(); i++)
+    {
+        UpdateDetectorFlowInfo(flow_list.at(i).detector_id);
+        UpdateDetectorStatusInfo(flow_list.at(i).detector_id, 1);
+    }
     return true;
 }
 // CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
@@ -1232,24 +1349,89 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     channel_status_bak_.work_mode = channel_status_info_.work_mode;
     is_first_light_ = false;
 
-    UpdateLightStatus();
+    UpdateLightTreeColor();
 
     return true;
 }
-// CYTA+故障代码(2字节)+END
-bool RealtimeMonitorDlg::ParseSysFaultContent(QByteArray &array)
+// CYTA+检测器编号(1字节)+END
+bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    if (index != 1)
+    {
+        array.remove(0, index+3);
+        return false;
+    }
+    unsigned char detector_id = 0;
+    memcpy(&detector_id, array.data(), 1);
+    array.remove(0, 4);
+    // TODO: update ui
+    UpdateDetectorStatusInfo(detector_id, 0);
+
     return true;
 }
 // CYTC+数据总长度（4字节）+驱动板状态数据字节流+END
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    unsigned int len = 0;
+    memcpy(&len, array.data(), 4);
+    len -= (4+4+3);
     array.remove(0, 4);
     int index = array.indexOf("END");
-    array.remove(0, index + 3);
-//    array.remove(index, 3);
+    if (len != (unsigned int)index)
+    {
+        array.remove(0, index + 3);
+        return false;
+    }
+    memcpy(&driver_info_, array.data(), sizeof(driver_info_));
+    array.remove(index, 3);
+    for (int i = 0; i < DRIBOARDNUM; i++)
+    {
+        if (driver_info_.driboardstatusList[i].dribid != 0)
+        {
+            // TODO: left to be done.
+        }
+    }
+
+    // TODO: update driver board info
+
+    return true;
+}
+// CYTD+驱动板编号(1字节)+状态(1字节)+END
+bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
+{
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    if (index != 3)
+    {
+        array.remove(0, index + 3);
+        return false;
+    }
+    unsigned char driver_id = 0, driver_status = 0;
+    driver_id = array.at(0);
+    driver_status = array.at(1);
+    array.remove(0, 5);
+    UpdateDriverStatusInfo(driver_id, driver_status);
+    return true;
+}
+// CYTE+通道号(1字节) + 标志(1字节) + 故障类型(1字节) + END
+bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
+{
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    if (index != 3)
+    {
+        array.remove(0, index+3);
+        return false;
+    }
+    LightFaultInfo light_status;
+    memcpy(&light_status, array.data(), 3);
+    array.remove(0, 6);
+    // TODO: update ui
+    UpdateLightTreeStatus(light_status);
+
     return true;
 }
 
@@ -1264,7 +1446,6 @@ bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
         return false;
     }
     array.remove(0, 3);
-    // TODO: flow++ which detector_id == detector_id_
     UpdateDetectorFlowInfo(detector_id_);
     return true;
 }
