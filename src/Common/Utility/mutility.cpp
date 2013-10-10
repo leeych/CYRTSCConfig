@@ -153,6 +153,6 @@ QString MUtility::secondsToDateTime(unsigned long seconds)
     {
         seconds -= 60*60*8;
     }
-    QDateTime datetime = QDateTime::fromTime_t(sec);
+    QDateTime datetime = QDateTime::fromTime_t(seconds);
     return datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
 }
