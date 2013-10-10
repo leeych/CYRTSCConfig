@@ -26,6 +26,8 @@ public:
 
     static bool checkIPString(const QString &ip);
     static QString trimmedAll(const QString &ip);
+
+    static QString secondsToDateTime(unsigned long seconds);
 };
 
 #endif // MUTILITY_H

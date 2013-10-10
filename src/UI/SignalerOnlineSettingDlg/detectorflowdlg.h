@@ -6,15 +6,12 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDateTimeEdit>
+#include <QList>
 
-typedef struct DetectorInfoTag
-{
-    quint32 seconds;
-    quint32 phase_id;
-    quint8 detector_id;
-}DetectorInfo;
+#include "detectorflowhandler.h"
+#include "tsc.h"
 
-
+class DetectorFlowHandler;
 class SyncCommand;
 
 class DetectorFlowDlg : public QDialog
@@ -50,8 +47,11 @@ private:
     bool ParseDetectorRealTimeContent(QByteArray &array);
 
 private:
+    DetectorFlowHandler *handler_;
     SyncCommand *sync_cmd_;
-    DetectorInfo detector_status_info_;
+    DetectorFlowInfo detector_status_info_;
+    DetectorData_t *detector_array_;
+    QList<DetectorFlowInfo> detector_list_;
 
 private:
     QTreeWidget *detector_tree_, *flow_tree_;

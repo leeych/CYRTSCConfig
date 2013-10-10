@@ -47,7 +47,7 @@ void DetectorFlowDlg::OnOkButtonClicked()
 
 void DetectorFlowDlg::OnCmdGetDetectorData(QByteArray &array)
 {
-    Q_UNUSED(array);
+    bool status = ParseDetectorDataContent(array);
 }
 // ClearDetectInfo
 void DetectorFlowDlg::OnCmdClearDetectorInfo(QByteArray &array)
@@ -230,7 +230,31 @@ void DetectorFlowDlg::SetDateTimeEdit(QDateTimeEdit *edit)
 // CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
 {
-    Q_UNUSED(array);
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    int sz = array.size();
+    int data_sz = sizeof(DetectorData_t);
+    if (sz % data_sz != 0)
+    {
+        return false;
+    }
+    int count = sz / data_sz;
+    detector_array_ = new DetectorData_t[count];
+    memcpy(detector_array_, array.data(), sizeof(DetectorData_t)*count);
+
+    // TODO: update ui
+    for (int i = 0; i < count; i++)
+    {
+        detector_status_info_.data_id = detector_array_[i].DataId;
+        detector_status_info_.detector_id = detector_array_[i].DetectorId;
+        detector_status_info_.detector_data = detector_array_[i].DetectorData;
+        detector_status_info_.phase_id = detector_array_[i].PhaseId;
+        detector_status_info_.recv_time = detector_array_[i].RecvTime;
+
+        detector_list_.append(detector_status_info_);
+    }
+
     return true;
 }
 // CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END

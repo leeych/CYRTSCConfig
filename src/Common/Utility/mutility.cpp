@@ -146,3 +146,13 @@ QString MUtility::trimmedAll(const QString &ip)
     }
     return trimmedAll(ip);
 }
+
+QString MUtility::secondsToDateTime(unsigned long seconds)
+{
+    if (seconds >= 60*60*8)     // east 8 time-zoon
+    {
+        seconds -= 60*60*8;
+    }
+    QDateTime datetime = QDateTime::fromTime_t(sec);
+    return datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+}

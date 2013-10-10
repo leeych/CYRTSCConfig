@@ -638,8 +638,8 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
 {
     unsigned char sched_id = 0;
     unsigned char time_section_id = 0;
-    QDate curr_date = QDate::currentDate();
-    QTime curr_time = QTime::currentTime();
+    QDate curr_date = date_time_.date();
+    QTime curr_time = date_time_.time();
     int m = 0;
     for (m = 0; m < tsc_param_.sched_table_.FactScheduleNum; m++)
     {
