@@ -21,6 +21,8 @@ void MainWindow::OnConfigoptSlot(const QString &page_name)
 {
     ChangeTabPage(page_name);
     curr_page_name_ = page_name;
+    main_tab_window_->setFocusPolicy(Qt::NoFocus);
+    main_tab_window_->clearFocus();
 }
 
 void MainWindow::OnUpdateStatusBarSlot(const QString &file_name)

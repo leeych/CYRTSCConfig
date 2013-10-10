@@ -1,11 +1,14 @@
 #include "detectorflowdlg.h"
 #include "macrostring.h"
 #include "synccommand.h"
+#include "mutility.h"
 
+#include <QCalendarWidget>
 #include <QLabel>
+#include <QTableView>
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QHeaderView>
 #include <QMessageBox>
 
 
@@ -111,6 +114,8 @@ void DetectorFlowDlg::InitPage()
     InitTree(flow_tree_, flow_header);
     start_time_editor_ = new QDateTimeEdit;
     end_time_editor_ = new QDateTimeEdit;
+    SetDateTimeEdit(start_time_editor_);
+    SetDateTimeEdit(end_time_editor_);
     QLabel *total_flow_label = new QLabel(STRING_UI_SIGNALER_DETECTOR_TOTAL_FLOW + ":");
     total_flow_lineedit_ = new QLineEdit;
     total_flow_lineedit_->setContextMenuPolicy(Qt::NoContextMenu);
@@ -179,6 +184,48 @@ void DetectorFlowDlg::InitTree(QTreeWidget *tree, const QStringList &header)
     tree->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
     QHeaderView *header_view = tree->header();
     header_view->setDefaultAlignment(Qt::AlignCenter);
+}
+
+void DetectorFlowDlg::SetDateTimeEdit(QDateTimeEdit *edit)
+{
+    QString dir;
+    MUtility::getImageDir(dir);
+    edit->setFixedHeight(26);
+    edit->setDisplayFormat(QString("yyyy-MM-dd hh:mm:ss"));
+    edit->setCalendarPopup(true);
+    edit->setStyleSheet("QDateTimeEdit::drop-down {"
+                        "subcontrol-position: right center;"
+                        "width: 15px;"
+                        "border-left-style: solid; "
+                        "border-top-right-radius: 3px; "
+                        "border-bottom-right-radius: 3px;}"
+                        "QDateTimeEdit::down-arrow {image: url(" + dir + "arrow.png);}"
+                        "border-width: 3px;");
+    QCalendarWidget *calendar = new QCalendarWidget;
+    QLocale local = QLocale(QLocale::Chinese, QLocale::China);
+    calendar->setLocale(local);
+    QString qsstyle =
+            "QAbstractItemView {background:rgb(255,255,255);selection-background-color: rgb(0, 153, 204);}";
+    calendar->setStyleSheet(qsstyle);
+    QWidget *calendarNavBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
+    if (calendarNavBar)
+    {
+        calendarNavBar->setStyleSheet("background-color:rgb(0, 153, 204);");
+    }
+    calendar->setHorizontalHeaderFormat(QCalendarWidget::NoHorizontalHeader);
+    calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    calendar->setFixedSize(210,150);
+    edit->setCalendarWidget(calendar);
+    edit->setAutoFillBackground(true);
+    QTableView *table = qFindChild<QTableView *>((edit->calendarWidget()));
+    QHeaderView *verticalHeader = table->verticalHeader();
+    verticalHeader->setResizeMode(QHeaderView::Fixed);
+    QHeaderView *h = table->horizontalHeader();
+    h->setResizeMode(QHeaderView::Fixed);
+    for(int i = 0; i < 7; i++)
+    {
+        h->resizeSection(i, 30);
+    }
 }
 // CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)

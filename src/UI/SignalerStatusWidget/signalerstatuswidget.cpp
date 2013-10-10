@@ -1,6 +1,7 @@
 #include "signalerstatuswidget.h"
 #include "macrostring.h"
 #include "mutility.h"
+#include "buttonwidget.h"
 #include "signalerbasiceditdlg.h"
 #include "signalerhandler.h"
 #include "signaleronlinesettingdlg.h"

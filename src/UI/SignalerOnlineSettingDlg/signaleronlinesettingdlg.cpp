@@ -6,6 +6,18 @@
 #include "synccommand.h"
 #include "eventloghandler.h"
 
+#include "mtabwidget.h"
+
+#include "unitparamtablewidget.h"
+#include "scheduletablewidget.h"
+#include "timesectiontablewidget.h"
+#include "timingplanwidget.h"
+#include "phasetimingtablewidget.h"
+#include "phasetablewidget.h"
+#include "phaseconflicttablewidget.h"
+#include "channeltablewidget.h"
+#include "detectortablewidget.h"
+
 #include "timeipdlg.h"
 #include "detectorflowdlg.h"
 #include "eventlogdlg.h"
@@ -373,6 +385,7 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
 void SignalerOnlineSettingDlg::closeEvent(QCloseEvent *)
 {
     conn_tip_label_->clear();
+    sync_cmd_->disconnectFromHost();
 }
 
 void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)

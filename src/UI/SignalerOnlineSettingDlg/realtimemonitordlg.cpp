@@ -399,7 +399,7 @@ void RealtimeMonitorDlg::InitPage()
     glayout->addWidget(phase_id_label, 6, 0, 1, 1);
     glayout->addWidget(phase_id_label_, 6, 1, 1, 1);
 
-    QLabel *phase_time_label = new QLabel(STRING_UI_SIGNALER_MONITOR_PHASE_TIME + ":");
+    QLabel *phase_time_label = new QLabel(STRING_UI_SIGNALER_MONITOR_PHASE_TIME + ":" + "(" + STRING_UI_SIGNALER_MONITOR_LCD_TIP + ")");
     phase_time_lcd_ = new QLCDNumber;
     phase_time_lcd_->setMinimumSize(QSize(0, 32));
     phase_time_lcd_->setMouseTracking(true);
@@ -456,18 +456,24 @@ void RealtimeMonitorDlg::InitPage()
     light_header << STRING_UI_CHANNEL_ID << STRING_UI_SIGNALER_MONITOR_LIGHT_COLOR
                     << STRING_UI_SIGNALER_MONITOR_LIGHT_STATUS;
     InitTree(light_tree_, light_header);
+    light_tree_->setColumnWidth(0, 60);
+    light_tree_->setColumnWidth(1, 60);
 
     driver_tree_ = new QTreeWidget;
     QStringList driver_header;
     driver_header << STRING_UI_SIGNALER_MONITOR_DRIVER_ID << STRING_MAIN_STATUS
                      << STRING_UI_SIGNALER_MONITOR_DRIVER_TYPE;
     InitTree(driver_tree_, driver_header);
+    driver_tree_->setColumnWidth(0, 60);
+    driver_tree_->setColumnWidth(1, 60);
 
     detector_tree_ = new QTreeWidget;
     QStringList detector_header;
     detector_header << STRING_UI_SIGNALER_MONITOR_DETECTOR_ID << STRING_UI_SIGNALER_MONITOR_DETECTOR_FLOW
                        << STRING_UI_SIGNALER_MONITOR_DETECTOR_STATUS;
     InitTree(detector_tree_, detector_header);
+    detector_tree_->setColumnWidth(0, 60);
+    detector_tree_->setColumnWidth(1, 60);
 
     stk_layout_ = new QStackedLayout;
     stk_layout_->addWidget(signaler_tree_); // index 0

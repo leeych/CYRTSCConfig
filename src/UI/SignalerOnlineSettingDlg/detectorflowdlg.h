@@ -37,7 +37,6 @@ public slots:
     void OnCmdGetDetectorRealTimeInfo(QByteArray &array);
     // Parse all the reply content
     void OnCmdParseParam(QByteArray &array);
-
     void OnConnectError(const QString &str);
 
 private:
@@ -45,6 +44,7 @@ private:
     void InitSignalSlots();
     void UpdateUI();
     void InitTree(QTreeWidget *tree, const QStringList &header);
+    void SetDateTimeEdit(QDateTimeEdit *edit);
 
     bool ParseDetectorDataContent(QByteArray &array);
     bool ParseDetectorRealTimeContent(QByteArray &array);

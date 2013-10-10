@@ -7,10 +7,9 @@
 #include <QMenu>
 #include <QAction>
 #include "signalerstatuswidget_global.h"
-#include "buttonwidget.h"
 #include "signalerparam.h"
 
-
+class ButtonWidget;
 class SignalerbasiceditDlg;
 class SignalerHandler;
 class SignalerOnlineSettingDlg;
@@ -62,10 +61,10 @@ private:
     SignalerHandler *handler_;
 
 private:
-    SignalerbasiceditDlg* signaler_edit_dlg_;
+    SignalerbasiceditDlg *signaler_edit_dlg_;
     SignalerOnlineSettingDlg *signaler_online_dlg_;
 
-    QTableWidget* signaler_table_;
+    QTableWidget *signaler_table_;
     QPushButton *ok_button_, *cancel_button_;
     ButtonWidget *button_widget_;
 

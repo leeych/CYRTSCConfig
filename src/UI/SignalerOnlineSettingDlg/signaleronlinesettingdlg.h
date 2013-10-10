@@ -5,20 +5,19 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTcpSocket>
-//#include <QStackedLayout>
 #include "signaleronlinesettingdlg_global.h"
 
-#include "mtabwidget.h"
-
-#include "unitparamtablewidget.h"
-#include "scheduletablewidget.h"
-#include "timesectiontablewidget.h"
-#include "timingplanwidget.h"
-#include "phasetimingtablewidget.h"
-#include "phasetablewidget.h"
-#include "phaseconflicttablewidget.h"
-#include "channeltablewidget.h"
-#include "detectortablewidget.h"
+class MDatabase;
+class MTabWidget;
+class UnitparamtableWidget;
+class ScheduleTableWidget;
+class TimesectiontableWidget;
+class TimingplanWidget;
+class PhasetimingtableWidget;
+class PhasetableWidget;
+class PhaseconflicttableWidget;
+class ChanneltableWidget;
+class DetectortableWidget;
 
 class TimeIPDlg;
 class DetectorFlowDlg;
@@ -70,14 +69,13 @@ private:
     void InitPage();
     void InitSignalSlots();
     void InitTabPage();
-    void UpdateUI();
 
+    void UpdateUI();
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
     void UpdateTabPage();
 
     void EnableDialogs(bool enable);
-
     bool ParseConfigArray(QByteArray &byte_array);
 
 private:
