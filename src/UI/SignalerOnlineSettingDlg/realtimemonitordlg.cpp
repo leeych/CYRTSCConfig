@@ -837,6 +837,10 @@ void RealtimeMonitorDlg::InitLightTreeContent()
         item->setTextColor(1, QColor(0,0,0));
         str = "-";
         item->setText(2, str);
+        for (int j = 0; j < 3; j++)
+        {
+            item->setTextAlignment(j, Qt::AlignCenter);
+        }
         light_item_list_.append(item);
     }
     light_tree_->addTopLevelItems(light_item_list_);
@@ -885,6 +889,7 @@ void RealtimeMonitorDlg::UpdateLightTreeColor()
             item->setTextColor(1, QColor(0,0,0));
             break;
         }
+        item->setTextAlignment(1, Qt::AlignCenter);
         tree_item_list.append(item);
     }
     light_tree_->addTopLevelItems(tree_item_list);
@@ -901,6 +906,7 @@ void RealtimeMonitorDlg::UpdateLightTreeStatus(const LightFaultInfo &light_fault
     QTreeWidgetItem *item = light_item_list_.at(light_fault.channel_id-1);
     str = light_fault_desc_map_.value(light_fault.fault_id) + light_flag_desc_map_.value(light_fault.flag);
     item->setText(2, str);
+    item->setTextAlignment(2, Qt::AlignCenter);
 }
 
 void RealtimeMonitorDlg::InitDriverTreeContent()
@@ -913,6 +919,10 @@ void RealtimeMonitorDlg::InitDriverTreeContent()
         item->setText(0, str);
         str = "-";
         item->setText(1, str);
+        for (int j = 0; j < 2; j++)
+        {
+            item->setTextAlignment(j, Qt::AlignCenter);
+        }
         driver_item_list_.append(item);
     }
     driver_tree_->addTopLevelItems(driver_item_list_);
@@ -939,8 +949,12 @@ void RealtimeMonitorDlg::InitDetectorTreeContent()
         item->setText(0, str);
         str = "-";
         item->setText(1, str);
-        str = "";
+        str = "-";
         item->setText(2, str);
+        for (int j = 0; j < 3; j++)
+        {
+            item->setTextAlignment(j, Qt::AlignCenter);
+        }
         detector_item_list_.append(item);
     }
     detector_tree_->addTopLevelItems(detector_item_list_);
@@ -955,6 +969,7 @@ void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
     QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
     int flow_count = item->text(2).toInt();
     item->setText(2, QString::number(++flow_count));
+    item->setTextAlignment(2, Qt::AlignCenter);
 }
 
 void RealtimeMonitorDlg::UpdateDetectorStatusInfo(unsigned char detector_id, unsigned char flag)
@@ -966,6 +981,7 @@ void RealtimeMonitorDlg::UpdateDetectorStatusInfo(unsigned char detector_id, uns
     QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
     QString str = detector_fault_desc_map_.value(flag);
     item->setText(1, str);
+    item->setTextAlignment(1, Qt::AlignCenter);
 }
 
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
