@@ -4,6 +4,7 @@
 #include "synccommand.h"
 #include "filereaderwriter.h"
 #include "eventlogdescriptor.h"
+#include "detectorflowhandler.h"
 
 #include <QPixmap>
 #include <QHBoxLayout>
@@ -38,6 +39,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
 	curr_stage_id_ = 0;
     count_down_seconds_ = 0;
     count_down_light_ = 0;
+    handler_ = new DetectorFlowHandler;
 
     InitPage();
     InitSignalSlots();
@@ -53,6 +55,11 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
         ptr = channel_point_list_.at(i);
         delete ptr;
         channel_point_list_[i] = NULL;
+    }
+    if (handler_ != NULL)
+    {
+        delete handler_;
+        handler_ = NULL;
     }
 }
 
@@ -302,13 +309,17 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         case '8':
             break;
         case '9':
-    //        status = ParseDetectorContent(recv_array_);
+            status = ParseDetectorFlowContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
             break;
         case 'A':
             status = ParseSysFaultContent(recv_array_);
             break;
         case 'B':
-            status = ParseDetectorRealTimeContent(recv_array_);
+            status = ParseRealTimeFlowContent(recv_array_);
             break;
         case 'C':
             status = ParseDriverStatusContent(recv_array_);
@@ -474,6 +485,7 @@ void RealtimeMonitorDlg::InitPage()
     InitTree(detector_tree_, detector_header);
     detector_tree_->setColumnWidth(0, 60);
     detector_tree_->setColumnWidth(1, 60);
+    InitDetectorTreeContent();
 
     stk_layout_ = new QStackedLayout;
     stk_layout_->addWidget(signaler_tree_); // index 0
@@ -810,6 +822,40 @@ void RealtimeMonitorDlg::UpdateLightStatus()
     light_tree_->addTopLevelItems(tree_item_list);
 }
 
+void RealtimeMonitorDlg::InitDetectorTreeContent()
+{
+    for (int i = 0; i < MAX_DETECTOR; i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(detector_tree_);
+        item->setText(i, QString::number(i+1));
+        detector_item_list_.append(item);
+    }
+    detector_tree_->addTopLevelItems(detector_item_list_);
+}
+
+void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
+{
+    if (!(detector_id > 0 && detector_id <= MAX_DETECTOR))
+    {
+        return;
+    }
+    QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
+    int flow_count = item->text(2).toInt();
+    item->setText(2, QString::number(++flow_count));
+}
+
+void RealtimeMonitorDlg::UpdateDetectorStatusInfo()
+{
+    unsigned char id = 0;
+    QTreeWidgetItem *item = NULL;
+    for (int i = 0; i < MAX_DETECTOR; i++)
+    {
+        item = detector_tree_->topLevelItem(i);
+        id = item->text(0).toInt();
+        // TODO: update detector status
+    }
+}
+
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
 {
     for (int i = 0; i < button_list_.size(); i++)
@@ -989,7 +1035,7 @@ bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
         SetVehicleLight(channel_color_array_[channel_id], channel_id, false);
 		SetVehicleLight((LightColor)begin_monitor_info_.status, begin_monitor_info_.channel_id, true);
 	}
-	else if (channel_id < 13+1)
+    else if (channel_id > 12 && channel_id < 16+1)
 	{
         SetPedestrianLight(channel_color_array_[channel_id], channel_id, false);
 		SetPedestrianLight((LightColor)begin_monitor_info_.status, channel_id, true);
@@ -1075,6 +1121,35 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     date_time_ = QDateTime::fromTime_t(seconds).toLocalTime();
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
 
+    return true;
+}
+
+bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
+{
+    array.remove(0, 4);
+    int index = array.indexOf("END");
+    array.remove(index, 3);
+    int sz = array.size();
+    int data_sz = sizeof(DetectorData_t);
+    if (sz % data_sz != 0)
+    {
+        return false;
+    }
+    int count = sz / data_sz;
+    detector_array_ = new DetectorData_t[count];
+    memcpy(detector_array_, array.data(), array.size());
+    array.remove(0, array.size());
+    for (int i = 0; i < count; i++)
+    {
+        handler_->set_detector_flow(detector_array_[i]);
+    }
+    if (detector_array_ != NULL)
+    {
+        delete [] detector_array_;
+        detector_array_ = NULL;
+    }
+    // TODO: update ui
+    UpdateDetectorStatusInfo();
     return true;
 }
 // CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
@@ -1179,13 +1254,18 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 }
 
 // CYTB+检测器编号(1字节)+END
-bool RealtimeMonitorDlg::ParseDetectorRealTimeContent(QByteArray &array)
+bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
 {
     array.remove(0, 4);
     memcpy(&detector_id_, array.data(), 1);
     array.remove(0, 1);
+    if (!array.left(3).contains("END"))
+    {
+        return false;
+    }
     array.remove(0, 3);
     // TODO: flow++ which detector_id == detector_id_
+    UpdateDetectorFlowInfo(detector_id_);
     return true;
 }
 

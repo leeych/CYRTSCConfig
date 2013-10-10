@@ -4,6 +4,7 @@
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QDebug>
 
 PhaseeditDlg::PhaseeditDlg(QWidget *parent) :
     QDialog(parent)
@@ -403,7 +404,8 @@ unsigned int PhaseeditDlg::get_channels()
 		{
 			channel_ids |= 0x01;
 		}
-	}
+    }
+    qDebug() << "channel_ids:" << channel_ids;
 	return channel_ids;
 }
 

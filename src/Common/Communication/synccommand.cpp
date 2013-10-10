@@ -129,6 +129,14 @@ void SyncCommand::ClearDetectorFlowInfo(QObject *target, const std::string &slot
     socket_->write(Command::ClearDetectInfo.c_str());
 }
 
+void SyncCommand::ClearDetectorFlowInfo()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        socket_->write(Command::ClearDetectInfo.c_str());
+    }
+}
+
 void SyncCommand::GetDriverBoardInfo(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

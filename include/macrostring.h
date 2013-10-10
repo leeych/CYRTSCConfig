@@ -288,6 +288,7 @@
 #define STRING_UI_DETECTOR_KEY_LANE     QObject::tr("Whether buried in the critical lane")
 
 #define STRING_UI_DETECTOR_TOP_LIMITED	QObject::tr("Already up the top limited count ")
+#define STRING_UI_DETECTOR_ID_OVERFLOW  QObject::tr("Detector Id can not be larger than ")
 
 #define STRING_UI_TIMESECTION_ID        QObject::tr("Time section ID")
 #define STRING_UI_TIMESECTION_EVENT_ID  QObject::tr("Event ID")

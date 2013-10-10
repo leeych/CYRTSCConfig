@@ -14,7 +14,6 @@
 #include <QGraphicsPixmapItem>
 #include <QImage>
 #include <QFrame>
-
 #include <QMap>
 #include <QList>
 #include <QTimer>
@@ -23,10 +22,12 @@
 #include "tscparam.h"
 
 // 1. GetConfigure
-// 2. BegineMonitor
-// 3. GetLampStatus
+// 2. GetLampStatus
+// 3. GetTscTime
+// 4. BeginMonitor
 
 class SyncCommand;
+class DetectorFlowHandler;
 
 typedef struct BeginMonitorTag
 {
@@ -101,8 +102,11 @@ private:
 
     void UpdateUI();
     void UpdateScheduleInfo();
-
     void UpdateLightStatus();
+
+    void InitDetectorTreeContent();
+    void UpdateDetectorFlowInfo(unsigned char detector_id);
+    void UpdateDetectorStatusInfo();
 
     void ResetButtonStatus(const QPushButton *self_btn);
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
@@ -148,15 +152,17 @@ private:
     bool ParseLightStatusContent(QByteArray &array);
     bool ParseCountDownContent(QByteArray &array);
     bool ParseTSCTimeContent(QByteArray &array);
+    bool ParseDetectorFlowContent(QByteArray &array);
     bool ParseSysFaultContent(QByteArray &array);
     bool ParseDriverStatusContent(QByteArray &array);
-//    bool ParseDetectorContent(QByteArray &array);
-    bool ParseDetectorRealTimeContent(QByteArray &array);
+    bool ParseRealTimeFlowContent(QByteArray &array);
 
 private:
     SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
     QMap<unsigned char, QString> ctrl_mode_desc_map_;
+    DetectorFlowHandler *handler_;
+    QList<QTreeWidgetItem *> detector_item_list_;
 
     QString ip_;
     QString cfg_file_;
@@ -171,7 +177,9 @@ private:
 
     unsigned char detector_id_;
 
-    bool is_first_light_;   // used for update light status
+    bool is_first_light_;       // used for update light status
+    bool is_uitimer_started_;
+    int ui_timer_id_;
 
     // used for signaler time display
     bool is_inited_;
@@ -180,8 +188,13 @@ private:
     QTimer *signaler_timer_;
     QTimer *count_down_timer_;
 
-    int ui_timer_id_;
-    bool is_uitimer_started_;
+    DetectorData_t *detector_array_;    // used for get detectorinfo
+
+    // request reply
+    BeginMonitorInfo begin_monitor_info_;
+	LightColor channel_color_array_[MAX_CHANNEL + 1];
+    CountDownInfo count_down_info_;
+    LightStatusInfo lights_status_info_;
 
     typedef struct ChannelStatusInfoTag
     {
@@ -191,11 +204,6 @@ private:
         unsigned int phase_id;
     }ChannelStatusInfo;
 
-    // request reply
-    BeginMonitorInfo begin_monitor_info_;
-	LightColor channel_color_array_[MAX_CHANNEL + 1];
-    CountDownInfo count_down_info_;
-    LightStatusInfo lights_status_info_;
     ChannelStatusInfo channel_status_info_;
     ChannelStatusInfo channel_status_bak_;  // used for revert lights' status
 

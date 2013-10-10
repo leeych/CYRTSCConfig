@@ -156,3 +156,21 @@ QString MUtility::secondsToDateTime(unsigned long seconds)
     QDateTime datetime = QDateTime::fromTime_t(seconds);
     return datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
 }
+
+QString MUtility::phaseBitsDesc(unsigned int phase)
+{
+    QString str;
+    for (int i = 1; i <= 32; i++)
+    {
+        if ((phase & 0x01) == 0x01)
+        {
+            str += QString::number(i) + "/";
+        }
+        phase = phase >> 1;
+    }
+    if (str.isEmpty())
+    {
+        return "-";
+    }
+    return str.left(str.size() - 1);
+}

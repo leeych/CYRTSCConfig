@@ -16,12 +16,18 @@ DetectorFlowDlg::DetectorFlowDlg(QWidget *parent) :
     QDialog(parent)
 {
     sync_cmd_ = SyncCommand::GetInstance();
+    handler_ = new DetectorFlowHandler;
     InitPage();
     InitSignalSlots();
 }
 
 DetectorFlowDlg::~DetectorFlowDlg()
 {
+    if (handler_ != NULL)
+    {
+        delete handler_;
+        handler_ = NULL;
+    }
 }
 
 void DetectorFlowDlg::Initialize()
@@ -32,12 +38,13 @@ void DetectorFlowDlg::Initialize()
 
 void DetectorFlowDlg::OnReadFlowButtonClicked()
 {
-    sync_cmd_->GetDetectorFlowData(this, SLOT(OnCmdGetDetectorData(QByteArray&)));
+    sync_cmd_->GetDetectorFlowData(this, SLOT(OnCmdParseParam(QByteArray&)));
+    read_flow_button_->setEnabled(false);
 }
 
 void DetectorFlowDlg::OnClearFowButtonClicked()
 {
-    sync_cmd_->ClearDetectorFlowInfo(this, SLOT(OnCmdClearDetectorInfo(QByteArray&)));
+    sync_cmd_->ClearDetectorFlowInfo();
 }
 
 void DetectorFlowDlg::OnOkButtonClicked()
@@ -45,23 +52,29 @@ void DetectorFlowDlg::OnOkButtonClicked()
     accept();
 }
 
-void DetectorFlowDlg::OnCmdGetDetectorData(QByteArray &array)
+void DetectorFlowDlg::OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *item, int col)
 {
-    bool status = ParseDetectorDataContent(array);
-}
-// ClearDetectInfo
-void DetectorFlowDlg::OnCmdClearDetectorInfo(QByteArray &array)
-{
-    Q_UNUSED(array);
-}
-
-void DetectorFlowDlg::OnCmdGetDetectorRealTimeInfo(QByteArray &array)
-{
-    Q_UNUSED(array);
+    if (item == NULL || col < 0)
+    {
+        return;
+    }
+    unsigned char id = item->text(0).trimmed().toUInt();
+    if (id > MAX_DETECTOR)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_DETECTOR_ID_OVERFLOW, STRING_OK);
+        return;
+    }
+    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(id);
+    UpdateFlowInfoTree(flow_list);
 }
 
 void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
 {
+    byte_array_.append(array);
+    if (!CheckPackage(byte_array_))
+    {
+        return;
+    }
     QString head(array.left(3));
     QString tail(array.right(3));
     if (head != QString("CYT") || tail != QString("END"))
@@ -80,7 +93,7 @@ void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
         }
         break;
     case 'B':
-        status = ParseDetectorRealTimeContent(array);
+        status = ParseRealtimeFlowInfoContent(array);
         if (!status)
         {
             QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
@@ -160,12 +173,56 @@ void DetectorFlowDlg::InitSignalSlots()
     connect(read_flow_button_, SIGNAL(clicked()), this, SLOT(OnReadFlowButtonClicked()));
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
-
+    connect(detector_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnDetectorIDTreeDoubleClicked(QTreeWidgetItem*,int)));
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void DetectorFlowDlg::UpdateUI()
 {
+    UpdateDetectorTree();
+    UpdateFlowInfoTree();
+}
+
+void DetectorFlowDlg::UpdateDetectorTree()
+{
+    detector_tree_->clear();
+    QList<QTreeWidgetItem *> item_list;
+    QList<unsigned char> detector_id_list = handler_->get_detector_id_list();
+    for (int i = 0; i < detector_id_list.size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(detector_tree_);
+        item->setText(0, QString::number(detector_id_list.at(i)));
+        item_list.append(item);
+    }
+    detector_tree_->addTopLevelItems(item_list);
+}
+
+void DetectorFlowDlg::UpdateFlowInfoTree()
+{
+    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow_list();
+    UpdateFlowInfoTree(flow_list);
+}
+
+void DetectorFlowDlg::UpdateFlowInfoTree(const QList<DetectorFlowInfo> &flow_list)
+{
+    flow_tree_->clear();
+    QString str;
+    QList<QTreeWidgetItem *> item_list;
+    for (int i = 0; i < flow_list.size(); i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(flow_tree_);
+        str.sprintf("%d", flow_list.at(i).data_id);
+        item->setText(0, str);
+        str = MUtility::secondsToDateTime(flow_list.at(i).recv_time);
+        item->setText(1, str);
+        str.sprintf("%d", flow_list.at(i).detector_data);
+        item->setText(2, str);
+        str = MUtility::phaseBitsDesc(flow_list.at(i).phase_ids);
+        item->setText(3, str);
+
+        item_list.append(item);
+    }
+    flow_tree_->addTopLevelItems(item_list);
 }
 
 void DetectorFlowDlg::InitTree(QTreeWidget *tree, const QStringList &header)
@@ -227,6 +284,25 @@ void DetectorFlowDlg::SetDateTimeEdit(QDateTimeEdit *edit)
         h->resizeSection(i, 30);
     }
 }
+
+bool DetectorFlowDlg::CheckPackage(QByteArray &array)
+{
+    if (array.contains("DETECTDATAER"))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
+        int index = array.indexOf("DETECTDATAER");
+        array.remove(index, QString("DETECTDATAER").size());
+        return false;
+    }
+    if (array == "DRIVEINFOER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS + STRING_FAILED, STRING_OK);
+        int index = array.indexOf("DRIVEINFOER");
+        array.remove(index, QString("DRIVEINFOER").size());
+        return false;
+    }
+    return true;
+}
 // CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
 {
@@ -241,33 +317,36 @@ bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
     }
     int count = sz / data_sz;
     detector_array_ = new DetectorData_t[count];
-    memcpy(detector_array_, array.data(), sizeof(DetectorData_t)*count);
-
+    memcpy(detector_array_, array.data(), array.size());
+    array.remove(0, array.size());
     // TODO: update ui
     for (int i = 0; i < count; i++)
     {
-        detector_status_info_.data_id = detector_array_[i].DataId;
-        detector_status_info_.detector_id = detector_array_[i].DetectorId;
-        detector_status_info_.detector_data = detector_array_[i].DetectorData;
-        detector_status_info_.phase_id = detector_array_[i].PhaseId;
-        detector_status_info_.recv_time = detector_array_[i].RecvTime;
-
-        detector_list_.append(detector_status_info_);
+        handler_->set_detector_flow(detector_array_[i]);
     }
+    if (detector_array_ != NULL)
+    {
+        delete [] detector_array_;
+        detector_array_ = NULL;
+    }
+    UpdateUI();
 
     return true;
 }
-// CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END
-bool DetectorFlowDlg::ParseDetectorRealTimeContent(QByteArray &array)
+// CYTB+检测器编号(1字节)+END
+bool DetectorFlowDlg::ParseRealtimeFlowInfoContent(QByteArray &array)
 {
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
-    if ((unsigned int)array.size() != sizeof(detector_status_info_))
+    unsigned char detector_id = 0;
+    if (array.size() != 1)
     {
+        array.remove(0, array.size());
         return false;
     }
-    memcpy(&detector_status_info_, array.data(), sizeof(detector_status_info_));
-    // TODO: update ui
+    memcpy(&detector_id, array.data(), 1);
+    array.remove(0, 1);
+
     return true;
 }

@@ -28,6 +28,7 @@ public:
     static QString trimmedAll(const QString &ip);
 
     static QString secondsToDateTime(unsigned long seconds);
+    static QString phaseBitsDesc(unsigned int phase);
 };
 
 #endif // MUTILITY_H

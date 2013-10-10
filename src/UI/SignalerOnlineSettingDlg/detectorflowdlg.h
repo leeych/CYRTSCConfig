@@ -28,10 +28,8 @@ public slots:
     void OnReadFlowButtonClicked();
     void OnClearFowButtonClicked();
     void OnOkButtonClicked();
+    void OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *, int);
 
-    void OnCmdGetDetectorData(QByteArray &array);
-    void OnCmdClearDetectorInfo(QByteArray &array);
-    void OnCmdGetDetectorRealTimeInfo(QByteArray &array);
     // Parse all the reply content
     void OnCmdParseParam(QByteArray &array);
     void OnConnectError(const QString &str);
@@ -40,11 +38,16 @@ private:
     void InitPage();
     void InitSignalSlots();
     void UpdateUI();
+    void UpdateDetectorTree();
+    void UpdateFlowInfoTree();
+    void UpdateFlowInfoTree(const QList<DetectorFlowInfo> &flow_list);
+
     void InitTree(QTreeWidget *tree, const QStringList &header);
     void SetDateTimeEdit(QDateTimeEdit *edit);
 
+    bool CheckPackage(QByteArray &array);
     bool ParseDetectorDataContent(QByteArray &array);
-    bool ParseDetectorRealTimeContent(QByteArray &array);
+    bool ParseRealtimeFlowInfoContent(QByteArray &array);
 
 private:
     DetectorFlowHandler *handler_;
@@ -52,6 +55,8 @@ private:
     DetectorFlowInfo detector_status_info_;
     DetectorData_t *detector_array_;
     QList<DetectorFlowInfo> detector_list_;
+
+    QByteArray byte_array_;
 
 private:
     QTreeWidget *detector_tree_, *flow_tree_;
