@@ -169,6 +169,8 @@ private:
     unsigned char count_down_seconds_;  // used for count_down disp
     unsigned char count_down_light_;
 
+    unsigned char detector_id_;
+
     bool is_first_light_;   // used for update light status
 
     // used for signaler time display

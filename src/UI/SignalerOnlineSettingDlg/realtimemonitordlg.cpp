@@ -437,7 +437,7 @@ void RealtimeMonitorDlg::InitPage()
     driver_button_->setCheckable(true);
     detector_button_->setCheckable(true);
 
-    time_vlayout->addWidget(signaler_record_button_);
+//    time_vlayout->addWidget(signaler_record_button_);
     time_vlayout->addWidget(light_status_button_);
     time_vlayout->addWidget(driver_button_);
     time_vlayout->addWidget(detector_button_);
@@ -461,11 +461,11 @@ void RealtimeMonitorDlg::InitPage()
 
     driver_tree_ = new QTreeWidget;
     QStringList driver_header;
-    driver_header << STRING_UI_SIGNALER_MONITOR_DRIVER_ID << STRING_MAIN_STATUS
-                     << STRING_UI_SIGNALER_MONITOR_DRIVER_TYPE;
+    driver_header << STRING_UI_SIGNALER_MONITOR_DRIVER_ID << STRING_MAIN_STATUS;
+//                     << STRING_UI_SIGNALER_MONITOR_DRIVER_TYPE;
     InitTree(driver_tree_, driver_header);
-    driver_tree_->setColumnWidth(0, 60);
-    driver_tree_->setColumnWidth(1, 60);
+//    driver_tree_->setColumnWidth(0, 60);
+//    driver_tree_->setColumnWidth(1, 60);
 
     detector_tree_ = new QTreeWidget;
     QStringList detector_header;
@@ -1178,14 +1178,14 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
     return true;
 }
 
-// CYTB+时间(4字节)+相位编码(4字节)+检测器编号(1字节)+END
+// CYTB+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorRealTimeContent(QByteArray &array)
 {
     array.remove(0, 4);
-//    memcpy(&detector_status_info_, array.data(), sizeof(detector_status_info_));
-    array.remove(0, 4+4+1);
+    memcpy(&detector_id_, array.data(), 1);
+    array.remove(0, 1);
     array.remove(0, 3);
-    // TODO: update ui
+    // TODO: flow++ which detector_id == detector_id_
     return true;
 }
 

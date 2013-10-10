@@ -413,7 +413,6 @@ void SignalerOnlineSettingDlg::InitPage()
     log_button_ = new QPushButton(STRING_UI_SIGNALER_LOG_READ);
     flow_button_ = new QPushButton(STRING_UI_SIGNALER_FLOW_READ);
     setting_button_ = new QPushButton(STRING_UI_SIGNALER_SETTING);
-
     saveas_button_ = new QPushButton(STRING_UI_SIGNALER_SAVEAS);
 
     more_button_ = new QPushButton(STRING_DOWN_ARROW);
