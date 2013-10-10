@@ -120,7 +120,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="81"/>
-        <location filename="../../include/macrostring.h" line="475"/>
+        <location filename="../../include/macrostring.h" line="476"/>
         <source>Normal</source>
         <translation>正常</translation>
     </message>
@@ -578,7 +578,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="170"/>
-        <location filename="../../include/macrostring.h" line="297"/>
+        <location filename="../../include/macrostring.h" line="298"/>
         <source>Timing ID</source>
         <translation>配时方案号</translation>
     </message>
@@ -654,7 +654,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="189"/>
-        <location filename="../../include/macrostring.h" line="542"/>
+        <location filename="../../include/macrostring.h" line="543"/>
         <source>Stage ID</source>
         <translation>阶段号</translation>
     </message>
@@ -975,7 +975,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="267"/>
-        <location filename="../../include/macrostring.h" line="517"/>
+        <location filename="../../include/macrostring.h" line="518"/>
         <source>Detector ID</source>
         <translation>检测器号</translation>
     </message>
@@ -1080,23 +1080,23 @@
         <translation>检测器表行数已达上限</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="292"/>
+        <location filename="../../include/macrostring.h" line="293"/>
         <source>Time section ID</source>
         <translation>时段表号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="293"/>
+        <location filename="../../include/macrostring.h" line="294"/>
         <source>Event ID</source>
         <translation>事件号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="294"/>
+        <location filename="../../include/macrostring.h" line="295"/>
         <source>Start time</source>
         <translation>起始时间</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="63"/>
-        <location filename="../../include/macrostring.h" line="354"/>
+        <location filename="../../include/macrostring.h" line="355"/>
         <source>Traffic control</source>
         <translation>交通管制</translation>
     </message>
@@ -1201,798 +1201,803 @@
         <translation>初始化程序信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="355"/>
+        <location filename="../../include/macrostring.h" line="291"/>
+        <source>Detector Id can not be larger than </source>
+        <translation>检测器号不能大于</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="356"/>
         <source>Manuall control</source>
         <translation>人工手动控制</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="356"/>
+        <location filename="../../include/macrostring.h" line="357"/>
         <source>System failure yellow flash</source>
         <translation>系统故障黄闪</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="358"/>
+        <location filename="../../include/macrostring.h" line="359"/>
         <source>Flash time can not less than </source>
         <translation>闪光控制时间不能小于</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="359"/>
+        <location filename="../../include/macrostring.h" line="360"/>
         <source>All red time can not less than </source>
         <translation>全红控制时间不能小于</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="361"/>
+        <location filename="../../include/macrostring.h" line="362"/>
         <source>Create new file failed.</source>
         <translation>新建文件失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="362"/>
+        <location filename="../../include/macrostring.h" line="363"/>
         <source>Add file failed.</source>
         <translation>添加文件失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="363"/>
+        <location filename="../../include/macrostring.h" line="364"/>
         <source>Remove file failed.</source>
         <translation>移除文件失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="364"/>
+        <location filename="../../include/macrostring.h" line="365"/>
         <source>Delete file failed.</source>
         <translation>删除文件失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="365"/>
+        <location filename="../../include/macrostring.h" line="366"/>
         <source>Clear file list failed.</source>
         <translation>清空列表失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="367"/>
+        <location filename="../../include/macrostring.h" line="368"/>
         <source>Signaler advanced setting</source>
         <translation>信号机高级设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="369"/>
+        <location filename="../../include/macrostring.h" line="370"/>
         <source>Disconnect</source>
         <translation>断开连接</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="370"/>
+        <location filename="../../include/macrostring.h" line="371"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="371"/>
+        <location filename="../../include/macrostring.h" line="372"/>
         <source>Read setting file</source>
         <translation>读取配置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="372"/>
+        <location filename="../../include/macrostring.h" line="373"/>
         <source>Update setting file</source>
         <translation>更新配置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="373"/>
+        <location filename="../../include/macrostring.h" line="374"/>
         <source>Send setting file</source>
         <translation>发送...</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="374"/>
+        <location filename="../../include/macrostring.h" line="375"/>
         <source>Real time monitor</source>
         <translation>实时监控</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="375"/>
+        <location filename="../../include/macrostring.h" line="376"/>
         <source>Read log file</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="376"/>
+        <location filename="../../include/macrostring.h" line="377"/>
         <source>Read flow</source>
         <translation>流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="377"/>
+        <location filename="../../include/macrostring.h" line="378"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="378"/>
+        <location filename="../../include/macrostring.h" line="379"/>
         <source>Save Failed</source>
         <translation>文件保存失败</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="379"/>
+        <location filename="../../include/macrostring.h" line="380"/>
         <source>Save Succeeded</source>
         <translation>保存成功</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="380"/>
+        <location filename="../../include/macrostring.h" line="381"/>
         <source>Plan save as ...</source>
         <translation>方案另存为</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="382"/>
+        <location filename="../../include/macrostring.h" line="383"/>
         <source>Connected to the signaler</source>
         <translation>成功连接到信号机。</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="383"/>
+        <location filename="../../include/macrostring.h" line="384"/>
         <source>TCP connected succeeded, check version now</source>
         <translation>TCP连接已建立，正在检测版本...</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="384"/>
+        <location filename="../../include/macrostring.h" line="385"/>
         <source>Disconnected from the signaler</source>
         <translation>连接已断开。</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="385"/>
+        <location filename="../../include/macrostring.h" line="386"/>
         <source>Signaler version incorrect</source>
         <translation>信号机版本不正确。</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="387"/>
+        <location filename="../../include/macrostring.h" line="388"/>
         <source>Connecting ...</source>
         <translation>连接中...</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="388"/>
+        <location filename="../../include/macrostring.h" line="389"/>
         <source>Connection was rejected by host</source>
         <translation>连接被主机拒绝</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="389"/>
+        <location filename="../../include/macrostring.h" line="390"/>
         <source>Has not connected</source>
         <translation>未连接</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="391"/>
+        <location filename="../../include/macrostring.h" line="392"/>
         <source>Delete signaler from table failed.</source>
         <translation>删除信号机失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="393"/>
+        <location filename="../../include/macrostring.h" line="394"/>
         <source>Signaler Time-Network setting</source>
         <translation>信号机时钟和网络设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="394"/>
+        <location filename="../../include/macrostring.h" line="395"/>
         <source>System time</source>
         <translation>系统时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="395"/>
+        <location filename="../../include/macrostring.h" line="396"/>
         <source>Time setting</source>
         <translation>时钟设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="396"/>
+        <location filename="../../include/macrostring.h" line="397"/>
         <source>Network setting</source>
         <translation>网络设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="397"/>
+        <location filename="../../include/macrostring.h" line="398"/>
         <source>Read sys time</source>
         <translation>读取系统时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="398"/>
+        <location filename="../../include/macrostring.h" line="399"/>
         <source>Sync time</source>
         <translation>时钟同步</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="399"/>
+        <location filename="../../include/macrostring.h" line="400"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="400"/>
+        <location filename="../../include/macrostring.h" line="401"/>
         <source>Set signaler IP</source>
         <translation>设置信号机IP</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="401"/>
+        <location filename="../../include/macrostring.h" line="402"/>
         <source>Network configuration</source>
         <translation>网络参数设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="402"/>
+        <location filename="../../include/macrostring.h" line="403"/>
         <source>Sync time return socket package is null</source>
         <translation>时钟同步返回值为空！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="403"/>
+        <location filename="../../include/macrostring.h" line="404"/>
         <source>Network configuration return package is null</source>
         <translation>网络参数设置返回为空！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="405"/>
+        <location filename="../../include/macrostring.h" line="406"/>
         <source>Read signaler configure file failed</source>
         <translation>读取信号机配置文件失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="406"/>
+        <location filename="../../include/macrostring.h" line="407"/>
         <source>Read signaler configure file succeeded</source>
         <translation>读取信号机配置文件成功！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="407"/>
-        <location filename="../../include/macrostring.h" line="549"/>
+        <location filename="../../include/macrostring.h" line="408"/>
+        <location filename="../../include/macrostring.h" line="550"/>
         <source>Parse signaler configuration file</source>
         <translation>解析信号机配置文件</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="408"/>
+        <location filename="../../include/macrostring.h" line="409"/>
         <source>Save temp signaler configure file failed</source>
         <translation>信号机配置文件保存失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="409"/>
+        <location filename="../../include/macrostring.h" line="410"/>
         <source>Socket return package is null</source>
         <translation>Socket返回为空！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="410"/>
+        <location filename="../../include/macrostring.h" line="411"/>
         <source>Configuration file send and set</source>
         <translation>配置文件设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="411"/>
+        <location filename="../../include/macrostring.h" line="412"/>
         <source>Signaler is busy, wait for a while and retry later</source>
         <translation>信号机正忙无法响应，请稍候再试。</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="413"/>
+        <location filename="../../include/macrostring.h" line="414"/>
         <source>Signaler event log</source>
         <translation>信号机事件日志设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="415"/>
+        <location filename="../../include/macrostring.h" line="416"/>
         <source>Event type</source>
         <translation>事件类型</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="416"/>
+        <location filename="../../include/macrostring.h" line="417"/>
         <source>Event log clear time</source>
         <translation>清除时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="418"/>
+        <location filename="../../include/macrostring.h" line="419"/>
         <source>Event type ID</source>
         <translation>事件类型编号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="419"/>
+        <location filename="../../include/macrostring.h" line="420"/>
         <source>Event flow ID</source>
         <translation>事件流水号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="420"/>
+        <location filename="../../include/macrostring.h" line="421"/>
         <source>Event datetime</source>
         <translation>日期时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="421"/>
+        <location filename="../../include/macrostring.h" line="422"/>
         <source>Event desc</source>
         <translation>事件描述</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="423"/>
+        <location filename="../../include/macrostring.h" line="424"/>
         <source>Read log</source>
         <translation>读取日志</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="424"/>
+        <location filename="../../include/macrostring.h" line="425"/>
         <source>Clear selected event</source>
         <translation>清除选中事件</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="425"/>
+        <location filename="../../include/macrostring.h" line="426"/>
         <source>Export event log</source>
         <translation>导出日志</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="426"/>
+        <location filename="../../include/macrostring.h" line="427"/>
         <source>Export report</source>
         <translation>生成报表</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="427"/>
+        <location filename="../../include/macrostring.h" line="428"/>
         <source>Export log file failed</source>
         <translation>导出日志失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="428"/>
+        <location filename="../../include/macrostring.h" line="429"/>
         <source>Export html file failed</source>
         <translation>生成报表失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="429"/>
+        <location filename="../../include/macrostring.h" line="430"/>
         <source>Delete event log item</source>
         <translation>清除指定日志记录</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="431"/>
+        <location filename="../../include/macrostring.h" line="432"/>
         <source>Read socket data is null</source>
         <translation>返回内容为空！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="432"/>
+        <location filename="../../include/macrostring.h" line="433"/>
         <source>Get event log info failed</source>
         <translation>获取事件日志数据失败！</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="433"/>
+        <location filename="../../include/macrostring.h" line="434"/>
         <source>Log socket package incorrect</source>
         <translation>日志信息返回内容无效</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="437"/>
+        <location filename="../../include/macrostring.h" line="438"/>
         <source>Software event</source>
         <translation>软件事件</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="438"/>
+        <location filename="../../include/macrostring.h" line="439"/>
         <source>Software starts running</source>
         <translation>软件启动</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="439"/>
+        <location filename="../../include/macrostring.h" line="440"/>
         <source>Serial opened</source>
         <translation>串口打开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="440"/>
+        <location filename="../../include/macrostring.h" line="441"/>
         <source>Serial configure</source>
         <translation>串口配置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="441"/>
+        <location filename="../../include/macrostring.h" line="442"/>
         <source>Watch dog open</source>
         <translation>看门狗打开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="442"/>
+        <location filename="../../include/macrostring.h" line="443"/>
         <source>Configure file open</source>
         <translation>配置文件打开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="443"/>
+        <location filename="../../include/macrostring.h" line="444"/>
         <source>No time-section to run</source>
         <translation>无时段可执行</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="444"/>
+        <location filename="../../include/macrostring.h" line="445"/>
         <source>No plan to run</source>
         <translation>无方案可执行</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="445"/>
+        <location filename="../../include/macrostring.h" line="446"/>
         <source>Invalid control mode</source>
         <translation>无效的控制模式</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="446"/>
+        <location filename="../../include/macrostring.h" line="447"/>
         <source>Phase conflict in the same stage</source>
         <translation>同阶段内相位冲突</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="447"/>
+        <location filename="../../include/macrostring.h" line="448"/>
         <source>No valid phase</source>
         <translation>无有效相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="448"/>
+        <location filename="../../include/macrostring.h" line="449"/>
         <source>Write backplane serial</source>
         <translation>写底板串口失败</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="449"/>
+        <location filename="../../include/macrostring.h" line="450"/>
         <source>Write panel serial</source>
         <translation>写面板串口失败</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="450"/>
+        <location filename="../../include/macrostring.h" line="451"/>
         <source>Local server initiated</source>
         <translation>本地服务器建立</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="451"/>
+        <location filename="../../include/macrostring.h" line="452"/>
         <source>Local server recv data</source>
         <translation>本地服务器接收数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="452"/>
+        <location filename="../../include/macrostring.h" line="453"/>
         <source>Local server send data</source>
         <translation>本地服务器发送数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="453"/>
+        <location filename="../../include/macrostring.h" line="454"/>
         <source>Local server connect</source>
         <translation>本地服务器连接</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="454"/>
+        <location filename="../../include/macrostring.h" line="455"/>
         <source>Local client send data</source>
         <translation>本地客户端发送数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="455"/>
+        <location filename="../../include/macrostring.h" line="456"/>
         <source>Local client recv data</source>
         <translation>本地客户端接收数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="456"/>
+        <location filename="../../include/macrostring.h" line="457"/>
         <source>Read GPS data</source>
         <translation>读GPS数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="459"/>
+        <location filename="../../include/macrostring.h" line="460"/>
         <source>Channel</source>
         <translation>通道</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="460"/>
+        <location filename="../../include/macrostring.h" line="461"/>
         <source>Restoration</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="461"/>
+        <location filename="../../include/macrostring.h" line="462"/>
         <source>Bright together</source>
         <translation>同亮</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="462"/>
+        <location filename="../../include/macrostring.h" line="463"/>
         <source>Green conflict</source>
         <translation>绿冲突</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="463"/>
+        <location filename="../../include/macrostring.h" line="464"/>
         <source>Red green</source>
         <translation>红绿</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="464"/>
+        <location filename="../../include/macrostring.h" line="465"/>
         <source>Error bright</source>
         <translation>误亮</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="465"/>
+        <location filename="../../include/macrostring.h" line="466"/>
         <source>off bright</source>
         <translation>不亮</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="467"/>
+        <location filename="../../include/macrostring.h" line="468"/>
         <source>Red light</source>
         <translation>红灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="468"/>
+        <location filename="../../include/macrostring.h" line="469"/>
         <source>Green light</source>
         <translation>绿灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="469"/>
+        <location filename="../../include/macrostring.h" line="470"/>
         <source>Yellow light</source>
         <translation>黄灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="472"/>
+        <location filename="../../include/macrostring.h" line="473"/>
         <source>CAN communication</source>
         <translation>CAN通讯事件</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="473"/>
+        <location filename="../../include/macrostring.h" line="474"/>
         <source>Driver board</source>
         <translation>驱动板</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="474"/>
+        <location filename="../../include/macrostring.h" line="475"/>
         <source>Fault</source>
         <translation>故障</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="476"/>
+        <location filename="../../include/macrostring.h" line="477"/>
         <source>MPU</source>
         <translation>主控板</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="479"/>
+        <location filename="../../include/macrostring.h" line="480"/>
         <source>Driver event</source>
         <translation>驱动板事件</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="480"/>
+        <location filename="../../include/macrostring.h" line="481"/>
         <source>not installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="481"/>
+        <location filename="../../include/macrostring.h" line="482"/>
         <source>run</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="482"/>
+        <location filename="../../include/macrostring.h" line="483"/>
         <source>fault yellow flash</source>
         <translation>故障黄闪</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="483"/>
+        <location filename="../../include/macrostring.h" line="484"/>
         <source>yellow flash seperated</source>
         <translation>独立黄闪</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="484"/>
+        <location filename="../../include/macrostring.h" line="485"/>
         <source>(off)</source>
         <translation>(灭)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="485"/>
+        <location filename="../../include/macrostring.h" line="486"/>
         <source>(ctrl)</source>
         <translation>(控制)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="488"/>
+        <location filename="../../include/macrostring.h" line="489"/>
         <source>Vehicle detector fault</source>
         <translation>车辆检测器故障</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="489"/>
+        <location filename="../../include/macrostring.h" line="490"/>
         <source>Detector</source>
         <translation>检测器</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="491"/>
+        <location filename="../../include/macrostring.h" line="492"/>
         <source>Software stopped</source>
         <translation>软件退出</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="492"/>
+        <location filename="../../include/macrostring.h" line="493"/>
         <source>Description info error</source>
         <translation>描述信息错误</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="495"/>
+        <location filename="../../include/macrostring.h" line="496"/>
         <source>********** Software Event **********</source>
         <translation>***********************软件事件***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="496"/>
+        <location filename="../../include/macrostring.h" line="497"/>
         <source>********** Green Conflict Restore **********</source>
         <translation>**********************绿冲突恢复**********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="497"/>
+        <location filename="../../include/macrostring.h" line="498"/>
         <source>********** Green Conflict **********</source>
         <translation>***********************绿冲突************************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="498"/>
+        <location filename="../../include/macrostring.h" line="499"/>
         <source>********** Red-Green Bright Restore **********</source>
         <translation>*********************红绿同亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="499"/>
+        <location filename="../../include/macrostring.h" line="500"/>
         <source>********** Red Off Bright Restore **********</source>
         <translation>*********************红灯不亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="500"/>
+        <location filename="../../include/macrostring.h" line="501"/>
         <source>********** Red Error Bright Restore **********</source>
         <translation>*********************红灯误亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="501"/>
+        <location filename="../../include/macrostring.h" line="502"/>
         <source>********** Yellow Off Bright Restore **********</source>
         <translation>*********************黄灯不亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="502"/>
+        <location filename="../../include/macrostring.h" line="503"/>
         <source>********** Yellow Error Bright Restore **********</source>
         <translation>*********************黄灯误亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="503"/>
+        <location filename="../../include/macrostring.h" line="504"/>
         <source>********** Green Off Bright Restore **********</source>
         <translation>*********************绿灯不亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="504"/>
+        <location filename="../../include/macrostring.h" line="505"/>
         <source>********** Green Error Bright Restore **********</source>
         <translation>*********************绿灯误亮恢复*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="505"/>
+        <location filename="../../include/macrostring.h" line="506"/>
         <source>********** Red-Green Bright **********</source>
         <translation>***********************红绿同亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="506"/>
+        <location filename="../../include/macrostring.h" line="507"/>
         <source>********** Red Off Bright **********</source>
         <translation>***********************红灯不亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="507"/>
+        <location filename="../../include/macrostring.h" line="508"/>
         <source>********** Red Error Bright **********</source>
         <translation>***********************红灯误亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="508"/>
+        <location filename="../../include/macrostring.h" line="509"/>
         <source>********** Yellow Off Bright **********</source>
         <translation>***********************黄灯不亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="509"/>
+        <location filename="../../include/macrostring.h" line="510"/>
         <source>********** Yellow Error Bright **********</source>
         <translation>***********************黄灯误亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="510"/>
+        <location filename="../../include/macrostring.h" line="511"/>
         <source>********** Green Off Bright **********</source>
         <translation>***********************绿灯不亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="511"/>
+        <location filename="../../include/macrostring.h" line="512"/>
         <source>********** Green Error Bright **********</source>
         <translation>***********************绿灯误亮***********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="512"/>
+        <location filename="../../include/macrostring.h" line="513"/>
         <source>********** CAN Communication **********</source>
         <translation>**********************CAN通讯事件*********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="513"/>
+        <location filename="../../include/macrostring.h" line="514"/>
         <source>********** Vehicle Fault **********</source>
         <translation>********************车辆检测器故障********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="514"/>
+        <location filename="../../include/macrostring.h" line="515"/>
         <source>********** Driver Event ***********</source>
         <translation>**********************驱动板事件**********************</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="516"/>
+        <location filename="../../include/macrostring.h" line="517"/>
         <source>Detector flow info</source>
         <translation>检测器流量信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="518"/>
+        <location filename="../../include/macrostring.h" line="519"/>
         <source>Detector flow ID</source>
         <translation>流水号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="519"/>
+        <location filename="../../include/macrostring.h" line="520"/>
         <source>Detector datetime</source>
         <translation>日期时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="520"/>
+        <location filename="../../include/macrostring.h" line="521"/>
         <source>Detect num</source>
         <translation>检测数量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="521"/>
+        <location filename="../../include/macrostring.h" line="522"/>
         <source>Detector phase</source>
         <translation>对应相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="522"/>
+        <location filename="../../include/macrostring.h" line="523"/>
         <source>Total flow</source>
         <translation>流量统计</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="523"/>
+        <location filename="../../include/macrostring.h" line="524"/>
         <source>Flow read</source>
         <translation>读取流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="524"/>
+        <location filename="../../include/macrostring.h" line="525"/>
         <source>Clear flow</source>
         <translation>清空流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="526"/>
+        <location filename="../../include/macrostring.h" line="527"/>
         <source>Signaler record</source>
         <translation>信号机状态记录</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="527"/>
+        <location filename="../../include/macrostring.h" line="528"/>
         <source>Lights status</source>
         <translation>信号灯状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="528"/>
+        <location filename="../../include/macrostring.h" line="529"/>
         <source>Driver status</source>
         <translation>驱动板状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="529"/>
+        <location filename="../../include/macrostring.h" line="530"/>
         <source>Detector status</source>
         <translation>检测器状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="531"/>
+        <location filename="../../include/macrostring.h" line="532"/>
         <source>Road status monitor</source>
         <translation>路口交通监控</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="532"/>
+        <location filename="../../include/macrostring.h" line="533"/>
         <source>Status param</source>
         <translation>状态参数</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="534"/>
+        <location filename="../../include/macrostring.h" line="535"/>
         <source>Signaler status info</source>
         <translation>信号机状态信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="535"/>
+        <location filename="../../include/macrostring.h" line="536"/>
         <source>Lights color</source>
         <translation>灯色</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="536"/>
+        <location filename="../../include/macrostring.h" line="537"/>
         <source>Driver id</source>
         <translation>驱动板号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="537"/>
+        <location filename="../../include/macrostring.h" line="538"/>
         <source>Driver type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="538"/>
+        <location filename="../../include/macrostring.h" line="539"/>
         <source>Detector id</source>
         <translation>检测器号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="539"/>
+        <location filename="../../include/macrostring.h" line="540"/>
         <source>Detector flow</source>
         <translation>流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="541"/>
+        <location filename="../../include/macrostring.h" line="542"/>
         <source>Cycle time</source>
         <translation>周期时长</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="543"/>
+        <location filename="../../include/macrostring.h" line="544"/>
         <source>Current phase id</source>
         <translation>当前相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="544"/>
+        <location filename="../../include/macrostring.h" line="545"/>
         <source>Phase time</source>
         <translation>相位时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="545"/>
+        <location filename="../../include/macrostring.h" line="546"/>
         <source>Signaler time</source>
         <translation>信号机时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="546"/>
+        <location filename="../../include/macrostring.h" line="547"/>
         <source>Green-Yellow-Red</source>
         <translation>绿灯-黄灯-红灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="548"/>
+        <location filename="../../include/macrostring.h" line="549"/>
         <source>Signaler network disconnected</source>
         <translation>网络连接已断开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="550"/>
+        <location filename="../../include/macrostring.h" line="551"/>
         <source>Parse socket package error</source>
         <translation>解析网络数据包出错</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="551"/>
+        <location filename="../../include/macrostring.h" line="552"/>
         <source>Require vehicle detector data</source>
         <translation>获取车辆检测器数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="552"/>
+        <location filename="../../include/macrostring.h" line="553"/>
         <source>Require detector status info data</source>
         <translation>获取检测器状态信息</translation>
     </message>
@@ -2001,247 +2006,247 @@
         <translation type="obsolete">开始小时</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="296"/>
+        <location filename="../../include/macrostring.h" line="297"/>
         <source>Control mode</source>
         <translation>控制方式</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="298"/>
+        <location filename="../../include/macrostring.h" line="299"/>
         <source>Accessibility(id)</source>
         <translation>辅助功能(功能号)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="299"/>
+        <location filename="../../include/macrostring.h" line="300"/>
         <source>Special function(id)</source>
         <translation>特殊功能(功能号)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="301"/>
+        <location filename="../../include/macrostring.h" line="302"/>
         <source>Brightness control</source>
         <translation>辉度控制</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="302"/>
+        <location filename="../../include/macrostring.h" line="303"/>
         <source>Special function</source>
         <translation>特殊功能</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="303"/>
+        <location filename="../../include/macrostring.h" line="304"/>
         <source>Function</source>
         <translation>功能</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="62"/>
-        <location filename="../../include/macrostring.h" line="304"/>
-        <location filename="../../include/macrostring.h" line="353"/>
+        <location filename="../../include/macrostring.h" line="305"/>
+        <location filename="../../include/macrostring.h" line="354"/>
         <source>Bus first</source>
         <translation>公交优先</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="305"/>
+        <location filename="../../include/macrostring.h" line="306"/>
         <source>Accessibility</source>
         <translation>辅助功能</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="306"/>
+        <location filename="../../include/macrostring.h" line="307"/>
         <source>Time section events</source>
         <translation>时段事件配置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="308"/>
+        <location filename="../../include/macrostring.h" line="309"/>
         <source>Up to the limited count </source>
         <translation>时段表行数已达上限</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="310"/>
+        <location filename="../../include/macrostring.h" line="311"/>
         <source>Phase timing id</source>
         <translation>阶段配时方案号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="311"/>
+        <location filename="../../include/macrostring.h" line="312"/>
         <source>Release phase id(phase id)</source>
         <translation>放行相位(相位号)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="312"/>
+        <location filename="../../include/macrostring.h" line="313"/>
         <source>Phase green time(s)</source>
         <translation>相位绿灯时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="313"/>
+        <location filename="../../include/macrostring.h" line="314"/>
         <source>Phase yellow time(s)</source>
         <translation>相位黄灯时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="314"/>
+        <location filename="../../include/macrostring.h" line="315"/>
         <source>Phase red time(s)</source>
         <translation>相位红灯时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="315"/>
+        <location filename="../../include/macrostring.h" line="316"/>
         <source>Start delay time(s)</source>
         <translation>起步延误时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="316"/>
+        <location filename="../../include/macrostring.h" line="317"/>
         <source>Phase option param(id)</source>
         <translation>阶段选项参数(选项号)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="318"/>
+        <location filename="../../include/macrostring.h" line="319"/>
         <source>Signaler IP</source>
         <translation>信号机IP</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="319"/>
+        <location filename="../../include/macrostring.h" line="320"/>
         <source>Server IP</source>
         <translation>上位机服务器IP</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="320"/>
+        <location filename="../../include/macrostring.h" line="321"/>
         <source>Server port</source>
         <translation>上位机端口号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="321"/>
+        <location filename="../../include/macrostring.h" line="322"/>
         <source>Start flashing time(s)</source>
         <translation>启动时的闪光控制时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="322"/>
+        <location filename="../../include/macrostring.h" line="323"/>
         <source>Start all-red time(s)</source>
         <translation>启动时的全红控制时间(s)</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="323"/>
+        <location filename="../../include/macrostring.h" line="324"/>
         <source>Current signaler ctrl state</source>
         <translation>当前的信号机控制状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="325"/>
+        <location filename="../../include/macrostring.h" line="326"/>
         <source>Pedestrian-demand signaler</source>
         <translation>行人请求式信号机</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="326"/>
+        <location filename="../../include/macrostring.h" line="327"/>
         <source>Man-&gt;multi-period-&gt;yellow flash-&gt;shutdown</source>
         <translation>行人请求→多时段→黄闪→关灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="327"/>
+        <location filename="../../include/macrostring.h" line="328"/>
         <source>Multi-period timer signaler</source>
         <translation>多时段定时式信号机</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="328"/>
+        <location filename="../../include/macrostring.h" line="329"/>
         <source>Coordinate-&gt;multi-period-&gt;yellow flash-&gt;shutdown</source>
         <translation>协调→多时段→黄闪→关灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="329"/>
+        <location filename="../../include/macrostring.h" line="330"/>
         <source>Induction controlling signaler</source>
         <translation>感应控制式信号机</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="330"/>
+        <location filename="../../include/macrostring.h" line="331"/>
         <source>Induction-&gt;multi-period-&gt;yellow flash-&gt;shutdown</source>
         <translation>感应→多时段→黄闪→关灯</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="250"/>
-        <location filename="../../include/macrostring.h" line="331"/>
+        <location filename="../../include/macrostring.h" line="332"/>
         <source>Other</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="332"/>
+        <location filename="../../include/macrostring.h" line="333"/>
         <source>Centralize coordinate signaler</source>
         <translation>集中协调式交通信号机</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="334"/>
+        <location filename="../../include/macrostring.h" line="335"/>
         <source>Signaler settings</source>
         <translation>信号机设置</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="335"/>
+        <location filename="../../include/macrostring.h" line="336"/>
         <source>Signaler fault demotion order</source>
         <translation>信号机故障降级顺序</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="337"/>
+        <location filename="../../include/macrostring.h" line="338"/>
         <source>Invalid</source>
         <translation>无效</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="338"/>
+        <location filename="../../include/macrostring.h" line="339"/>
         <source>Autonomous control</source>
         <translation>自主控制</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="339"/>
+        <location filename="../../include/macrostring.h" line="340"/>
         <source>Close lights</source>
         <translation>关灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="340"/>
+        <location filename="../../include/macrostring.h" line="341"/>
         <source>Flash</source>
         <translation>闪光</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="341"/>
+        <location filename="../../include/macrostring.h" line="342"/>
         <source>All red</source>
         <translation>全红</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="342"/>
+        <location filename="../../include/macrostring.h" line="343"/>
         <source>Coordinate</source>
         <translation>协调控制</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="343"/>
+        <location filename="../../include/macrostring.h" line="344"/>
         <source>Induction</source>
         <translation>全感应</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="344"/>
+        <location filename="../../include/macrostring.h" line="345"/>
         <source>Main road half induction</source>
         <translation>主道半感应</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="345"/>
+        <location filename="../../include/macrostring.h" line="346"/>
         <source>Second road half induction</source>
         <translation>次道半感应</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="346"/>
+        <location filename="../../include/macrostring.h" line="347"/>
         <source>Single-point optimization</source>
         <translation>单点优化</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="60"/>
-        <location filename="../../include/macrostring.h" line="347"/>
+        <location filename="../../include/macrostring.h" line="348"/>
         <source>Pedestrian crossing</source>
         <translation>行人过街</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="61"/>
-        <location filename="../../include/macrostring.h" line="348"/>
+        <location filename="../../include/macrostring.h" line="349"/>
         <source>Coordinate induction</source>
         <translation>协调感应</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="349"/>
+        <location filename="../../include/macrostring.h" line="350"/>
         <source>Master-slave remote control</source>
         <translation>主从线控</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="350"/>
+        <location filename="../../include/macrostring.h" line="351"/>
         <source>System Optimization</source>
         <translation>系统优化</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="351"/>
+        <location filename="../../include/macrostring.h" line="352"/>
         <source>Intervention wire</source>
         <translation>干预线控</translation>
     </message>
