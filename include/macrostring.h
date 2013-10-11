@@ -427,7 +427,7 @@
 #define STRING_UI_SIGNALER_EVENT_DATETIME       QObject::tr("Event datetime")
 #define STRING_UI_SIGNALER_EVENT_DESC           QObject::tr("Event desc")
 
-#define STRING_UI_SIGNALER_EVENT_READ_LOG       QObject::tr("Read log")
+#define STRING_UI_SIGNALER_EVENT_READ_LOG       QObject::tr("Update eventlog")
 #define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
@@ -438,6 +438,7 @@
 #define STRING_UI_SIGNALER_EVENT_SOCKET_NULL    QObject::tr("Read socket data is null")
 #define STRING_UI_SIGNALER_EVENT_FAILED         QObject::tr("Get event log info failed")
 #define STRING_UI_SIGNALER_EVENT_INCORRECT      QObject::tr("Log socket package incorrect")
+#define STRING_UI_SIGNALER_EVENT_TYPE_ERR       QObject::tr("Event type error")
 
 // Event log description desc
 // Software event

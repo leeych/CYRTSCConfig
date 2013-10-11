@@ -37,7 +37,7 @@ public:
     void SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot);
 
     void ReadEventLogFile(QObject *target, const std::string &slot);
-    void DeleteEventLog(const std::string &param, QObject *target, const std::string &slot);
+    void ClearEventLog(const std::string &param, QObject *target, const std::string &slot);
 
     void StartMonitoring(QObject *target, const std::string &slot);
     void StartMonitoring();

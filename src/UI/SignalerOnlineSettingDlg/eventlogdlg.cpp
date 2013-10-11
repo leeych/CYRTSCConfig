@@ -14,6 +14,7 @@
 EventLogDlg::EventLogDlg(QWidget *parent) :
     QDialog(parent)
 {
+    curr_event_type_id_ = 0;
     InitPage();
     InitSignalSlots();
 }
@@ -30,6 +31,7 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     handler_ = handler;
     tip_label_->clear();
     UpdateUI();
+    resize(640, 420);
     exec();
 }
 
@@ -40,7 +42,22 @@ void EventLogDlg::OnReadLogButtonClicked()
 
 void EventLogDlg::OnDeleteEventButtonClicked()
 {
-    SyncCommand::GetInstance()->DeleteEventLog("1 20130924", this, SLOT(OnCmdDeleteEventLog(QByteArray&)));
+    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_TYPE_ERR, STRING_OK);
+        return;
+    }
+    QString str = QString::number(curr_event_type_id_);
+    SyncCommand::GetInstance()->ClearEventLog(str.toStdString(), this, SLOT(OnCmdClearEventLog(QByteArray&)));
+    this->setEnabled(false);
+    QTime t;
+    t.start();
+    while (t.elapsed() < 2000)
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+    this->setEnabled(true);
+    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
 }
 
 void EventLogDlg::OnExportLogButtonClicked()
@@ -75,6 +92,17 @@ void EventLogDlg::OnExportReportButtonClicked()
         return;
     }
     tip_label_->setText(STRING_UI_SIGNALER_EVENT_EXPORT_REPORT + STRING_SUCCEEDED);
+}
+
+void EventLogDlg::OnEventTypeTreeItemSelected(QTreeWidgetItem *item, int col)
+{
+    if (item == NULL || col < 0)
+    {
+        return;
+    }
+//    curr_event_type_id_ = item->text(0).trimmed().toInt();
+    QString desc = item->text(0).trimmed();
+    curr_event_type_id_ = handler_->get_event_type_id_by_desc(desc);
 }
 
 void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
@@ -116,7 +144,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     }
 }
 
-void EventLogDlg::OnCmdDeleteEventLog(QByteArray &array)
+void EventLogDlg::OnCmdClearEventLog(QByteArray &array)
 {
     if (array.isEmpty())
     {
@@ -125,6 +153,7 @@ void EventLogDlg::OnCmdDeleteEventLog(QByteArray &array)
     }
     // TODO: is there any return value left to be determined
     tip_label_->setText(STRING_UI_SIGNALER_EVENT_LOG_DELETE_LOG + STRING_SUCCEEDED);
+//    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
 }
 
 void EventLogDlg::InitPage()
@@ -183,6 +212,7 @@ void EventLogDlg::InitSignalSlots()
     connect(remove_event_button_, SIGNAL(clicked()), this, SLOT(OnDeleteEventButtonClicked()));
     connect(export_log_button_, SIGNAL(clicked()), this, SLOT(OnExportLogButtonClicked()));
     connect(export_report_button_, SIGNAL(clicked()), this, SLOT(OnExportReportButtonClicked()));
+    connect(event_tree_, SIGNAL(itemPressed(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemSelected(QTreeWidgetItem*,int)));
     connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
 }
 

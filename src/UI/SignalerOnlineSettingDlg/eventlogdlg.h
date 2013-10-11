@@ -26,11 +26,12 @@ public slots:
     void OnDeleteEventButtonClicked();
     void OnExportLogButtonClicked();
     void OnExportReportButtonClicked();
+    void OnEventTypeTreeItemSelected(QTreeWidgetItem *, int);
     void OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *, int);
 
     // cmd return caller
     void OnCmdReadEventLog(QByteArray &array);
-    void OnCmdDeleteEventLog(QByteArray &array);
+    void OnCmdClearEventLog(QByteArray &array);
     
 private:
     void InitPage();
@@ -46,6 +47,7 @@ private:
     void ParseEventLogArray(QByteArray &byte_arr);
 
 private:
+    unsigned char curr_event_type_id_;
     EventLogHandler *handler_;
     QByteArray event_log_array_;
     QString file_name_;

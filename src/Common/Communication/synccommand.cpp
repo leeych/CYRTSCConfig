@@ -63,10 +63,11 @@ void SyncCommand::ReadEventLogFile(QObject *target, const std::string &slot)
 }
 
 // const std::string &param: represent for log_id and log_time string
-void SyncCommand::DeleteEventLog(const std::string &param, QObject *target, const std::string &slot)
+void SyncCommand::ClearEventLog(const std::string &param, QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     socket_->write((Command::ClearEventInfo + param).c_str());
+    qDebug() << (Command::ClearEventInfo + param).c_str();
 }
 
 void SyncCommand::StartMonitoring(QObject *target, const std::string &slot)
