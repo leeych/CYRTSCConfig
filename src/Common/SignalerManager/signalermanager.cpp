@@ -83,6 +83,14 @@ SignalerMap &SignalerManager::GetSignaler(const QString &file_name)
 
 bool SignalerManager::SetSignaler(const SignalerMap &signaler_map, const QString &file_name)
 {
+    if (!QFile::exists(file_name))
+    {
+        bool status = xmlhelper_->CreateXmlDocument(file_name, SignalerElement::SignalerList);
+        if (!status)
+        {
+            return false;
+        }
+    }
     if (!xmlhelper_->LoadXmlFile(file_name))
     {
         return false;

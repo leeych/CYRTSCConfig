@@ -15,8 +15,13 @@
 DetectorFlowDlg::DetectorFlowDlg(QWidget *parent) :
     QDialog(parent)
 {
+    curr_detector_id_ = 0;
     sync_cmd_ = SyncCommand::GetInstance();
     handler_ = new DetectorFlowHandler;
+    for (int i = 0; i < MAX_DETECTOR; i++)
+    {
+        detector_flow_list_.append(0);
+    }
     InitPage();
     InitSignalSlots();
 }
@@ -33,18 +38,20 @@ DetectorFlowDlg::~DetectorFlowDlg()
 void DetectorFlowDlg::Initialize()
 {
     UpdateUI();
+    resize(640, 420);
     exec();
 }
 
 void DetectorFlowDlg::OnReadFlowButtonClicked()
 {
     sync_cmd_->GetDetectorFlowData(this, SLOT(OnCmdParseParam(QByteArray&)));
-    read_flow_button_->setEnabled(false);
+    this->setEnabled(false);
 }
 
 void DetectorFlowDlg::OnClearFowButtonClicked()
 {
     sync_cmd_->ClearDetectorFlowInfo();
+//    this->setEnabled(false);
 }
 
 void DetectorFlowDlg::OnOkButtonClicked()
@@ -58,27 +65,48 @@ void DetectorFlowDlg::OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *item, int c
     {
         return;
     }
-    unsigned char id = item->text(0).trimmed().toUInt();
-    if (id > MAX_DETECTOR)
+    curr_detector_id_ = item->text(0).trimmed().toUInt();
+    if (curr_detector_id_ > MAX_DETECTOR)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_DETECTOR_ID_OVERFLOW + QString::number(MAX_DETECTOR) + "!", STRING_OK);
         return;
     }
-    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(id);
+    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(curr_detector_id_);
+    UpdateFlowInfoTree(flow_list);
+}
+
+void DetectorFlowDlg::OnDateTimeChanged(const QDateTime &datetime)
+{
+    QList<DetectorFlowInfo> flow_list;
+    QDateTimeEdit *sender_obj = static_cast<QDateTimeEdit *>(sender());
+    if (sender_obj == start_time_editor_)
+    {
+        QDateTime end_datetime = end_time_editor_->dateTime().toUTC();
+        unsigned int start_secs = datetime.toTime_t(), end_secs = end_datetime.toTime_t();
+        flow_list = handler_->get_detector_flow(curr_detector_id_, start_secs, end_secs);
+    }
+    else
+    {
+        QDateTime start_datetime = start_time_editor_->dateTime().toUTC();
+        unsigned int start_secs = start_datetime.toTime_t(), end_secs = datetime.toTime_t();
+        flow_list = handler_->get_detector_flow(curr_detector_id_, start_secs, end_secs);
+    }
     UpdateFlowInfoTree(flow_list);
 }
 
 void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
 {
-    byte_array_.append(array);
-    if (!CheckPackage(byte_array_))
+    recv_array_.append(array);
+    if (!CheckPackage(recv_array_))
     {
+        this->setEnabled(true);
         return;
     }
     QString head(array.left(3));
     QString tail(array.right(3));
     if (head != QString("CYT") || tail != QString("END"))
     {
+        this->setEnabled(true);
         return;
     }
     bool status = false;
@@ -102,12 +130,13 @@ void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
     default:
         break;
     }
+    this->setEnabled(true);
 }
 
 void DetectorFlowDlg::OnConnectError(const QString &str)
 {
     QMessageBox::information(this, STRING_TIP, str, STRING_OK);
-    return;
+    this->setEnabled(true);
 }
 
 void DetectorFlowDlg::InitPage()
@@ -118,26 +147,34 @@ void DetectorFlowDlg::InitPage()
     QStringList detector_header;
     detector_header << STRING_UI_SIGNALER_DETECTOR_ID;
     InitTree(detector_tree_, detector_header);
-//    detector_tree_->setMaximumWidth(100);
+    detector_tree_->setColumnWidth(0, 40);
+    InitDetectorTreeContent();
 
     flow_tree_ = new QTreeWidget;
     QStringList flow_header;
     flow_header << STRING_UI_SIGNALER_DETECTOR_FLOW << STRING_UI_SIGNALER_DETECTOR_DATETIME
                    << STRING_UI_SIGNALER_DETECTOR_NUM << STRING_UI_SIGNALER_DETECTOR_PHASE;
     InitTree(flow_tree_, flow_header);
+    flow_tree_->setColumnWidth(0, 80);
+    flow_tree_->setColumnWidth(1, 120);
+    flow_tree_->setColumnWidth(2, 80);
+//    flow_tree_->setMinimumWidth(320);
     start_time_editor_ = new QDateTimeEdit;
     end_time_editor_ = new QDateTimeEdit;
     SetDateTimeEdit(start_time_editor_);
+    start_time_editor_->setDateTime(QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss"));
     SetDateTimeEdit(end_time_editor_);
+    end_time_editor_->setDateTime(QDateTime::currentDateTime());
     QLabel *total_flow_label = new QLabel(STRING_UI_SIGNALER_DETECTOR_TOTAL_FLOW + ":");
     total_flow_lineedit_ = new QLineEdit;
+    total_flow_lineedit_->setMaximumWidth(80);
+    total_flow_lineedit_->setEnabled(false);
     total_flow_lineedit_->setContextMenuPolicy(Qt::NoContextMenu);
 
     QHBoxLayout *timeedit_hlayout = new QHBoxLayout;
     timeedit_hlayout->addWidget(start_time_editor_);
     timeedit_hlayout->addWidget(new QLabel("--"));
     timeedit_hlayout->addWidget(end_time_editor_);
-//    timeedit_hlayout->addStretch(1);
     timeedit_hlayout->addWidget(total_flow_label);
     timeedit_hlayout->addWidget(total_flow_lineedit_);
 
@@ -150,7 +187,7 @@ void DetectorFlowDlg::InitPage()
     tree_hlayout->addLayout(right_vlayout);
 
     tree_hlayout->setStretch(0, 1);
-    tree_hlayout->setStretch(1, 3);
+    tree_hlayout->setStretch(1, 4);
 
     read_flow_button_ = new QPushButton(STRING_UI_SGINALER_DETECTOR_READ_FLOW);
     clear_flow_button_ = new QPushButton(STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW);
@@ -174,13 +211,27 @@ void DetectorFlowDlg::InitSignalSlots()
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
     connect(detector_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnDetectorIDTreeDoubleClicked(QTreeWidgetItem*,int)));
+    connect(start_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)));
+    connect(end_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)));
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
 void DetectorFlowDlg::UpdateUI()
 {
-    UpdateDetectorTree();
+//    UpdateDetectorTree();
     UpdateFlowInfoTree();
+}
+
+void DetectorFlowDlg::InitDetectorTreeContent()
+{
+    for (int i = 0; i < MAX_DETECTOR; i++)
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(detector_tree_);
+        item->setText(0, QString::number(i+1));
+        item->setTextAlignment(0, Qt::AlignCenter);
+        detector_item_list_.append(item);
+    }
+    detector_tree_->addTopLevelItems(detector_item_list_);
 }
 
 void DetectorFlowDlg::UpdateDetectorTree()
@@ -192,6 +243,7 @@ void DetectorFlowDlg::UpdateDetectorTree()
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(detector_tree_);
         item->setText(0, QString::number(detector_id_list.at(i)));
+        item->setTextAlignment(0, Qt::AlignCenter);
         item_list.append(item);
     }
     detector_tree_->addTopLevelItems(item_list);
@@ -219,10 +271,22 @@ void DetectorFlowDlg::UpdateFlowInfoTree(const QList<DetectorFlowInfo> &flow_lis
         item->setText(2, str);
         str = MUtility::phaseBitsDesc(flow_list.at(i).phase_ids);
         item->setText(3, str);
-
+        for (int j = 0; j < 4; j++)
+        {
+            item->setTextAlignment(j, Qt::AlignCenter);
+        }
         item_list.append(item);
     }
     flow_tree_->addTopLevelItems(item_list);
+}
+
+void DetectorFlowDlg::SetDetectorFlow(unsigned char detector_id)
+{
+    if (detector_id <= 0 || detector_id > MAX_DETECTOR)
+    {
+        return;
+    }
+    detector_flow_list_[detector_id]++;
 }
 
 void DetectorFlowDlg::InitTree(QTreeWidget *tree, const QStringList &header)
@@ -291,14 +355,14 @@ bool DetectorFlowDlg::CheckPackage(QByteArray &array)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
         int index = array.indexOf("DETECTDATAER");
-        array.remove(index, QString("DETECTDATAER").size());
+        array.remove(index, QString("DETECTDATAER").size()+1);
         return false;
     }
-    if (array == "DRIVEINFOER")
+    if (array.contains("DRIVEINFOER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS + STRING_FAILED, STRING_OK);
         int index = array.indexOf("DRIVEINFOER");
-        array.remove(index, QString("DRIVEINFOER").size());
+        array.remove(index, QString("DRIVEINFOER").size()+1);
         return false;
     }
     return true;
@@ -313,6 +377,7 @@ bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
     int data_sz = sizeof(DetectorData_t);
     if (sz % data_sz != 0)
     {
+        array.remove(0, sz);
         return false;
     }
     int count = sz / data_sz;
@@ -329,7 +394,7 @@ bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
         delete [] detector_array_;
         detector_array_ = NULL;
     }
-    UpdateUI();
+    UpdateFlowInfoTree();
 
     return true;
 }
@@ -347,6 +412,8 @@ bool DetectorFlowDlg::ParseRealtimeFlowInfoContent(QByteArray &array)
     }
     memcpy(&detector_id, array.data(), 1);
     array.remove(0, 1);
+    array.remove(0, 3);
+    SetDetectorFlow(detector_id);
 
     return true;
 }

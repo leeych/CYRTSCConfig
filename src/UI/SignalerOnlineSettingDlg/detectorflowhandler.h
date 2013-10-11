@@ -50,6 +50,7 @@ public:
     QList<unsigned char> get_detector_id_list();
     QList<DetectorFlowInfo> &get_detector_flow_list();
     QList<DetectorFlowInfo> get_detector_flow(unsigned char detector_id);
+    QList<DetectorFlowInfo> get_detector_flow(unsigned char detector_id, unsigned int start_secs, unsigned int end_secs);
     int get_detector_flow_num(unsigned char detector_id);
     void set_detector_flow(const DetectorData_t &item);
     bool remove_detector_flow(unsigned char detector_id, unsigned short data_id);

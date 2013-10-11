@@ -45,6 +45,22 @@ QList<DetectorFlowInfo> DetectorFlowHandler::get_detector_flow(unsigned char det
     return flow_list;
 }
 
+QList<DetectorFlowInfo> DetectorFlowHandler::get_detector_flow(unsigned char detector_id,
+                                                               unsigned int start_secs, unsigned int end_secs)
+{
+    QList<DetectorFlowInfo> bak_list, flow_list = get_detector_flow(detector_id);
+    unsigned int secs = 0;
+    for (int i = 0; i < flow_list.size(); i++)
+    {
+        secs = flow_list.at(i).recv_time;
+        if (secs >= start_secs && secs <= end_secs)
+        {
+            bak_list.append(flow_list.at(i));
+        }
+    }
+    return bak_list;
+}
+
 int DetectorFlowHandler::get_detector_flow_num(unsigned char detector_id)
 {
     int flow_count = 0;
