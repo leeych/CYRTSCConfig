@@ -26,8 +26,8 @@ void TscAboutDlg::OnOKButtonClicked()
 void TscAboutDlg::InitPage()
 {
     setWindowTitle(STRING_UI_ABOUT);
-    software_declare_label_ = new QLabel("<font size=\"15\" color=\"Green\">" + STRING_UI_ABOUT_SOFTWARE +
-                                         "</font><br /><font size=\"5\">" + STRING_UI_ABOUT_DECLARE + "</font>");
+    software_declare_label_ = new QLabel("<font size=\"8\" color=\"Green\">" + STRING_UI_ABOUT_SOFTWARE +
+                                         "</font><br /><font size=\"3\">" + STRING_UI_ABOUT_DECLARE + "</font>");
     software_declare_label_->setAlignment(Qt::AlignCenter);
     all_right_label_ = new QLabel(STRING_UI_ABOUT_COPYRIGHT);
     QString dir;
@@ -64,7 +64,7 @@ void TscAboutDlg::InitPage()
                   "QPushButton:default { border-color: navy;}"
                   );
 
-    setFixedSize(530,290);
+    setFixedSize(530,270);
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
 }
