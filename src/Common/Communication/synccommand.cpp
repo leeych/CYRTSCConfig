@@ -123,6 +123,14 @@ void SyncCommand::GetDetectorFlowData(QObject *target, const std::string &slot)
     socket_->write(Command::GetDetectInfo.c_str());
 }
 
+void SyncCommand::GetDetectorFlowData()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        socket_->write(Command::GetDetectInfo.c_str());
+    }
+}
+
 void SyncCommand::ClearDetectorFlowInfo(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

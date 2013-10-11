@@ -113,6 +113,7 @@ void RealtimeMonitorDlg::OnDetectorButtonToggled(bool checked)
 {
     if (checked)
     {
+        sync_cmd_->GetDetectorFlowData();
         UpdateTreeGroupBox(STRING_UI_SIGNALER_MONITOR_DETECTOR_STATUS, detector_tree_);
         ResetButtonStatus(detector_button_);
     }
@@ -1038,14 +1039,14 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
         int index = array.indexOf("DETECTDATAER");
-        array.remove(index, QString("DETECTDATAER").size());
+        array.remove(index, QString("DETECTDATAER").size()+1);
         return false;
     }
-    if (array == "DRIVEINFOER")
+    if (array.contains("DRIVEINFOER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS + STRING_FAILED, STRING_OK);
         int index = array.indexOf("DRIVEINFOER");
-        array.remove(index, QString("DRIVEINFOER").size());
+        array.remove(index, QString("DRIVEINFOER").size()+1);
         return false;
     }
     return true;

@@ -48,6 +48,7 @@ public:
     void GetTscTime();
 
     void GetDetectorFlowData(QObject *target, const std::string &slot);
+    void GetDetectorFlowData();
     void ClearDetectorFlowInfo(QObject *target, const std::string &slot);
     void ClearDetectorFlowInfo();
     void GetDriverBoardInfo(QObject *target, const std::string &slot);
