@@ -192,8 +192,11 @@ void EventLogDlg::InitPage()
     QHBoxLayout *button_hlayout = new QHBoxLayout;
 //    button_hlayout->addStretch(1);
     button_hlayout->addWidget(read_log_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(remove_event_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(export_log_button_);
+    button_hlayout->addStretch(1);
     button_hlayout->addWidget(export_report_button_);
 //    button_hlayout->addStretch(1);
 

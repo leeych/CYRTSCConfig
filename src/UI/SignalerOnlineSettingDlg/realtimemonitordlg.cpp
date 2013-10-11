@@ -837,7 +837,7 @@ void RealtimeMonitorDlg::InitLightTreeContent()
         str = STRING_LIGHT_OFF;
         item->setText(1, str);
         item->setTextColor(1, QColor(0,0,0));
-        str = "-";
+        str = STRING_UI_NORMAL;
         item->setText(2, str);
         for (int j = 0; j < 3; j++)
         {
@@ -921,7 +921,7 @@ void RealtimeMonitorDlg::InitDriverTreeContent()
         QTreeWidgetItem *item = new QTreeWidgetItem(driver_tree_);
         str.sprintf("%d", i+1);
         item->setText(0, str);
-        str = "-";
+        str = STRING_DIRVER_FAULT_NOT_INSTALLED;
         item->setText(1, str);
         for (int j = 0; j < 2; j++)
         {
@@ -953,7 +953,7 @@ void RealtimeMonitorDlg::InitDetectorTreeContent()
         item->setText(0, str);
         str = "-";
         item->setText(1, str);
-        str = "-";
+        str = STRING_DIRVER_FAULT_NOT_INSTALLED;
         item->setText(2, str);
         for (int j = 0; j < 3; j++)
         {

@@ -56,7 +56,16 @@ void DetectorFlowDlg::OnClearFowButtonClicked()
 
 void DetectorFlowDlg::OnOkButtonClicked()
 {
-    accept();
+    unsigned int start_secs = start_time_editor_->dateTime().toUTC().toTime_t(),
+            end_secs = end_time_editor_->dateTime().toUTC().toTime_t();
+    QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(curr_detector_id_, start_secs, end_secs);
+    UpdateFlowInfoTree(flow_list);
+    unsigned int flow_count = 0;
+    for (int i = 0; i < flow_list.size(); i++)
+    {
+        flow_count += flow_list.at(i).detector_data;
+    }
+    total_flow_lineedit_->setText(QString::number(flow_count));
 }
 
 void DetectorFlowDlg::OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *item, int col)
@@ -191,7 +200,7 @@ void DetectorFlowDlg::InitPage()
 
     read_flow_button_ = new QPushButton(STRING_UI_SGINALER_DETECTOR_READ_FLOW);
     clear_flow_button_ = new QPushButton(STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW);
-    ok_button_ = new QPushButton(STRING_OK);
+    ok_button_ = new QPushButton(STRING_UI_SIGNALER_MONITOR_FLOW_STATISTIC);
 
     QHBoxLayout *button_hlayout = new QHBoxLayout;
     button_hlayout->addWidget(read_flow_button_);
@@ -211,8 +220,8 @@ void DetectorFlowDlg::InitSignalSlots()
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
     connect(detector_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnDetectorIDTreeDoubleClicked(QTreeWidgetItem*,int)));
-    connect(start_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)));
-    connect(end_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)));
+//    connect(start_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)), Qt::QueuedConnection);
+//    connect(end_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)), Qt::QueuedConnection);
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
 }
 
