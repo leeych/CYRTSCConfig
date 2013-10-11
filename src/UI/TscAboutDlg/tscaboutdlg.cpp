@@ -27,7 +27,7 @@ void TscAboutDlg::InitPage()
 {
     setWindowTitle(STRING_UI_ABOUT);
     software_declare_label_ = new QLabel("<font size=\"8\" color=\"Green\">" + STRING_UI_ABOUT_SOFTWARE +
-                                         "</font><br /><font size=\"3\">" + STRING_UI_ABOUT_DECLARE + "</font>");
+                                         "</font><br /><br /><font size=\"3\">" + STRING_UI_ABOUT_DECLARE + "</font>");
     software_declare_label_->setAlignment(Qt::AlignCenter);
     all_right_label_ = new QLabel(STRING_UI_ABOUT_COPYRIGHT);
     QString dir;
@@ -56,7 +56,7 @@ void TscAboutDlg::InitPage()
     vlayout->addLayout(button_hlayout);
     setLayout(vlayout);
     setStyleSheet("QWidget{background-color:#F5F5F5;}"
-                  "QPushButton {border: 2px solid #000000; border-radius: 3px;"
+                  "QPushButton {border: 1px solid #DCDCDC; border-radius: 3px;"
                   "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);"
                   "min-width: 60px; min-height: 20px;}"
                   "QPushButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);}"
