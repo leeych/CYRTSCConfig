@@ -359,7 +359,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
 {
     StopMonitoring();
-    signaler_timer_->stop();
+//    signaler_timer_->stop();
     count_down_timer_->stop();
     is_inited_ = false;
 
@@ -369,6 +369,7 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
         ui_timer_id_ = 0;
     }
     ResetButtonStatus(NULL);
+    ResetChannelColor();
     // TODO: window closed handler
 }
 
