@@ -80,8 +80,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 
 void MainWindow::OnHelpToolButtonClicked()
 {
-    QMessageBox::information(this, STRING_TIP, "Help", STRING_OK);
-    return;
+    about_->exec();
 }
 
 void MainWindow::OnSaveToolButtonClicked()
@@ -118,10 +117,12 @@ void MainWindow::InitPage()
     CreateToolBar();
     CreateStatusBar();
 
-    config_widget_ = new ConfigoptWidget;
-    file_list_widget_ = new FileListWidget;
+    config_widget_ = new ConfigoptWidget(this);
+    file_list_widget_ = new FileListWidget(this);
     main_tab_window_ = new MTabWidget(this);
-//    main_tab_window_ = new QTabWidget(this);
+    QFont tabfont(STRING_FONT_SONGTI, 12);
+    main_tab_window_->setTabBarFont(tabfont);
+    about_ = new TscAboutDlg(this);
 
     QFont font(STRING_FONT_SONGTI, 11);
     left_splitter_ = new QSplitter(Qt::Vertical);

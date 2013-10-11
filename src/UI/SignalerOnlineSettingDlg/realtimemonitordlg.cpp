@@ -850,13 +850,15 @@ void RealtimeMonitorDlg::InitLightTreeContent()
 
 void RealtimeMonitorDlg::UpdateLightTreeColor()
 {
-    light_tree_->clear();
-    QList<QTreeWidgetItem *> tree_item_list;
+//    light_tree_->clear();
+//    QList<QTreeWidgetItem *> tree_item_list;
     QString str;
     LightColor color;
+    QTreeWidgetItem *item = NULL;
     for (int i = 1; i < MAX_CHANNEL+1; i++)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem;
+//        QTreeWidgetItem *item = new QTreeWidgetItem;
+        item = light_item_list_.at(i-1);
         color = channel_color_array_[i];
         switch (color)
         {
@@ -892,9 +894,9 @@ void RealtimeMonitorDlg::UpdateLightTreeColor()
             break;
         }
         item->setTextAlignment(1, Qt::AlignCenter);
-        tree_item_list.append(item);
+//        tree_item_list.append(item);
     }
-    light_tree_->addTopLevelItems(tree_item_list);
+//    light_tree_->addTopLevelItems(tree_item_list);
 }
 
 void RealtimeMonitorDlg::UpdateLightTreeStatus(const LightFaultInfo &light_fault)
@@ -1188,7 +1190,7 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
 	curr_stage_id_ = count_down_info_.stage_id;
     str.sprintf("%d / %d", curr_stage_id_, total_stage_count_);
     stage_id_label_->setText(str);
-    phase_id_label_->setText(QString::number(count_down_info_.phase_id));
+    phase_id_label_->setText(MUtility::phaseBitsDesc(count_down_info_.phase_ids));
     ctrl_mode_label_->setText(ctrl_mode_desc_map_.value(count_down_info_.ctrl_mode));
     // phase id left to be update
 
@@ -1315,7 +1317,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     array.remove(index, 3);
 
     channel_status_info_.work_mode = lights_status_info_.work_mode;
-    channel_status_info_.plan_id = lights_status_info_.plan_id;
+    channel_status_info_.stage_id = lights_status_info_.plan_id;
     channel_status_info_.phase_id = lights_status_info_.phase_id;
     channel_status_info_.channel_vec.clear();
     unsigned char red_tmp = 0, yellow_tmp = 0, green_tmp = 0;
@@ -1363,10 +1365,14 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     // back up channel status info
     channel_status_bak_.channel_vec = channel_status_info_.channel_vec;
     channel_status_bak_.phase_id = channel_status_info_.phase_id;
-    channel_status_bak_.plan_id = channel_status_info_.plan_id;
+    channel_status_bak_.stage_id = channel_status_info_.stage_id;
     channel_status_bak_.work_mode = channel_status_info_.work_mode;
     is_first_light_ = false;
 
+    QString str;
+    curr_stage_id_ = channel_status_bak_.stage_id;
+    str.sprintf("%d / %d", curr_stage_id_, total_stage_count_);
+    stage_id_label_->setText(str);
     UpdateLightTreeColor();
 
     return true;
@@ -1415,9 +1421,7 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
             UpdateDriverStatusInfo(driver_id, driver_status);
         }
     }
-
     // TODO: update driver board info
-
     return true;
 }
 // CYTD+驱动板编号(1字节)+状态(1字节)+END

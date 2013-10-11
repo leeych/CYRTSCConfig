@@ -23,6 +23,7 @@
 #include "detectortablewidget.h"
 #include "unitparamtablewidget.h"
 #include "signalerstatuswidget.h"
+#include "tscaboutdlg.h"
 
 class MainWindow : public QMainWindow
 {
@@ -88,6 +89,7 @@ private:
     ChanneltableWidget* channel_tab_page_;
     DetectortableWidget* detector_tab_page_;
     UnitparamtableWidget* unitparam_tab_page_;
+    TscAboutDlg *about_;
 
     SignalerStatusWidget* signaler_tab_page_;
 };

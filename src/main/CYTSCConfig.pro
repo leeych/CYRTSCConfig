@@ -17,6 +17,7 @@ INCLUDEPATH += $$PWD/../../include \
                $$PWD/../DataCenter/MDatabase \
                $$PWD/../UI/UIBase \
                $$PWD/../UI/TSCLogin \
+               $$PWD/../UI/TscAboutDlg \
                $$PWD/../UI/BottomButtonsWidget \
                $$PWD/../Common/SignalerManager \
                $$PWD/../Common/SystemIniter \
@@ -43,7 +44,7 @@ HEADERS  += mainwindow.h \
     ../../include/macrostring.h
 
 
-LIBS += -L$$PWD/../../lib/ -lUIBase -lUtility -lSystemIniter -lCommunication -lMDatabase \
+LIBS += -L$$PWD/../../lib/ -lUIBase -lTscAboutDlg -lUtility -lSystemIniter -lCommunication -lMDatabase \
         -lFileListWidget -lTSCLogin -lBottomButtonsWidget -lConfigoptWidget \
         -lUnitparamtableWidget -lScheduleTableWidget -lTimingplanWidget \
         -lPhasetableWidget -lChanneltableWidget -lDetectortableWidget \
@@ -57,6 +58,7 @@ DEFINES += SYSTEMINITER_LIBRARY
 DEFINES += COMMUNICATION_LIBRARY
 DEFINES += XMLHELPER_LIBRARY
 DEFINES += TSCLOGIN_LIBRARY
+DEFINES += TSCABOUTDLG_LIBRARY
 DEFINES += UIBASE_LIBRARY
 DEFINES += FILELISTWIDGET_LIBRARY
 DEFINES += CONFIGOPTWIDGET_LIBRARY
@@ -88,6 +90,8 @@ contains(DEFINES,XMLHELPER_LIBRARY){
         LIBS += -lXmlHelper}
 contains(DEFINES,TSCLOGIN_LIBRARY){
         LIBS += -lTSCLogin}
+contains(DEFINES,TSCABOUTDLG_LIBRARY){
+        LIBS += -lTscAboutDlg}
 contains(DEFINES,UIBASE_LIBRARY){
         LIBS += -lUIBase}
 contains(DEFINES,SIGNALERMANAGER_LIBRARY){

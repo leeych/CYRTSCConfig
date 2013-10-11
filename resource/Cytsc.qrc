@@ -42,5 +42,6 @@
         <file>images/monitor/ty_img.bmp</file>
         <file>images/monitor/road_branch.bmp</file>
         <file>images/arrow.png</file>
+        <file>images/about.png</file>
     </qresource>
 </RCC>

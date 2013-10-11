@@ -92,6 +92,12 @@
 #define STRING_UI_LOGIN_PASSWD_EMPTY    QObject::tr("Password can not be empty")
 #define STRING_UI_LOGIN_ERROR           QObject::tr("Inner error")
 
+#define STRING_UI_ABOUT_SOFTWARE        QObject::tr("Traffic Signaler Controller")
+#define STRING_UI_ABOUT_DECLARE         QObject::tr("Trustworth publisher of ChaoYuan")
+#define STRING_UI_ABOUT_VERSION         QObject::tr("Software Version")
+#define STRING_UI_ABOUT_COPYRIGHT       QObject::tr("Copyright(C)cychina.cn All Rights Reserved.")
+#define STRING_UI_ABOUT                 QObject::tr("About")
+
 #define STRING_UI_MONDAY                QObject::tr("Monday")
 #define STRING_UI_THUESDAY              QObject::tr("Thuesday")
 #define STRING_UI_WEDNESDAY             QObject::tr("Wednesday")

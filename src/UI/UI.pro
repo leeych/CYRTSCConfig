@@ -16,4 +16,5 @@ SUBDIRS += \
     FileListWidget \
     SignalerOnlineSettingDlg \
     SignalerStatusWidget \
-    TSCLogin
+    TSCLogin \
+    TscAboutDlg

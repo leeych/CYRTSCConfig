@@ -41,7 +41,7 @@ typedef struct CountDownTag
     unsigned char stage_id;
     unsigned char light_corlor;
     unsigned char light_time;
-    unsigned int phase_id;
+    unsigned int phase_ids;
 }CountDownInfo;
 
 typedef struct RedYellowGreenTag
@@ -225,7 +225,7 @@ private:
     {
         QVector<LightColor> channel_vec;
         unsigned char work_mode;
-        unsigned char plan_id;
+        unsigned char stage_id;
         unsigned int phase_id;
     }ChannelStatusInfo;
 
