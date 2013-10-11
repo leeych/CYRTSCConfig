@@ -1402,12 +1402,15 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
         return false;
     }
     memcpy(&driver_info_, array.data(), sizeof(driver_info_));
-    array.remove(index, 3);
+    array.remove(0, index + 3);
+    unsigned char driver_id = 0, driver_status = 0;
     for (int i = 0; i < DRIBOARDNUM; i++)
     {
         if (driver_info_.driboardstatusList[i].dribid != 0)
         {
-            // TODO: left to be done.
+            driver_id = driver_info_.driboardstatusList[i].dribid;
+            driver_status = driver_info_.driboardstatusList[i].status;
+            UpdateDriverStatusInfo(driver_id, driver_status);
         }
     }
 
