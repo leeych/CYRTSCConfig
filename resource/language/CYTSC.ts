@@ -1193,7 +1193,7 @@
     <message>
         <location filename="../../include/macrostring.h" line="95"/>
         <source>Traffic Signaler Controller</source>
-        <translation>道路交通信号控制机</translation>
+        <translation>交通信号机</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="96"/>
