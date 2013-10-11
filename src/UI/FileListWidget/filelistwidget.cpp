@@ -218,6 +218,7 @@ void FileListWidget::InitPage()
     QHBoxLayout* hlayout = new QHBoxLayout;
     hlayout->addWidget(read_file_button_);
     hlayout->addWidget(delete_file_button_);
+    hlayout->setSpacing(0);
 
     QVBoxLayout* vlayout = new QVBoxLayout;
 //    vlayout->addWidget(file_list_widget_);
@@ -231,7 +232,13 @@ void FileListWidget::InitPage()
 	layout->setSpacing(0);
     setLayout(layout);
     QString frame_qss =
-       "QFrame{border-width:1px;border-style:solid;border-color:LightSkyBlue;margin-top:1px;}";
+       "QFrame{border-width:1px;border-style:solid;border-color:LightSkyBlue;margin-top:1px;}"
+            "QToolButton {border: 1px solid #DCDCDC; border-radius: 3px;"
+            "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);"
+            "min-width: 80px; min-height: 20px;}"
+            "QToolButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);}"
+            "QToolButton:flat { border: none;}"
+            "QToolButton:default { border-color: navy;}";
     setStyleSheet(frame_qss);
 	UpdateUI();
 }

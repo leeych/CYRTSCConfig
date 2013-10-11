@@ -191,3 +191,35 @@ QComboBox::item:selected
 { /* when user selects item using mouse or keyboard */
     background-color: #83c8f9;
 }
+
+QPushButton
+{
+	border: 1px solid #dcdcdc; border-radius: 3px;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #fefefe, stop: 1 #d6d0c5);
+	min-width: 60px; min-height: 20px;
+}
+
+QPushButton:pressed 
+{ 
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:checked
+{
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #bebebe, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat 
+{ 
+	border: none;
+}
+
+QPushButton:default 
+{
+	 border-color: navy;
+}
+
+QDialog
+{
+	background-color:#E9F6FE;
+}
