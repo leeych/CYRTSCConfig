@@ -1467,6 +1467,7 @@ bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
     }
     array.remove(0, 3);
     UpdateDetectorFlowInfo(detector_id_);
+    UpdateDetectorStatusInfo(detector_id_, 1);
     return true;
 }
 
