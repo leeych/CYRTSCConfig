@@ -42,6 +42,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     monitor_dlg_ = new RealtimeMonitorDlg(this);
 
     conn_status_ = false;
+    is_cfg_read_ = false;
     is_ver_correct_ = false;
     ver_check_id_ = 0;
     db_ptr_ = new MDatabase;
@@ -277,26 +278,16 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
             QFile::remove(cfg_file_);
         }
-        /*
-        TSCParam tscparam;
-        memcpy(&tscparam, config_byte_array_.data(), config_byte_array_.length());
-        FileReaderWriter writer;
-        bool status = writer.WriteFile(tscparam, cfg_file_.toStdString().c_str());
-        if (!status)
-        {
-            conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
-            QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
-            QFile::remove(cfg_file_);
-        }*/
         else
         {
             dialog_tab_->setEnabled(true);
             UpdateTabPage();
         }
+        file.close();
     }
     else
     {
-        conn_tip_label_->setText(STRING_UI_SIGNALER_PARSE_FILE_CONFIG);
+        conn_tip_label_->setText(STRING_UI_SIGNALER_PARSE_FILE_CONFIG + STRING_FAILED);
     }
     config_byte_array_.clear();
 }
@@ -309,16 +300,10 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
-    if (content.length() != 8)
-    {
-        killTimer(ui_lock_id_);
-        ui_lock_id_ = 0;
-        UpdateButtonStatus(true);
-        return;
-    }
-    if (content == "CONFIGYS")
+    if (content.contains("CONFIGYS"))
     {
         QFile file(tmp_file_);
         if (!file.open(QIODevice::ReadOnly))
@@ -327,6 +312,7 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
             killTimer(ui_lock_id_);
             ui_lock_id_ = 0;
             UpdateButtonStatus(true);
+            conn_tip_label_->clear();
             return;
         }
         QByteArray array = file.readAll();
@@ -334,12 +320,21 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
         SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
         return;
     }
-    if (content == "CONFIGNO")
+    if (content.contains("CONFIGNO"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG_BUSY_WAIT, STRING_OK);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
+        return;
+    }
+    else
+    {
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+        UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
 }
@@ -352,6 +347,7 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
     if (content.length() < 8)
@@ -359,22 +355,25 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
-    if (content == "CONFIGOK")
+    if (content.contains("CONFIGOK"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_SUCCEEDED, STRING_OK);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
-    if (content == "CONFIGER")
+    if (content.contains("CONFIGER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_FAILED, STRING_OK);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
+        conn_tip_label_->clear();
         return;
     }
 }
@@ -519,6 +518,7 @@ void SignalerOnlineSettingDlg::UpdateUI()
 {
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
     UpdateButtonStatus(false);
+    update_button_->setEnabled(is_cfg_read_);
 //    UpdateButtonStatus(true);
 }
 
@@ -543,7 +543,15 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
 {
 //    dialog_tab_->setEnabled(enable);
     read_button_->setEnabled(enable);
-    update_button_->setEnabled(enable);
+    if (!is_cfg_read_)
+    {
+        update_button_->setEnabled(false);
+    }
+    else
+    {
+        update_button_->setEnabled(enable);
+    }
+
     send_button_->setEnabled(enable);
     monitor_button_->setEnabled(enable);
     log_button_->setEnabled(enable);

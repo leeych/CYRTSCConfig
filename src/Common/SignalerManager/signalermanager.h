@@ -2,7 +2,7 @@
 #define SIGNALERMANAGER_H
 
 #include <QMap>
-#include "SignalerManager_global.h"
+//#include "SignalerManager_global.h"
 #include "xmlhelper.h"
 #include "signalerelement.h"
 #include "signalerparam.h"

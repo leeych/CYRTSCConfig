@@ -12,8 +12,6 @@
 
 #define REPLY_HEAD_FIX      ("CYT")
 
-struct Request;
-
 class SyncCommand : public QObject
 {
     Q_OBJECT

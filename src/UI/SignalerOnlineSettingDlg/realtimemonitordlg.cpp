@@ -1374,7 +1374,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     curr_stage_id_ = channel_status_bak_.stage_id;
     str.sprintf("%d / %d", curr_stage_id_, total_stage_count_);
     stage_id_label_->setText(str);
-    MUtility::phaseBitsDesc(channel_status_bak_.phase_id);
+    str = MUtility::phaseBitsDesc(channel_status_bak_.phase_id);
     phase_id_label_->setText(str);
     UpdateLightTreeColor();
 

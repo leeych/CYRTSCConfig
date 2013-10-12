@@ -91,6 +91,7 @@ private:
     unsigned int port_;
     bool conn_status_;
 
+    bool is_cfg_read_;
     bool is_ver_correct_;
     int ver_check_id_;  // check version
     int ui_lock_id_;    // enable ui except for buttons
