@@ -518,7 +518,8 @@ void SignalerOnlineSettingDlg::InitTabPage()
 void SignalerOnlineSettingDlg::UpdateUI()
 {
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
-    UpdateButtonStatus(true);
+    UpdateButtonStatus(false);
+//    UpdateButtonStatus(true);
 }
 
 void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)

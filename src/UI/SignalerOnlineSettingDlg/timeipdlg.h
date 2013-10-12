@@ -52,6 +52,7 @@ private:
     QList<QPushButton *> button_list_;
     QDateTime signaler_time_;
     int timer_id_;
+    int cmd_timer_id_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

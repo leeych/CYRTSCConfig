@@ -14,6 +14,7 @@ TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
 {
     timer_id_ = 0;
+    cmd_timer_id_ = 0;
     InitPage();
     InitSignalSlots();
 }
@@ -24,6 +25,11 @@ TimeIPDlg::~TimeIPDlg()
     {
         killTimer(timer_id_);
         timer_id_ = 0;
+    }
+    if (cmd_timer_id_ != 0)
+    {
+        killTimer(cmd_timer_id_);
+        cmd_timer_id_ = 0;
     }
 }
 
@@ -50,6 +56,7 @@ void TimeIPDlg::OnRefreshButtonClicked()
 {
     SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(QByteArray&)));
     EnableButtonExcept(false, NULL);
+    cmd_timer_id_ = startTimer(3000);
 }
 
 void TimeIPDlg::OnWriteIPButtonClicked()
@@ -184,6 +191,12 @@ void TimeIPDlg::timerEvent(QTimerEvent *)
     {
         signaler_time_ = signaler_time_.addSecs(1);
         sys_time_text_label_->setText(signaler_time_.toString("yyyy-MM-dd hh:mm:ss ddd"));
+    }
+    if (cmd_timer_id_ != 0)
+    {
+        EnableButtonExcept(true, NULL);
+        killTimer(cmd_timer_id_);
+        cmd_timer_id_ = 0;
     }
 }
 
