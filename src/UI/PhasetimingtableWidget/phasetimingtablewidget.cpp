@@ -1,5 +1,8 @@
 #include "phasetimingtablewidget.h"
 #include "macrostring.h"
+#include "phasetimingeditdlg.h"
+#include "bottombuttonswidget.h"
+
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>

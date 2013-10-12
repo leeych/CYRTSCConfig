@@ -4,6 +4,9 @@
 
 #include "scheduletablewidget.h"
 #include "macrostring.h"
+#include "bottombuttonswidget.h"
+#include "scheduledlg.h"
+#include "schedulehandler.h"
 
 
 ScheduleTableWidget::ScheduleTableWidget(const QString &name, QWidget *parent)

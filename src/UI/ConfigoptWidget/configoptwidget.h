@@ -5,9 +5,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QFrame>
-#include "configoptwidget_global.h"
+//#include "configoptwidget_global.h"
 
-class CONFIGOPTWIDGETSHARED_EXPORT ConfigoptWidget : public QWidget
+class /*CONFIGOPTWIDGETSHARED_EXPORT*/ ConfigoptWidget : public QWidget
 {
     Q_OBJECT
 public:

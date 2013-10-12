@@ -1,12 +1,12 @@
 #ifndef BOTTOMBUTTONSWIDGET_H
 #define BOTTOMBUTTONSWIDGET_H
 
-#include "bottombuttonswidget_global.h"
+//#include "bottombuttonswidget_global.h"
 
 #include <QWidget>
 #include <QPushButton>
 
-class BOTTOMBUTTONSWIDGETSHARED_EXPORT BottomButtonsWidget : public QWidget
+class /*BOTTOMBUTTONSWIDGETSHARED_EXPORT*/ BottomButtonsWidget : public QWidget
 {
     Q_OBJECT
 

@@ -5,12 +5,13 @@
 #include <QTableWidget>
 #include <QMenu>
 #include <QAction>
-#include "detectortablewidget_global.h"
-#include "detectoreditdlg.h"
-#include "detectorhandler.h"
-#include "bottombuttonswidget.h"
+//#include "detectortablewidget_global.h"
 
-class DETECTORTABLEWIDGETSHARED_EXPORT DetectortableWidget : public QWidget
+class DetectoreditDlg;
+class DetectorHandler;
+class BottomButtonsWidget;
+
+class /*DETECTORTABLEWIDGETSHARED_EXPORT*/ DetectortableWidget : public QWidget
 {
     Q_OBJECT
 

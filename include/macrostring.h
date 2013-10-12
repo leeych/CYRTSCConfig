@@ -26,6 +26,9 @@
 #define STRING_DOWN_ARROW               QObject::tr("|")
 #define STRING_PACKAGE_LEN_ERROR        QObject::tr("Network package length error")
 #define STRING_PACKAGE_INCOMPLETE       QObject::tr("Network package package incomplete")
+#define STRING_SOCKET_TIMEOUT           QObject::tr("Socket timeout")
+#define STRING_REQUEST_SEND_CFG         QObject::tr("Requesting signaler to send local config file")
+#define STRING_SOCKET_SEND_CONFIG       QObject::tr("Sending config file")
 
 #define STRING_CONNECT_HOST_REFUSED     QObject::tr("Connected host refused")
 #define STRING_CONNECT_HOST_CLOSED      QObject::tr("Remote host closed")

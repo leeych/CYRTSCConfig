@@ -4,7 +4,9 @@
 
 #include "detectortablewidget.h"
 #include "macrostring.h"
-
+#include "detectoreditdlg.h"
+#include "detectorhandler.h"
+#include "bottombuttonswidget.h"
 
 DetectortableWidget::DetectortableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)

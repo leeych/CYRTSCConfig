@@ -5,12 +5,13 @@
 #include <QTreeWidget>
 #include <QMenu>
 #include <QAction>
-#include "timesectiontablewidget_global.h"
-#include "timesectioneditdlg.h"
-#include "timesectionhandler.h"
-#include "bottombuttonswidget.h"
+//#include "timesectiontablewidget_global.h"
 
-class TIMESECTIONTABLEWIDGETSHARED_EXPORT TimesectiontableWidget : public QWidget
+class BottomButtonsWidget;
+class TimesectioneditDlg;
+class TimesectionHandler;
+
+class /*TIMESECTIONTABLEWIDGETSHARED_EXPORT*/ TimesectiontableWidget : public QWidget
 {
     Q_OBJECT
 

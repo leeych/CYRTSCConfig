@@ -4,13 +4,13 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QMenu>
-#include "timingplanwidget_global.h"
+//#include "timingplanwidget_global.h"
 
-#include "timingeditdlg.h"
-#include "timinghandler.h"
-#include "bottombuttonswidget.h"
+class BottomButtonsWidget;
+class TimingeditDlg;
+class TimingHandler;
 
-class TIMINGPLANWIDGETSHARED_EXPORT TimingplanWidget : public QWidget
+class /*TIMINGPLANWIDGETSHARED_EXPORT*/ TimingplanWidget : public QWidget
 {
     Q_OBJECT
 

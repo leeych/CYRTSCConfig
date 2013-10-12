@@ -106,21 +106,21 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 {
-    QFile file(cfg_file_);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
-        return;
-    }
-    QByteArray array = file.readAll();
-    file.close();
-    SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
+    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
+//    if (!file.open(QIODevice::ReadOnly))
+//    {
+//        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
+//        return;
+//    }
+
+    conn_tip_label_->setText(STRING_REQUEST_SEND_CFG);
     UpdateButtonStatus(false);
     ui_lock_id_ = startTimer(READ_WAIT_TIME);
 }
 
 void SignalerOnlineSettingDlg::OnSendButtonClicked()
 {
+    OnUpdateButtonClicked();
     QString file_name = QFileDialog::getOpenFileName(NULL, STRING_OPEN, "./", "Data(*.dat);;All File(*.*)");
     if (file_name.isNull() || file_name.isEmpty())
     {
@@ -131,8 +131,7 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
         QMessageBox::warning(this, STRING_WARNING, STRING_FILE_NOT_EXISTS, STRING_OK);
         return;
     }
-//    conn_tip_label_->setText();
-    conn_tip_label_->clear();
+    conn_tip_label_->setText(STRING_SOCKET_SEND_CONFIG);
     SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
 }
 
@@ -321,7 +320,7 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
     }
     if (content == "CONFIGYS")
     {
-        QFile file(cfg_file_);
+        QFile file(tmp_file_);
         if (!file.open(QIODevice::ReadOnly))
         {
             QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
@@ -332,7 +331,6 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
         }
         QByteArray array = file.readAll();
         file.close();
-
         SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
         return;
     }
@@ -395,6 +393,7 @@ void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
     }
     else if (ui_lock_id_ != 0)
     {
+        QMessageBox::information(this, STRING_TIP, STRING_SOCKET_TIMEOUT, STRING_OK);
         UpdateButtonStatus(true);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;

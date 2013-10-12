@@ -1,6 +1,8 @@
 #include "unitparamtablewidget.h"
 #include "macrostring.h"
 #include "mutility.h"
+#include "unitparamhandler.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>

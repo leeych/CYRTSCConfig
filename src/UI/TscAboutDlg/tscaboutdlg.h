@@ -4,9 +4,9 @@
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
-#include "TscAboutDlg_global.h"
+//#include "TscAboutDlg_global.h"
 
-class TSCABOUTDLGSHARED_EXPORT TscAboutDlg : public QDialog
+class /*TSCABOUTDLGSHARED_EXPORT*/ TscAboutDlg : public QDialog
 {
     Q_OBJECT
 

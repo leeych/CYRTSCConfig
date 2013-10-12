@@ -8,10 +8,11 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QList>
-#include "unitparamtablewidget_global.h"
-#include "unitparamhandler.h"
+//#include "unitparamtablewidget_global.h"
 
-class UNITPARAMTABLEWIDGETSHARED_EXPORT UnitparamtableWidget : public QWidget
+class UnitparamHandler;
+
+class /*UNITPARAMTABLEWIDGETSHARED_EXPORT*/ UnitparamtableWidget : public QWidget
 {
     Q_OBJECT
 

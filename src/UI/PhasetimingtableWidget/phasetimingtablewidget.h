@@ -5,12 +5,14 @@
 #include <QTreeWidget>
 #include <QMenu>
 #include <QAction>
-#include "phasetimingtablewidget_global.h"
-#include "phasetimingeditdlg.h"
+//#include "phasetimingtablewidget_global.h"
 #include "phasetiminghandler.h"
-#include "bottombuttonswidget.h"
 
-class PHASETIMINGTABLEWIDGETSHARED_EXPORT PhasetimingtableWidget : public QWidget
+class BottomButtonsWidget;
+class PhasetimingeditDlg;
+
+
+class /*PHASETIMINGTABLEWIDGETSHARED_EXPORT*/ PhasetimingtableWidget : public QWidget
 {
     Q_OBJECT
 

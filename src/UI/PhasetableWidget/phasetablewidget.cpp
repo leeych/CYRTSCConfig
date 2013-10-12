@@ -3,6 +3,8 @@
 #include <QHeaderView>
 #include "phasetablewidget.h"
 #include "macrostring.h"
+#include "bottombuttonswidget.h"
+#include "phaseeditdlg.h"
 
 PhasetableWidget::PhasetableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)

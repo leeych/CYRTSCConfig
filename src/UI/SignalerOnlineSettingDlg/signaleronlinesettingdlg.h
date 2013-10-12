@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QTcpSocket>
 #include <QDesktopWidget>
-#include "signaleronlinesettingdlg_global.h"
+//#include "signaleronlinesettingdlg_global.h"
 
 class MDatabase;
 class MTabWidget;
@@ -28,7 +28,7 @@ class RealtimeMonitorDlg;
 class SyncCommand;
 class EventLogHandler;
 
-class SIGNALERONLINESETTINGDLGSHARED_EXPORT SignalerOnlineSettingDlg : public QDialog
+class /*SIGNALERONLINESETTINGDLGSHARED_EXPORT*/ SignalerOnlineSettingDlg : public QDialog
 {
     Q_OBJECT
 
@@ -86,6 +86,7 @@ private:
     QTcpSocket *socket_;
 
     QString cfg_file_;
+    QString tmp_file_;  // used for send and update config file
     QString ip_;
     unsigned int port_;
     bool conn_status_;

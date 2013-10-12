@@ -1,5 +1,9 @@
 #include "timesectiontablewidget.h"
 #include "macrostring.h"
+#include "timesectioneditdlg.h"
+#include "timesectionhandler.h"
+#include "bottombuttonswidget.h"
+
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>

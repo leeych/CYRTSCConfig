@@ -4,6 +4,10 @@
 
 #include "timingplanwidget.h"
 #include "macrostring.h"
+#include "timingeditdlg.h"
+#include "timinghandler.h"
+#include "bottombuttonswidget.h"
+
 
 TimingplanWidget::TimingplanWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)

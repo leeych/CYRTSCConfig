@@ -5,12 +5,14 @@
 #include <QTableWidget>
 #include <QPushButton>
 #include <QMenu>
-#include "scheduletablewidget_global.h"
-#include "bottombuttonswidget.h"
-#include "scheduledlg.h"
-#include "schedulehandler.h"
+//#include "scheduletablewidget_global.h"
 
-class SCHEDULETABLEWIDGETSHARED_EXPORT ScheduleTableWidget : public QWidget
+class BottomButtonsWidget;
+class ScheduleDlg;
+class ScheduleHandler;
+
+
+class /*SCHEDULETABLEWIDGETSHARED_EXPORT*/ ScheduleTableWidget : public QWidget
 {
     Q_OBJECT
 

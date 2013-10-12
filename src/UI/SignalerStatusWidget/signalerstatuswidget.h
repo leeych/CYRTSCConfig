@@ -6,7 +6,7 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QAction>
-#include "signalerstatuswidget_global.h"
+//#include "signalerstatuswidget_global.h"
 #include "signalerparam.h"
 
 class ButtonWidget;
@@ -14,7 +14,7 @@ class SignalerbasiceditDlg;
 class SignalerHandler;
 class SignalerOnlineSettingDlg;
 
-class SIGNALERSTATUSWIDGETSHARED_EXPORT SignalerStatusWidget : public QWidget
+class /*SIGNALERSTATUSWIDGETSHARED_EXPORT*/ SignalerStatusWidget : public QWidget
 {
     Q_OBJECT
 

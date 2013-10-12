@@ -8,7 +8,7 @@
 #include <QAction>
 #include <QMap>
 
-#include "filelistwidget_global.h"
+//#include "filelistwidget_global.h"
 #include "filereaderwriter.h"
 #include "datainitializer.h"
 

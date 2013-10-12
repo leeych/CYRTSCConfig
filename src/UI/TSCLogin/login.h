@@ -5,9 +5,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
-#include "tsclogin_global.h"
+//#include "tsclogin_global.h"
 
-class TSCLOGINSHARED_EXPORT Login : public QDialog
+class /*TSCLOGINSHARED_EXPORT*/ Login : public QDialog
 {
     Q_OBJECT
 

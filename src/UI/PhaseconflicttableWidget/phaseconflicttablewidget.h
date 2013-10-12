@@ -4,12 +4,12 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QMenu>
-#include "phaseconflicttablewidget_global.h"
+//#include "phaseconflicttablewidget_global.h"
 #include "phaseconflicteditdlg.h"
 #include "phaseconflicthandler.h"
 #include "bottombuttonswidget.h"
 
-class PHASECONFLICTTABLEWIDGETSHARED_EXPORT PhaseconflicttableWidget : public QWidget
+class /*PHASECONFLICTTABLEWIDGETSHARED_EXPORT*/ PhaseconflicttableWidget : public QWidget
 {
     Q_OBJECT
 

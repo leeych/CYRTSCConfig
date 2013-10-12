@@ -4,12 +4,14 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QMenu>
-#include "phaseeditdlg.h"
-#include "phasetablewidget_global.h"
+//#include "phasetablewidget_global.h"
 #include "phasehandler.h"
-#include "bottombuttonswidget.h"
 
-class PHASETABLEWIDGETSHARED_EXPORT PhasetableWidget : public QWidget
+
+class PhaseeditDlg;
+class BottomButtonsWidget;
+
+class /*PHASETABLEWIDGETSHARED_EXPORT*/ PhasetableWidget : public QWidget
 {
     Q_OBJECT
 
