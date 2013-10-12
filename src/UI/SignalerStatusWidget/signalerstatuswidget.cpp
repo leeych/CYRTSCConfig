@@ -7,6 +7,8 @@
 #include "signaleronlinesettingdlg.h"
 #include "synccommand.h"
 
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QLabel>
 #include <QHeaderView>
 #include <QHBoxLayout>
@@ -72,6 +74,8 @@ void SignalerStatusWidget::OnEditActionClicked()
         return;
     }
     signaler_edit_dlg_->Initialize(id, handler_);
+    QDesktopWidget *desktop = QApplication::desktop();
+    signaler_edit_dlg_->move((desktop->width()-signaler_edit_dlg_->width())/2,(desktop->height()-signaler_edit_dlg_->height())/2);
 }
 
 void SignalerStatusWidget::OnDeleteActionClicked()
@@ -150,6 +154,8 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
         return;
     }
     signaler_edit_dlg_->Initialize(id, handler_);
+    QDesktopWidget *desktop = QApplication::desktop();
+    signaler_edit_dlg_->move((desktop->width()-signaler_edit_dlg_->width())/2,(desktop->height()-signaler_edit_dlg_->height())/2);
 }
 
 void SignalerStatusWidget::OnTableRowUpdateSlot(int)

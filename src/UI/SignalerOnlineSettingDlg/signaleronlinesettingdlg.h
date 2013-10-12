@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTcpSocket>
+#include <QDesktopWidget>
 #include "signaleronlinesettingdlg_global.h"
 
 class MDatabase;
@@ -96,10 +97,10 @@ private:
     QByteArray config_byte_array_;
 
 private:
-//    QStackedLayout *stk_layout_;
     QWidget *more_widget_;
     MTabWidget *dialog_tab_;
-//    QTabWidget *dialog_tab_;
+
+    QDesktopWidget *desktop_;
 
     UnitparamtableWidget *unitparam_widget_;
     ScheduleTableWidget *schedule_widget_;

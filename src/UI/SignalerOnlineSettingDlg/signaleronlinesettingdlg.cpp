@@ -7,7 +7,6 @@
 #include "eventloghandler.h"
 
 #include "mtabwidget.h"
-
 #include "unitparamtablewidget.h"
 #include "scheduletablewidget.h"
 #include "timesectiontablewidget.h"
@@ -23,11 +22,13 @@
 #include "eventlogdlg.h"
 #include "realtimemonitordlg.h"
 
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDesktopWidget>
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -44,6 +45,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     is_ver_correct_ = false;
     ver_check_id_ = 0;
     db_ptr_ = new MDatabase;
+    desktop_ = QApplication::desktop();
 
     InitPage();
     InitSignalSlots();
@@ -129,36 +131,33 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
         QMessageBox::warning(this, STRING_WARNING, STRING_FILE_NOT_EXISTS, STRING_OK);
         return;
     }
-    // TODO: send file to signaler
-    QFile file(file_name);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
-        return;
-    }
-    QByteArray array = file.readAll();
-    file.close();
-    SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
+//    conn_tip_label_->setText();
+    conn_tip_label_->clear();
+    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 {
     monitor_dlg_->Initialize(ip_);
+    monitor_dlg_->move((desktop_->width()-monitor_dlg_->width())/2, (desktop_->height()-monitor_dlg_->height())/2);
 }
 
 void SignalerOnlineSettingDlg::OnLogButtonClicked()
 {
     event_log_dlg_->Initialize(ip_, handler_);
+    event_log_dlg_->move((desktop_->width()-event_log_dlg_->width())/2, (desktop_->height()-event_log_dlg_->height())/2);
 }
 
 void SignalerOnlineSettingDlg::OnFlowButtonClicked()
 {
     flow_dlg_->Initialize();
+    flow_dlg_->move((desktop_->width()-flow_dlg_->width())/2, (desktop_->height()-flow_dlg_->height())/2);
 }
 
 void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 {
     time_ip_dlg_->Initialize();
+    time_ip_dlg_->move((desktop_->width()-time_ip_dlg_->width())/2, (desktop_->height()-time_ip_dlg_->height())/2);
 }
 
 void SignalerOnlineSettingDlg::OnSaveAsbuttonClicked()
@@ -191,7 +190,7 @@ void SignalerOnlineSettingDlg::OnSaveAsbuttonClicked()
     }
     else
     {
-        conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_SUCCESS);
+        conn_tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_SAVE_SUCCESS + "</font>");
     }
 }
 
@@ -218,7 +217,7 @@ void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
     memcpy(ver, content.data(), 11);
     if (strcmp(ver, "CYT0V100END") != 0)
     {
-        conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_VERERROR);
+        conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_TIP_VERERROR + "</font>");
         return;
     }
 
@@ -251,7 +250,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
     if (content.isEmpty())
     {
-        conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_FAILED);
+        conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_READ_FILE_FAILED + "</font>");
         config_byte_array_.clear();
         QFile::remove(cfg_file_);
         return;
@@ -263,7 +262,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     }
 
     bool status = ParseConfigArray(config_byte_array_);
-    conn_tip_label_->setText(STRING_UI_SIGNALER_READ_FILE_SUCCESS);
+    conn_tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_READ_FILE_SUCCESS + "</font>");
     if (status)
     {
         QFile file(cfg_file_);
@@ -275,7 +274,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         qint64 sz = file.write(config_byte_array_);
         if (sz != config_byte_array_.size())
         {
-            conn_tip_label_->setText(STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED);
+            conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED + "</font>");
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
             QFile::remove(cfg_file_);
         }
@@ -334,7 +333,7 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
         QByteArray array = file.readAll();
         file.close();
 
-        SyncCommand::GetInstance()->SendConfigData(array.data(), this, SLOT(OnCmdSendConfig(QByteArray&)));
+        SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
         return;
     }
     if (content == "CONFIGNO")
@@ -520,7 +519,7 @@ void SignalerOnlineSettingDlg::InitTabPage()
 void SignalerOnlineSettingDlg::UpdateUI()
 {
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
-    UpdateButtonStatus(false);
+    UpdateButtonStatus(true);
 }
 
 void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)

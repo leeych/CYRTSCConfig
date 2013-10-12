@@ -45,6 +45,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     InitCtrlModeDesc();
     InitFaultDesc();
 	ResetChannelColor();
+
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
