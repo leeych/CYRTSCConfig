@@ -199,6 +199,12 @@ QPushButton
 	min-width: 60px; min-height: 20px;
 }
 
+QPushButton:hover
+{
+	border: 1px solid #f8f8ff; border-radius: 4px;
+	background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #ceffff, stop: 1 #ffffff);
+}
+
 QPushButton:pressed 
 { 
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
