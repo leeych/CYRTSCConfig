@@ -75,7 +75,7 @@ void TimesectioneditDlg::OnDeleteActionClicked()
     {
         for (int i = 0; i < time_section_tmp_list_.size(); i++)
         {
-            if (time_section_tmp_list_.at(i).event_id && event_id)
+            if (time_section_tmp_list_.at(i).event_id == event_id)
             {
                 time_section_tmp_list_.removeAt(i);
                 break;

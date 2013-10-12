@@ -9,21 +9,21 @@
 #include <QMap>
 #include <QLabel>
 
-#include "mtabwidget.h"
-#include "configoptwidget.h"
-#include "filelistwidget.h"
+class MTabWidget;
+class ConfigoptWidget;
+class FileListWidget;
+class ScheduleTableWidget;
+class TimingplanWidget;
+class PhasetableWidget;
+class TimesectiontableWidget;
+class PhasetimingtableWidget;
+class PhaseconflicttableWidget;
+class ChanneltableWidget;
+class DetectortableWidget;
+class UnitparamtableWidget;
+class TscAboutDlg;
+class SignalerStatusWidget;
 
-#include "scheduletablewidget.h"
-#include "timingplanwidget.h"
-#include "phasetablewidget.h"
-#include "timesectiontablewidget.h"
-#include "phasetimingtablewidget.h"
-#include "phaseconflicttablewidget.h"
-#include "channeltablewidget.h"
-#include "detectortablewidget.h"
-#include "unitparamtablewidget.h"
-#include "signalerstatuswidget.h"
-#include "tscaboutdlg.h"
 
 class MainWindow : public QMainWindow
 {
@@ -64,7 +64,7 @@ private:
     bool is_edited_;
 
 private:
-    QLabel* tip_;
+    QLabel* status_tip_label_;
     QToolBar* main_toolbar_;
     QToolButton* save_button_;
     QToolButton* communication_button_;
@@ -76,9 +76,9 @@ private:
 
     ConfigoptWidget* config_widget_;
     FileListWidget* file_list_widget_;
-
+    SignalerStatusWidget* signaler_tab_page_;
     MTabWidget* main_tab_window_;
-//    QTabWidget *main_tab_window_;
+
     // Tab pages
     ScheduleTableWidget* schedule_tab_page_;
     TimesectiontableWidget* time_section_tab_page_;
@@ -89,9 +89,7 @@ private:
     ChanneltableWidget* channel_tab_page_;
     DetectortableWidget* detector_tab_page_;
     UnitparamtableWidget* unitparam_tab_page_;
-    TscAboutDlg *about_;
-
-    SignalerStatusWidget* signaler_tab_page_;
+    TscAboutDlg *about_dlg_;
 };
 
 #endif // MAINWINDOW_H

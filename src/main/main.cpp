@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    MainWindow w;
+    MainWindow window;
     QSplashScreen *splash = new QSplashScreen(QPixmap(dir + "splash.png"));
     splash->show();
     splash->showMessage(STRING_MAIN_INITIALIZE, Qt::AlignBottom | Qt::AlignLeft, Qt::white);
@@ -64,15 +64,16 @@ int main(int argc, char *argv[])
     {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
-    splash->finish(&w);
+    splash->finish(&window);
     delete splash;
+    splash = NULL;
 
     dir += "icon.png";
-    w.setWindowIcon(QIcon(dir));
-    w.show();
+    window.setWindowIcon(QIcon(dir));
 
-	QDesktopWidget *desktop = QApplication::desktop();
-	w.move((desktop->width() - w.width())/2,(desktop->height() - w.height())/2);
+    QDesktopWidget *desktop = QApplication::desktop();
+    window.move((desktop->width() - window.width())/2,(desktop->height() - window.height())/2);
+    window.show();
     
     return a.exec();
 }

@@ -65,7 +65,6 @@ int PhaseHandler::index_of_phase_list(unsigned char phase_id)
         if (phase_id == phase_list_.at(i).phase_id)
         {
             index = i;
-            qDebug() << "index: " << index;
             return index;
         }
     }
@@ -105,6 +104,7 @@ QList<PhaseParam *> PhaseHandler::get_phase_ptr_list()
 
 QList<PhaseParam> &PhaseHandler::get_phase_list()
 {
+    qSort(phase_list_.begin(), phase_list_.end(), phase_less_than);
     return phase_list_;
 }
 
@@ -139,7 +139,6 @@ unsigned char PhaseHandler::get_phase_channel_id( unsigned char phase_id )
 {
     QList<ChannelParam> channels = db_->get_channel_table();
 	unsigned char channel_id = 0;
-
     for (int i = 0; i < channels.size(); i++)
     {
         if (phase_id == channels.at(i).channel_ctrl_src)
@@ -252,7 +251,7 @@ bool PhaseHandler::save_data()
     return true;
 }
 
-bool PhaseHandler::phase_less_than( const PhaseParam &left, const PhaseParam &right )
+bool PhaseHandler::phase_less_than(const PhaseParam &left, const PhaseParam &right)
 {
 	if (left.phase_id > right.phase_id)
 	{

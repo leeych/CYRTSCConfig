@@ -286,17 +286,17 @@ void ScheduleDlg::InitPage()
     whole_vlayout->addWidget(day_grp);
     whole_vlayout->addLayout(button_hlayout);
     setLayout(whole_vlayout);
-    QString qss =  "QGroupBox {border-width:1px;border-style:solid;border-color:LightSkyBlue;margin-top: 1ex;}"
-            "QGroupBox::title{subcontrol-origin:margin;subcontrol-position:top left;left:10px;margin-left:0px;padding:0px}"
-            "QComboBox{background-color: rgb(233,246,254);border:1px solid rgb(128,171,224);border-radius:3px;}"
-            "QComboBox QAbstractItemView{selection-background-color:rgb(128,171,224);}"
-            "QComboBox::item{background-color: transparent;color: #000000;}"
-            "QComboBox::item:selected{background-color: #83c8f9;}"
-            "QWidget{background-color:#eaf6fe;}"
-            "QPushButton{border:1px solid rgb(164,209,251);border-radius:3px;min-height:25px;min-width:80px;"
-            "background-color:qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 rgb(221,238,254),stop:1 rgb(197,226,255));}"
-            "QPushButton:pressed{background-color:qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 rgb(254,103,0),stop:1 rgb(254,103,0));}";
-    setStyleSheet(qss);
+//    QString qss =  "QGroupBox {border-width:1px;border-style:solid;border-color:LightSkyBlue;margin-top: 1ex;}"
+//            "QGroupBox::title{subcontrol-origin:margin;subcontrol-position:top left;left:10px;margin-left:0px;padding:0px}"
+//            "QComboBox{background-color: rgb(233,246,254);border:1px solid rgb(128,171,224);border-radius:3px;}"
+//            "QComboBox QAbstractItemView{selection-background-color:rgb(128,171,224);}"
+//            "QComboBox::item{background-color: transparent;color: #000000;}"
+//            "QComboBox::item:selected{background-color: #83c8f9;}"
+//            "QWidget{background-color:#eaf6fe;}"
+//            "QPushButton{border:1px solid rgb(164,209,251);border-radius:3px;min-height:25px;min-width:80px;"
+//            "background-color:qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 rgb(221,238,254),stop:1 rgb(197,226,255));}"
+//            "QPushButton:pressed{background-color:qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 rgb(254,103,0),stop:1 rgb(254,103,0));}";
+//    setStyleSheet(qss);
 }
 
 void ScheduleDlg::InitSignalSlots()

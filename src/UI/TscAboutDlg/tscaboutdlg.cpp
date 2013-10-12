@@ -55,14 +55,14 @@ void TscAboutDlg::InitPage()
     vlayout->addLayout(declare_hlayout);
     vlayout->addLayout(button_hlayout);
     setLayout(vlayout);
-    setStyleSheet("QWidget{background-color:#F5F5F5;}"
-                  "QPushButton {border: 1px solid #DCDCDC; border-radius: 3px;"
-                  "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);"
-                  "min-width: 60px; min-height: 20px;}"
-                  "QPushButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);}"
-                  "QPushButton:flat { border: none;}"
-                  "QPushButton:default { border-color: navy;}"
-                  );
+//    setStyleSheet("QWidget{background-color:#F5F5F5;}"
+//                  "QPushButton {border: 1px solid #DCDCDC; border-radius: 3px;"
+//                  "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);"
+//                  "min-width: 60px; min-height: 20px;}"
+//                  "QPushButton:pressed { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);}"
+//                  "QPushButton:flat { border: none;}"
+//                  "QPushButton:default { border-color: navy;}"
+//                  );
 
     setFixedSize(530,270);
     QDesktopWidget* desktop = QApplication::desktop();

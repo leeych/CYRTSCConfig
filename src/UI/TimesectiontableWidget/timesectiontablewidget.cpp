@@ -7,7 +7,7 @@
 TimesectiontableWidget::TimesectiontableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
-    timesection_edit_dlg_ = new TimesectioneditDlg;
+    timesection_edit_dlg_ = new TimesectioneditDlg(this);
     handler_ = new TimesectionHandler;
     InitPage();
     InitSignalSlots();
@@ -370,6 +370,14 @@ QString TimesectiontableWidget::get_ctrl_mode_desc(unsigned char ctrl_mode)
 
 TimesectiontableWidget::~TimesectiontableWidget()
 {
-	delete timesection_edit_dlg_;
-	delete handler_;
+    if (timesection_edit_dlg_ != NULL)
+    {
+        delete timesection_edit_dlg_;
+        timesection_edit_dlg_ = NULL;
+    }
+    if (handler_ != NULL)
+    {
+        delete handler_;
+        handler_ = NULL;
+    }
 }

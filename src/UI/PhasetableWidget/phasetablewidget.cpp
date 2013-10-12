@@ -218,11 +218,11 @@ void PhasetableWidget::InitSignalSlots()
 {
     connect(tree_widget_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(OnCustomContextMenuRequested(QPoint)));
     connect(tree_widget_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnTreeItemDoubleClicked(QTreeWidgetItem*,int)));
+//    connect(tree_widget_->header(), SIGNAL(clicked(QModelIndex)), tree_widget_, SLOT(sortByColumn(int)));
     connect(add_action_, SIGNAL(triggered()), this, SLOT(OnAddActionClicked()));
     connect(edit_action_, SIGNAL(triggered()), this, SLOT(OnEditActionClicked()));
     connect(delete_action_, SIGNAL(triggered()), this, SLOT(OnDeleteActionClicked()));
     connect(save_action_, SIGNAL(triggered()), this, SLOT(OnSaveActionClicked()));
-
     connect(buttons_widget_->addButtonPtr(), SIGNAL(clicked()), this, SLOT(OnAddActionClicked()));
     connect(buttons_widget_->editButtonPtr(), SIGNAL(clicked()), this, SLOT(OnEditActionClicked()));
     connect(buttons_widget_->deleteButtonPtr(), SIGNAL(clicked()), this, SLOT(OnDeleteActionClicked()));
@@ -233,7 +233,7 @@ void PhasetableWidget::InitSignalSlots()
 
 void PhasetableWidget::InitTree()
 {
-    tree_widget_ = new QTreeWidget;
+    tree_widget_ = new QTreeWidget(this);
     tree_widget_->setColumnCount(13);
     QStringList header;
     header << STRING_UI_PHASE_ID << STRING_UI_PHASE_MAN_GREEN << STRING_UI_PHASE_MAN_CLEAR
@@ -253,6 +253,9 @@ void PhasetableWidget::InitTree()
     tree_widget_->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
 	QHeaderView *header_view = tree_widget_->header();
 	header_view->setDefaultAlignment(Qt::AlignCenter);
+    header_view->setClickable(true);
+    header_view->setSortIndicator(0, Qt::AscendingOrder);
+    header_view->setSortIndicatorShown(true);
 	tree_widget_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 

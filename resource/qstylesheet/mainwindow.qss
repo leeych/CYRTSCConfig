@@ -2,6 +2,7 @@ QMainWindow
 {
     background-color: #E9F6FE;
 }
+
 QMenuBar 
 {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -12,7 +13,7 @@ QMenuBar
 
 QMenuBar::item 
 {
-    spacing: 3px; /* spacing between menu bar items */
+    spacing: 3px;
     padding: 1px 4px;
     background: transparent;
     border-radius: 4px;
@@ -22,7 +23,7 @@ QMenuBar::item
 }
 
 QMenuBar::item:selected 
-{ /* when selected using mouse or keyboard */
+{
     background: #3e9cde;
 }
 

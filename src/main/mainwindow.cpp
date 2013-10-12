@@ -1,7 +1,23 @@
 #include <QtGui>
-#include "mutility.h"
 #include "mainwindow.h"
+#include "mutility.h"
 #include "macrostring.h"
+
+#include "mtabwidget.h"
+#include "configoptwidget.h"
+#include "filelistwidget.h"
+
+#include "scheduletablewidget.h"
+#include "timingplanwidget.h"
+#include "phasetablewidget.h"
+#include "timesectiontablewidget.h"
+#include "phasetimingtablewidget.h"
+#include "phaseconflicttablewidget.h"
+#include "channeltablewidget.h"
+#include "detectortablewidget.h"
+#include "unitparamtablewidget.h"
+#include "signalerstatuswidget.h"
+#include "tscaboutdlg.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,7 +43,7 @@ void MainWindow::OnConfigoptSlot(const QString &page_name)
 
 void MainWindow::OnUpdateStatusBarSlot(const QString &file_name)
 {
-    tip_->setText(file_name);
+    status_tip_label_->setText(file_name);
 }
 
 void MainWindow::OnUpdateTabPageSlot()
@@ -80,7 +96,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 
 void MainWindow::OnHelpToolButtonClicked()
 {
-    about_->exec();
+    about_dlg_->exec();
 }
 
 void MainWindow::OnSaveToolButtonClicked()
@@ -122,7 +138,7 @@ void MainWindow::InitPage()
     main_tab_window_ = new MTabWidget(this);
     QFont tabfont(STRING_FONT_SONGTI, 12);
     main_tab_window_->setTabBarFont(tabfont);
-    about_ = new TscAboutDlg(this);
+    about_dlg_ = new TscAboutDlg(this);
 
     QFont font(STRING_FONT_SONGTI, 11);
     left_splitter_ = new QSplitter(Qt::Vertical);
@@ -148,7 +164,6 @@ void MainWindow::InitPage()
     QString dir;
     MUtility::getStyleSheetDir(dir);
     setStyleSheet(QLatin1String(MUtility::fetchQrc(dir + "mainwindow.qss")));
-//    main_tab_window_->setFont(font);
 }
 
 void MainWindow::InitSignalSlots()
@@ -253,10 +268,10 @@ void MainWindow::CreateStatusBar()
     statusBar()->showMessage(STRING_MAIN_STATUS);
     statusBar()->setStyleSheet("background-color: rgb(233,246,254);font-size:12px");
 
-    tip_ = new QLabel(statusBar());
-    tip_->setMinimumSize(tip_->sizeHint());
-    tip_->setAlignment(Qt::AlignHCenter);
-    statusBar()->addPermanentWidget(tip_);
+    status_tip_label_ = new QLabel(statusBar());
+    status_tip_label_->setMinimumSize(status_tip_label_->sizeHint());
+    status_tip_label_->setAlignment(Qt::AlignHCenter);
+    statusBar()->addPermanentWidget(status_tip_label_);
     statusBar()->setSizeGripEnabled(true);
 }
 
