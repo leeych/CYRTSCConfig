@@ -195,7 +195,7 @@ QComboBox::item:selected
 QPushButton
 {
 	border: 1px solid #dcdcdc; border-radius: 3px;
-	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 ##f9fbfe, stop: 1 ##f0fafa);
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f9fbfe, stop: 1 #f0fafa);
 	min-width: 60px; min-height: 20px;
 }
 
