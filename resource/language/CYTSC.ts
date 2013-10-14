@@ -801,7 +801,7 @@
     <message>
         <location filename="../../include/macrostring.h" line="227"/>
         <source>Walkman green and clear time must larger than zero</source>
-        <translation>行人绿灯时间不能为0！</translation>
+        <translation>行人绿灯时间和行人清空时间不能为0！</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="228"/>
