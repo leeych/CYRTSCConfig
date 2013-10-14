@@ -45,6 +45,9 @@ private:
     QString widget_name_;
 	QList<QWidget *> font_setting_list_;
 
+    unsigned char flash_time_;
+    unsigned char all_red_time_;
+
 private:
     QLineEdit* signal_ip_lineedit_;
     QLineEdit* server_ip_lineedit_;

@@ -30,7 +30,7 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 
-#define CMD_WAIT_TIME   6000
+#define CMD_WAIT_TIME   30000
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)

@@ -12,6 +12,7 @@
 #include <QList>
 #include <QMessageBox>
 #include <QRegExp>
+#include <QHostInfo>
 
 
 UnitparamtableWidget::UnitparamtableWidget(const QString& name, QWidget* parent)
@@ -20,11 +21,12 @@ UnitparamtableWidget::UnitparamtableWidget(const QString& name, QWidget* parent)
     handler_ = new UnitparamHandler;
     InitPage();
     InitSignalSlots();
-
     UpdateUI();
 
-	flash_time_spinbox_->setValue(0);
-	all_red_time_spinbox_->setValue(0);
+    flash_time_ = 0;
+    all_red_time_ = 0;
+    flash_time_spinbox_->setValue(flash_time_);
+    all_red_time_spinbox_->setValue(all_red_time_);
 }
 
 const QString &UnitparamtableWidget::widget_name()
@@ -40,6 +42,8 @@ bool UnitparamtableWidget::OnOkButtonClicked()
     }
 	if (SaveData())
 	{
+        flash_time_ = flash_time_spinbox_->value();
+        all_red_time_ = all_red_time_spinbox_->value();
 		handler_->save_data();
 	}
     return true;
@@ -48,6 +52,8 @@ bool UnitparamtableWidget::OnOkButtonClicked()
 void UnitparamtableWidget::OnCancelButtonClicked()
 {
 	UpdateUI();
+    flash_time_spinbox_->setValue(flash_time_);
+    all_red_time_spinbox_->setValue(all_red_time_);
 }
 
 void UnitparamtableWidget::OnUpdateDataSlot()
@@ -108,8 +114,8 @@ void UnitparamtableWidget::InitPage()
     //gllayout->addWidget(signal_ip_lineedit_, 0, 1, 1, 1);
     gllayout->addWidget(server_ip_label, 1, 0, 1, 1, Qt::AlignCenter);
     gllayout->addWidget(server_ip_lineedit_, 1, 2, 1, 1, Qt::AlignCenter);
-    gllayout->addWidget(server_port_label, 2, 0, 1, 1, Qt::AlignCenter);
-    gllayout->addWidget(server_port_lineedit_, 2, 2, 1, 1, Qt::AlignCenter);
+//    gllayout->addWidget(server_port_label, 2, 0, 1, 1, Qt::AlignCenter);
+//    gllayout->addWidget(server_port_lineedit_, 2, 2, 1, 1, Qt::AlignCenter);
     gllayout->addWidget(flash_time_label, 3, 0, 1, 1, Qt::AlignCenter);
     gllayout->addWidget(flash_time_spinbox_, 3, 2, 1, 1, Qt::AlignCenter);
     gllayout->addWidget(allred_time_label, 4, 0, 1, 1, Qt::AlignCenter);
@@ -234,6 +240,8 @@ void UnitparamtableWidget::InitPage()
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(left_group);
     layout->addWidget(right_group);
+    layout->setStretch(0, 2);
+    layout->setStretch(1, 3);
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->addLayout(layout);
     vlayout->addLayout(bottom_hlayout);
@@ -256,10 +264,15 @@ void UnitparamtableWidget::InitSignalSlots()
 void UnitparamtableWidget::UpdateUI()
 {
     Unit_t param;
-    memset(&param, 0, sizeof(param));
+    memset(&param, 0x00, sizeof(param));
     handler_->get_unitparam(param);
     server_ip_lineedit_->setEnabled(false);
     server_port_lineedit_->setEnabled(false);
+    QHostInfo host_info = QHostInfo::fromName(QHostInfo::localHostName());
+    QHostAddress address = host_info.addresses().first();
+    QString str = address.toString();
+    server_ip_lineedit_->setText(str);
+    server_port_lineedit_->setText("12810");
     flash_time_spinbox_->setValue(param.StartUpFlash);
     all_red_time_spinbox_->setValue(param.StartUpRed);
 }
