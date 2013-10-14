@@ -112,6 +112,7 @@
 #define STRING_UI_OPEN_FILE             QObject::tr("Open file")
 #define STRING_UI_NEW_FILE              QObject::tr("New file")
 #define STRING_UI_DELETE_FILE           QObject::tr("Delete file from disk failed.")
+#define STRING_UI_TEMP_FILE             QObject::tr("Temp file")
 
 #define STRING_MAIN_TITLE				QObject::tr("ChaoYuan centralize coordinate traffic siganler setting")
 #define STRING_MAIN_COMMUNICATION       QObject::tr("Communication")
@@ -561,6 +562,7 @@
 #define STRING_UI_SIGNALER_MONITOR_LCD_TIP          QObject::tr("Green-Yellow-Red")
 
 #define STRING_UI_SIGNALER_MONITOR_FLOW_STATISTIC   QObject::tr("Statistics")
+#define STRING_UI_SIGNALER_WRITE_IP_REQUEST_TIP     QObject::tr("This request needs to disable networking first, continue?")
 
 #define STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR    QObject::tr("Signaler network disconnected")
 #define STRING_UI_SIGNALER_MONITOR_PARSE_CFG        QObject::tr("Parse signaler configuration file")

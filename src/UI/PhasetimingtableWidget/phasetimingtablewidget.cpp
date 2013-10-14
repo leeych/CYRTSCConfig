@@ -230,8 +230,11 @@ void PhasetimingtableWidget::InitContextMenu()
     context_menu_->setStyleSheet(menu_qss);
 }
 
-void PhasetimingtableWidget::OnUpdateTreeSlot( unsigned char phase_timing_id )
+void PhasetimingtableWidget::OnUpdateTreeSlot(unsigned char phase_timing_id)
 {
+    Q_UNUSED(phase_timing_id);
+    UpdateTree();
+    /*
 	QTreeWidgetItem *item = tree_widget_->currentItem();
 	if (item == NULL)
 	{
@@ -247,6 +250,7 @@ void PhasetimingtableWidget::OnUpdateTreeSlot( unsigned char phase_timing_id )
 		QTreeWidgetItem *item_parent = item->parent();
 		AddChild(item_parent, phase_timing_id);
     }
+    */
 }
 
 void PhasetimingtableWidget::OnCustomContextMenuRequested(QPoint)

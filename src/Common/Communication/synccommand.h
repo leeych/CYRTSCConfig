@@ -22,14 +22,17 @@ public:
     QTcpSocket *getSocket();
 
     void connectToHost(const QString &ip, unsigned int port);
+    void InitParseHandler(QObject *target, const std::string &slot);
+    void ReleaseSignalSlots();
     void disconnectFromHost();
-    void ReadTscVersion(QObject *target, const std::string &slot);
 
+    void ReadTscVersion(QObject *target, const std::string &slot);
     void ReadSignalerConfigFile(QObject *target, const std::string &slot);
     void ReadSignalerTime(QObject *target, const std::string &slot);
     void ReadSignalerNetworkInfo(QObject *target, const std::string &slot);
     void SyncSignalerTime(unsigned int seconds, QObject *target, const std::string &slot);
     void ConfigNetwork(const QStringList &netinfo, QObject *target, const std::string &slot);
+    void ConnectConfigNetworkHandler(QObject *target, const std::string &slot);
 
     void SetConfiguration(QObject *target, const std::string &slot);
     void SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot);
@@ -51,8 +54,6 @@ public:
     void ClearDetectorFlowInfo();
     void GetDriverBoardInfo(QObject *target, const std::string &slot);
     void GetDriverBoardInfo();
-
-    void ReleaseSignalSlots();
 
 signals:
     void connectedSignal();
@@ -76,7 +77,6 @@ private:
     void WriteRequest();
     void RegParseHandler();
     void UnRegParseHandler();
-    void InitParseHandler(QObject *target, const std::string &slot);
     void GenConnectErrDesc();
 
 private:

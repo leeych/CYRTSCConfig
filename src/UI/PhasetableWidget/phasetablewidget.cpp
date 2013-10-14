@@ -152,6 +152,9 @@ void PhasetableWidget::OnSaveActionClicked()
 
 void PhasetableWidget::OnUpdateTreeItemSlot(unsigned char id)
 {
+    Q_UNUSED(id);
+    UpdateTree();
+    /*
     PhaseParam phase;
     handler_->get_phase(id, phase);
     QTreeWidgetItem* item = tree_widget_->currentItem();
@@ -183,6 +186,7 @@ void PhasetableWidget::OnUpdateTreeItemSlot(unsigned char id)
 	item->setText(11, str);
 	str = get_phase_ctrled_channels_desc(phase.phase_channel);
     item->setText(12, str);
+    */
 }
 
 void PhasetableWidget::OnCustomContextMenuRequested(QPoint)
@@ -255,9 +259,9 @@ void PhasetableWidget::InitTree()
     tree_widget_->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
 	QHeaderView *header_view = tree_widget_->header();
 	header_view->setDefaultAlignment(Qt::AlignCenter);
-    header_view->setClickable(true);
-    header_view->setSortIndicator(0, Qt::AscendingOrder);
-    header_view->setSortIndicatorShown(true);
+//    header_view->setClickable(true);
+//    header_view->setSortIndicator(0, Qt::AscendingOrder);
+//    header_view->setSortIndicatorShown(true);
 	tree_widget_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 

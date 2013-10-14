@@ -198,6 +198,11 @@ void SyncCommand::ConfigNetwork(const QStringList &net_info, QObject *target, co
     qDebug() << cmd_str << " bytes:" << sz;
 }
 
+void SyncCommand::ConnectConfigNetworkHandler(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+}
+
 void SyncCommand::SetConfiguration(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

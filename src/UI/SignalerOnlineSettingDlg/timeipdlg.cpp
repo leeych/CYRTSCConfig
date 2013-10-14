@@ -61,12 +61,20 @@ void TimeIPDlg::OnRefreshButtonClicked()
 
 void TimeIPDlg::OnWriteIPButtonClicked()
 {
+    int ret = QMessageBox::question(this, STRING_TIP, STRING_UI_SIGNALER_WRITE_IP_REQUEST_TIP, STRING_OK, STRING_NO);
+    if (ret != 0)
+    {
+        return;
+    }
     QStringList param_list;
     QString ip = ip_lineedit_->text().trimmed();
     QString netmask = mask_lineedit_->text().trimmed();
     QString gateway = gateway_lineedit_->text().trimmed();
     param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
+//    disconnect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QAbstractSocket::SocketError)));
+
+    SyncCommand::GetInstance()->connectToHost(ip, 12810);
 }
 
 void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
@@ -165,6 +173,7 @@ void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
 
 void TimeIPDlg::OnConnectEstablish()
 {
+    SyncCommand::GetInstance()->InitParseHandler(this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
 }
 
 void TimeIPDlg::OnConnectError(QAbstractSocket::SocketError)
@@ -194,6 +203,7 @@ void TimeIPDlg::timerEvent(QTimerEvent *)
     }
     if (cmd_timer_id_ != 0)
     {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SERVER_NOT_REPLY);
         EnableButtonExcept(true, NULL);
         killTimer(cmd_timer_id_);
         cmd_timer_id_ = 0;
@@ -259,6 +269,7 @@ void TimeIPDlg::InitSignalSlots()
     connect(sync_time_button_, SIGNAL(clicked()), this, SLOT(OnSyncTimeButtonClicked()));
     connect(refresh_button_, SIGNAL(clicked()), this, SLOT(OnRefreshButtonClicked()));
     connect(write_ip_button_, SIGNAL(clicked()), this, SLOT(OnWriteIPButtonClicked()));
+    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
 }
 
 void TimeIPDlg::UpdateUI()

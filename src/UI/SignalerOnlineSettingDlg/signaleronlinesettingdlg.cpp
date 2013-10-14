@@ -333,6 +333,8 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         QFile file(cfg_file_);
 		if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
+            QMessageBox::warning(this, STRING_WARNING, STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED, STRING_OK);
+            conn_tip_label_->setText(STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED);
             config_byte_array_.clear();
             return;
         }
@@ -346,6 +348,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         else
         {
             dialog_tab_->setEnabled(true);
+            update_button_->setEnabled(true);
             UpdateTabPage();
         }
         file.close();
