@@ -397,6 +397,8 @@
 #define STRING_UI_SIGNALER_CONNECTING_TIP   QObject::tr("Connecting ...")
 #define STRING_UI_SIGNALER_CONN_REJECT      QObject::tr("Connection was rejected by host")
 #define STRING_UI_SIGNALER_CONN_NONE        QObject::tr("Has not connected")
+#define STRING_UI_SIGNALER_READING_CONFIG   QObject::tr("Reading signaler config file...")
+#define STRING_UI_SIGNALER_SERVER_NOT_REPLY QObject::tr("Server has not reply")
 
 #define STRING_UI_SIGNALER_DELETE_FAILED    QObject::tr("Delete signaler from table failed.")
 

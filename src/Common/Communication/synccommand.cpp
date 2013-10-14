@@ -40,14 +40,14 @@ void SyncCommand::ReadSignalerConfigFile(QObject *target, const std::string &slo
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetConfigure.c_str());
-    qDebug() << Command::GetConfigure.c_str() << " bytes: " << sz;
+    qDebug() << Command::GetConfigure.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ReadSignalerTime(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetTSCtime.c_str());
-    qDebug() << Command::GetTSCtime.c_str() << " bytes: " << sz;
+    qDebug() << Command::GetTSCtime.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ReadSignalerNetworkInfo(QObject *target, const std::string &slot)

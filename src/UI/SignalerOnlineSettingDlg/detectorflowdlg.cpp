@@ -38,7 +38,6 @@ DetectorFlowDlg::~DetectorFlowDlg()
 void DetectorFlowDlg::Initialize()
 {
     UpdateUI();
-    resize(640, 420);
     exec();
 }
 

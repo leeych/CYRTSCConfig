@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QTcpSocket>
 #include <QDesktopWidget>
+#include <QTimer>
 //#include "signaleronlinesettingdlg_global.h"
 
 class MDatabase;
@@ -37,6 +38,16 @@ public:
     ~SignalerOnlineSettingDlg();
     void Initialize(const QString &ip, unsigned int port);
 
+    enum SockCmd
+    {
+        Connect = 0,
+        GetVersion,
+        ReadConfig,
+        ReqSetConfig,
+        SendConfig,
+        CmdNone
+    };
+
 signals:
     void updateTabPageSignal(void *);
 
@@ -56,6 +67,7 @@ public slots:
     void OnDisconnectedSlot();
     void OnConnectErrorSlot(QString err);
 
+    void OnCmdTimerTimeoutSlot();
     // cmd call back
     void OnCmdGetVerId(QByteArray &content);
     void OnCmdReadConfig(QByteArray &content);
@@ -82,8 +94,11 @@ private:
 private:
     MDatabase *db_ptr_;
     SyncCommand *sync_cmd_;
-    EventLogHandler *handler_;
     QTcpSocket *socket_;
+    EventLogHandler *handler_;
+    QTimer *cmd_timer_;
+
+    SockCmd curr_cmd_;
 
     QString cfg_file_;
     QString tmp_file_;  // used for send and update config file
@@ -93,6 +108,7 @@ private:
 
     bool is_cfg_read_;
     bool is_ver_correct_;
+//    int cmd_timer_id_;  // used for socket cmd has no reply
     int ver_check_id_;  // check version
     int ui_lock_id_;    // enable ui except for buttons
 
