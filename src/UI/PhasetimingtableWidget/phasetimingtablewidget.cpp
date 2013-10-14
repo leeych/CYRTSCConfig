@@ -279,7 +279,7 @@ void PhasetimingtableWidget::AddChild(QTreeWidgetItem *item, unsigned char phase
 	QList<PhaseTiming> phase_timing_list = handler_->get_phasetiming_list(phase_timing_id);
 	for (int i = 0; i < phase_timing_list.size(); i++)
 	{
-		item_sub = new QTreeWidgetItem;
+        item_sub = new QTreeWidgetItem;
 		str.sprintf("%d", phase_timing_list.at(i).phase_timing_id);
 		item_sub->setText(0, str);
 		item_sub->setTextAlignment(0, Qt::AlignCenter);

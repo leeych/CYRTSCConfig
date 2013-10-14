@@ -6,6 +6,7 @@ SignalerHandler::SignalerHandler()
     QString dir;
     MUtility::getMainDir(dir);
     file_name_ = dir + "/user/xml/signaler.xml";
+    manager_ = NULL;
 }
 
 SignalerHandler::~SignalerHandler()

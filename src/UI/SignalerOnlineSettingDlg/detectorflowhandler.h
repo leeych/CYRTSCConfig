@@ -61,7 +61,7 @@ private:
     static bool less_than(const DetectorFlowInfo &lhs, const DetectorFlowInfo &rhs);
 
 private:
-    DetectorData_t *data_info_;
+//    DetectorData_t *data_info_;
     QList<DetectorFlowInfo> detector_list_;
 };
 

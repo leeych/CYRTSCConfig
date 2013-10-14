@@ -290,7 +290,7 @@ void DetectorFlowDlg::UpdateFlowInfoTree(const QList<DetectorFlowInfo> &flow_lis
 
 void DetectorFlowDlg::SetDetectorFlow(unsigned char detector_id)
 {
-    if (detector_id <= 0 || detector_id > MAX_DETECTOR)
+    if (detector_id == 0 || detector_id > MAX_DETECTOR)
     {
         return;
     }

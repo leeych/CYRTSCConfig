@@ -4,6 +4,7 @@
 ScheduleHandler::ScheduleHandler()
 {
     db_ = MDatabase::GetInstance();
+    schedule_num_ = 0;
 }
 
 ScheduleHandler::~ScheduleHandler()

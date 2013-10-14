@@ -70,7 +70,7 @@ void UnitparamtableWidget::InitPage()
 {
     // QLabel* signaler_ip_label = new QLabel(STRING_UI_UNIT_SIGNAL_IP + ":");
     QLabel* server_ip_label = new QLabel(STRING_UI_UNIT_SERVER_IP + ":");
-    QLabel* server_port_label = new QLabel(STRING_UI_UNIT_SERVER_PORT + ":");
+//    QLabel* server_port_label = new QLabel(STRING_UI_UNIT_SERVER_PORT + ":");
     QLabel* flash_time_label = new QLabel(STRING_UI_UNIT_FLASH_TIME + ":");
     QLabel* allred_time_label = new QLabel(STRING_UI_UNIT_ALL_RED + ":");
     QLabel* curr_status_label = new QLabel(STRING_UI_UNIT_SIGNALER_STATUS + ":");
@@ -92,10 +92,10 @@ void UnitparamtableWidget::InitPage()
     server_ip_lineedit_->setInputMask("000.000.000.000");
     server_ip_lineedit_->setAlignment(Qt::AlignCenter);
 
-    server_port_lineedit_ = new QLineEdit(this);
-    QIntValidator *int_validator = new QIntValidator(1025, 100000);
-    server_port_lineedit_->setValidator(int_validator);
-    server_port_lineedit_->setAlignment(Qt::AlignCenter);
+//    server_port_lineedit_ = new QLineEdit(this);
+//    QIntValidator *int_validator = new QIntValidator(1025, 100000);
+//    server_port_lineedit_->setValidator(int_validator);
+//    server_port_lineedit_->setAlignment(Qt::AlignCenter);
 
     flash_time_spinbox_ = new QSpinBox(this);
     all_red_time_spinbox_ = new QSpinBox(this);
@@ -223,7 +223,7 @@ void UnitparamtableWidget::InitPage()
 	font_setting_list_.append(other_signal_rbt_);
 
 	font_setting_list_.append(server_ip_label);
-	font_setting_list_.append(server_port_label);
+//	font_setting_list_.append(server_port_label);
 	font_setting_list_.append(flash_time_label);
 	font_setting_list_.append(allred_time_label);
 	font_setting_list_.append(curr_status_label);
@@ -267,12 +267,12 @@ void UnitparamtableWidget::UpdateUI()
     memset(&param, 0x00, sizeof(param));
     handler_->get_unitparam(param);
     server_ip_lineedit_->setEnabled(false);
-    server_port_lineedit_->setEnabled(false);
+//    server_port_lineedit_->setEnabled(false);
     QHostInfo host_info = QHostInfo::fromName(QHostInfo::localHostName());
     QHostAddress address = host_info.addresses().first();
     QString str = address.toString();
     server_ip_lineedit_->setText(str);
-    server_port_lineedit_->setText("12810");
+//    server_port_lineedit_->setText("12810");
     flash_time_spinbox_->setValue(param.StartUpFlash);
     all_red_time_spinbox_->setValue(param.StartUpRed);
 }

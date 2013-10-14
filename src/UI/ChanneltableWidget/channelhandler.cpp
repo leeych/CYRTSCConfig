@@ -29,11 +29,6 @@ void ChannelHandler::init()
     qSort(channel_list_.begin(), channel_list_.end(), channel_less_than);
 }
 
-unsigned char ChannelHandler::get_current_channel_id()
-{
-    return current_channel_id_;
-}
-
 bool ChannelHandler::get_channel(unsigned char channel_id, ChannelParam& channel)
 {
     int idx = index_of_channel_list(channel_id);

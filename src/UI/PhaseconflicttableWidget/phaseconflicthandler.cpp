@@ -27,7 +27,7 @@ void PhaseconflictHandler::init()
 
 void PhaseconflictHandler::set_phase_conflict(unsigned char phase_id, unsigned int conflict_ids)
 {
-    if (phase_id <= 0)
+    if (phase_id == 0)
     {
         return;
     }

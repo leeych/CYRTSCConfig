@@ -536,8 +536,7 @@ QList<PhaseParam> MDatabase::get_phase_table()
 QList<ChannelParam> MDatabase::get_channel_table()
 {
     QList<ChannelParam> channel_list;
-	int index = -1;
-    for (int i = 0; i < channel_table_.FactChannelNum; i++)
+    for (int index = -1, i = 0; i < channel_table_.FactChannelNum; i++)
     {
         ChannelParam channel;
         channel.channel_id = channel_table_.ChannelList[i].ChannelId;
@@ -586,9 +585,8 @@ QList<DetectorParam> MDatabase::get_detector_table()
     detector_list.clear();
 	detector_list = QList<DetectorParam>::fromStdList(std_detector_list);
 
-    int index = -1;
     DetectorParam detector_tmp;
-    for (int i = 0; i < detector_table_.FactDetectorNum; i++)
+    for (int i = 0, index = -1; i < detector_table_.FactDetectorNum; i++)
     {
         detector_tmp.detector_id = detector_table_.DetectorList[i].DetectorId;
         detector_tmp.detector_type = detector_table_.DetectorList[i].DetectorType;

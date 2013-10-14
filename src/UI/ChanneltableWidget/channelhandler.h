@@ -16,7 +16,6 @@ public:
     void reset_database();
 
     void init();
-    unsigned char get_current_channel_id();
     bool get_channel(unsigned char channel_id, ChannelParam&);
     void set_channel(unsigned char channel_id, const ChannelParam& channel);
 
@@ -34,7 +33,6 @@ private:
 	static bool channel_less_than(const ChannelParam &left, const ChannelParam &right);
 
 private:
-    unsigned char current_channel_id_;
     MDatabase* db_;
     QList<ChannelParam> channel_list_;
 };
