@@ -6,8 +6,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QDateTime>
-
 #include <QTcpSocket>
+#include <QTimer>
 
 class TimeIPDlg : public QDialog
 {
@@ -16,6 +16,13 @@ public:
     explicit TimeIPDlg(QWidget *parent = 0);
     ~TimeIPDlg();
     void Initialize();
+
+    enum CurrentCmd
+    {
+        ReadNetwork = 0,
+        WriteNetwork,
+        NoneCmd
+    };
     
 signals:
     
@@ -25,6 +32,7 @@ public slots:
     void OnRefreshButtonClicked();
     void OnWriteIPButtonClicked();
 
+    void OnCmdTimerTimeoutSlot();
     // cmd callback
     void OnCmdReadTscTime(QByteArray &array_content);
     void OnCmdReadNetworkingInfo(QByteArray &content);
@@ -51,8 +59,9 @@ private:
     QString dialog_name_;
     QList<QPushButton *> button_list_;
     QDateTime signaler_time_;
+    QTimer *cmd_timer_;
     int timer_id_;
-    int cmd_timer_id_;
+    CurrentCmd curr_cmd_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

@@ -45,7 +45,7 @@ public:
         ReadConfig,
         ReqSetConfig,
         SendConfig,
-        CmdNone
+        NoneCmd
     };
 
 signals:

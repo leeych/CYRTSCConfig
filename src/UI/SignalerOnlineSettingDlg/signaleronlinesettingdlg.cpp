@@ -44,7 +44,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     monitor_dlg_ = new RealtimeMonitorDlg(this);
 
     cmd_timer_ = new QTimer(this);
-    curr_cmd_ = CmdNone;
+    curr_cmd_ = NoneCmd;
 
     conn_status_ = false;
     is_cfg_read_ = false;
@@ -124,15 +124,8 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 {
-    conn_tip_label_->clear();
-    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
-//    if (!file.open(QIODevice::ReadOnly))
-//    {
-//        QMessageBox::information(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
-//        return;
-//    }
-
     conn_tip_label_->setText(STRING_REQUEST_SEND_CFG);
+    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
     UpdateButtonStatus(false);
 //    curr_cmd_ = ReqSetConfig;
 //    cmd_timer_->start(CMD_WAIT_TIME);
@@ -155,19 +148,6 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
     conn_tip_label_->setText(STRING_SOCKET_SEND_CONFIG);
     tmp_file_ = file_name;
     OnUpdateButtonClicked();
-//    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
-//    QFile file(file_name);
-//    if (!file.open(QIODevice::ReadOnly))
-//    {
-//        QMessageBox::information(this, STRING_TIP, STRING_UI_OPEN_FILE + STRING_FAILED, STRING_OK);
-//        conn_tip_label_->clear();
-//        return;
-//    }
-//    QByteArray array = file.readAll();
-//    file.close();
-//    SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
-//    curr_cmd_ = SendConfig;
-//    cmd_timer_->start(CMD_WAIT_TIME);
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
@@ -196,7 +176,7 @@ void SignalerOnlineSettingDlg::OnFlowButtonClicked()
 void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 {
     conn_tip_label_->clear();
-    time_ip_dlg_->resize(420, 300);
+    time_ip_dlg_->resize(420, 260);
     time_ip_dlg_->move((desktop_->width()-time_ip_dlg_->width())/2, (desktop_->height()-time_ip_dlg_->height())/2);
     time_ip_dlg_->Initialize();
 }
@@ -301,13 +281,14 @@ void SignalerOnlineSettingDlg::OnCmdTimerTimeoutSlot()
         ;
     case SendConfig:
         ;
-    case CmdNone:
+    case NoneCmd:
         conn_tip_label_->setText(STRING_UI_SIGNALER_SERVER_NOT_REPLY);
         UpdateButtonStatus(true);
         break;
     default:
         break;
     }
+    curr_cmd_ = NoneCmd;
     cmd_timer_->stop();
 }
 
@@ -385,6 +366,7 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
         }
         QByteArray array = file.readAll();
         file.close();
+        conn_tip_label_->setText(STRING_SOCKET_SEND_CONFIG);
         SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
         return;
     }
@@ -460,7 +442,7 @@ void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
     {
         OnConnectedSlot();
     }
-    else if (ui_lock_id_ != 0)
+    if (ui_lock_id_ != 0)
     {
         QMessageBox::information(this, STRING_TIP, STRING_SOCKET_TIMEOUT, STRING_OK);
         UpdateButtonStatus(true);
@@ -468,11 +450,6 @@ void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
     }
-//    else if (cmd_timer_id_ != 0)
-//    {
-//        killTimer(cmd_timer_id_);
-//        cmd_timer_id_ = 0;
-//    }
 }
 
 void SignalerOnlineSettingDlg::InitPage()

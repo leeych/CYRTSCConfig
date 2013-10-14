@@ -14,7 +14,8 @@ TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
 {
     timer_id_ = 0;
-    cmd_timer_id_ = 0;
+    cmd_timer_ = new QTimer(this);
+    curr_cmd_ = NoneCmd;
     InitPage();
     InitSignalSlots();
 }
@@ -26,10 +27,10 @@ TimeIPDlg::~TimeIPDlg()
         killTimer(timer_id_);
         timer_id_ = 0;
     }
-    if (cmd_timer_id_ != 0)
+    if (cmd_timer_ != NULL)
     {
-        killTimer(cmd_timer_id_);
-        cmd_timer_id_ = 0;
+        delete cmd_timer_;
+        cmd_timer_ = NULL;
     }
 }
 
@@ -56,7 +57,8 @@ void TimeIPDlg::OnRefreshButtonClicked()
 {
     SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(QByteArray&)));
     EnableButtonExcept(false, NULL);
-    cmd_timer_id_ = startTimer(3000);
+    curr_cmd_ = ReadNetwork;
+    cmd_timer_->start(30000);
 }
 
 void TimeIPDlg::OnWriteIPButtonClicked()
@@ -72,9 +74,28 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     QString gateway = gateway_lineedit_->text().trimmed();
     param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
-//    disconnect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QAbstractSocket::SocketError)));
-
+    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
     SyncCommand::GetInstance()->connectToHost(ip, 12810);
+    curr_cmd_ = WriteNetwork;
+    cmd_timer_->start(30000);
+}
+
+void TimeIPDlg::OnCmdTimerTimeoutSlot()
+{
+    switch (curr_cmd_)
+    {
+    case ReadNetwork:
+        break;
+    case WriteNetwork:
+        break;
+    case NoneCmd:
+        break;
+    default:
+        break;
+    }
+    QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SERVER_NOT_REPLY, STRING_OK);
+    curr_cmd_ = NoneCmd;
+    cmd_timer_->stop();
 }
 
 void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
@@ -105,6 +126,7 @@ void TimeIPDlg::OnCmdReadNetworkingInfo(QByteArray &content)
     QString network(content.data());
     if (network.left(4) != QString("CYT8") || network.right(3) != QString("END"))
     {
+        QMessageBox::information(this, STRING_TIP, STRING_PACKAGE_INCORRECT, STRING_OK);
         return;
     }
 
@@ -140,12 +162,12 @@ void TimeIPDlg::OnCmdSyncSignalerTime(QByteArray &array_content)
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_SYNC_TIME_NULL + STRING_FAILED, STRING_OK);
         return;
     }
-    if (array_content == "TIMECFGOK")
+    if (array_content.contains("TIMECFGOK"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SYNC_TIME + STRING_SUCCEEDED, STRING_OK);
         return;
     }
-    if (array_content == "TIMECFGER")
+    if (array_content.contains("TIMECFGER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SYNC_TIME + STRING_FAILED, STRING_OK);
         return;
@@ -157,18 +179,16 @@ void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
     if (array_content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_NETWORK_CFG_NULL, STRING_OK);
-        return;
     }
-    if (array_content == "NETSETOK")
+    else if (array_content.contains("NETSETOK"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_NETWORK + STRING_SUCCEEDED, STRING_OK);
-        return;
     }
-    if (array_content == "NETSETER")
+    else if (array_content.contains("NETSETER"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_NETWORK + STRING_FAILED, STRING_OK);
-        return;
     }
+    disconnect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
 }
 
 void TimeIPDlg::OnConnectEstablish()
@@ -192,6 +212,7 @@ void TimeIPDlg::closeEvent(QCloseEvent *)
         killTimer(timer_id_);
         timer_id_ = 0;
     }
+    cmd_timer_->stop();
 }
 
 void TimeIPDlg::timerEvent(QTimerEvent *)
@@ -200,13 +221,6 @@ void TimeIPDlg::timerEvent(QTimerEvent *)
     {
         signaler_time_ = signaler_time_.addSecs(1);
         sys_time_text_label_->setText(signaler_time_.toString("yyyy-MM-dd hh:mm:ss ddd"));
-    }
-    if (cmd_timer_id_ != 0)
-    {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SERVER_NOT_REPLY);
-        EnableButtonExcept(true, NULL);
-        killTimer(cmd_timer_id_);
-        cmd_timer_id_ = 0;
     }
 }
 
@@ -258,6 +272,8 @@ void TimeIPDlg::InitPage()
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addWidget(time_grp);
     vlayout->addWidget(network_grp);
+    vlayout->setStretch(0, 1);
+    vlayout->setStretch(1, 2);
     setLayout(vlayout);
 
     setWindowFlags(this->windowFlags() & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);
@@ -269,7 +285,8 @@ void TimeIPDlg::InitSignalSlots()
     connect(sync_time_button_, SIGNAL(clicked()), this, SLOT(OnSyncTimeButtonClicked()));
     connect(refresh_button_, SIGNAL(clicked()), this, SLOT(OnRefreshButtonClicked()));
     connect(write_ip_button_, SIGNAL(clicked()), this, SLOT(OnWriteIPButtonClicked()));
-    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
+    connect(cmd_timer_, SIGNAL(timeout()), this, SLOT(OnCmdTimerTimeoutSlot()));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
 }
 
 void TimeIPDlg::UpdateUI()
