@@ -164,7 +164,7 @@ void PhasetimingtableWidget::InitPage()
 {
     InitTree();
     InitContextMenu();
-    buttons_widget_ = new BottomButtonsWidget;
+    buttons_widget_ = new BottomButtonsWidget(this);
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->addWidget(tree_widget_);
     vlayout->addWidget(buttons_widget_);
@@ -192,7 +192,7 @@ void PhasetimingtableWidget::InitSignalSlots()
 
 void PhasetimingtableWidget::InitTree()
 {
-    tree_widget_ = new QTreeWidget;
+    tree_widget_ = new QTreeWidget(this);
     tree_widget_->setColumnCount(7);
     QStringList header;
     header << STRING_UI_PHASETIMING_ID << STRING_UI_PHASE_TIMING_STAGE << STRING_UI_PHASETIMING_RELEASE_ID << STRING_UI_PHASETIMING_GREEN_TIME << STRING_UI_PHASETIMING_YELLOW_TIME

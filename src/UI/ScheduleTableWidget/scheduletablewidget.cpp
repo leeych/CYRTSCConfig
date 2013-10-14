@@ -166,7 +166,7 @@ void ScheduleTableWidget::InitPage()
 {
     InitContextMenu();
     InitTable();
-    buttons_widget_ = new BottomButtonsWidget;
+    buttons_widget_ = new BottomButtonsWidget(this);
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->addWidget(schedule_table_);
     vlayout->addWidget(buttons_widget_);
@@ -194,7 +194,7 @@ void ScheduleTableWidget::InitSignalSlots()
 
 void ScheduleTableWidget::InitTable()
 {
-    schedule_table_ = new QTableWidget;
+    schedule_table_ = new QTableWidget(this);
     schedule_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     schedule_table_->setSelectionBehavior(QTableWidget::SelectRows);
     schedule_table_->setSelectionMode(QAbstractItemView::SingleSelection);

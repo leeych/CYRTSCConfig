@@ -84,7 +84,7 @@ void UnitparamtableWidget::InitPage()
 	curr_status_label->setFont(font);
 */
     // signal_ip_lineedit_ = new QLineEdit;
-    server_ip_lineedit_ = new QLineEdit;
+    server_ip_lineedit_ = new QLineEdit(this);
     QRegExp ipreg("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-4]|[01]?\\d\\d?)");
     QRegExpValidator *pIpValidator = new QRegExpValidator(ipreg);
     //signal_ip_lineedit_->setValidator(pIpValidator);
@@ -92,13 +92,13 @@ void UnitparamtableWidget::InitPage()
     server_ip_lineedit_->setInputMask("000.000.000.000");
     server_ip_lineedit_->setAlignment(Qt::AlignCenter);
 
-    server_port_lineedit_ = new QLineEdit;
+    server_port_lineedit_ = new QLineEdit(this);
     QIntValidator *int_validator = new QIntValidator(1025, 100000);
     server_port_lineedit_->setValidator(int_validator);
     server_port_lineedit_->setAlignment(Qt::AlignCenter);
 
-    flash_time_spinbox_ = new QSpinBox;
-    all_red_time_spinbox_ = new QSpinBox;
+    flash_time_spinbox_ = new QSpinBox(this);
+    all_red_time_spinbox_ = new QSpinBox(this);
 	
 	flash_time_spinbox_->setMinimumWidth(120);
 	all_red_time_spinbox_->setMinimumWidth(120);
@@ -106,7 +106,7 @@ void UnitparamtableWidget::InitPage()
     flash_time_spinbox_->setRange(0, 255);
     all_red_time_spinbox_->setRange(0, 255);
 
-    signal_status_cmb_ = new QComboBox;
+    signal_status_cmb_ = new QComboBox(this);
     signal_status_cmb_->addItem(STRING_UI_UNIT_AUTO_CONTORL);
 
     QGridLayout* gllayout = new QGridLayout;

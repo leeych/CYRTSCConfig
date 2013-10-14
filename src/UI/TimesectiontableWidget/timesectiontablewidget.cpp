@@ -196,7 +196,7 @@ void TimesectiontableWidget::InitPage()
 {
     InitTree();
     InitContextMenu();
-    buttons_widget_ = new BottomButtonsWidget;
+    buttons_widget_ = new BottomButtonsWidget(this);
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->addWidget(section_tree_widget_);
     vlayout->addWidget(buttons_widget_);
@@ -224,7 +224,7 @@ void TimesectiontableWidget::InitSignalSlots()
 
 void TimesectiontableWidget::InitTree()
 {
-    section_tree_widget_ = new QTreeWidget;
+    section_tree_widget_ = new QTreeWidget(this);
     section_tree_widget_->setColumnCount(7);
     QStringList header;
     header << STRING_UI_TIMESECTION_ID << STRING_UI_TIMESECTION_EVENT_ID << STRING_UI_TIMESECTION_TIME << STRING_UI_TIMESECTION_CTRL_MODE
@@ -269,7 +269,7 @@ void TimesectiontableWidget::AddChild(QTreeWidgetItem* item, unsigned char time_
     QList<TimeSection> time_section_list = handler_->get_timesection_list(time_section_id);
     for (int i = 0;i < time_section_list.size(); i++)
     {
-        item_sub = new QTreeWidgetItem;
+        item_sub = new QTreeWidgetItem(section_tree_widget_);
         str.sprintf("%d", time_section_list.at(i).time_section_id);
         item_sub->setText(0, str);
         item_sub->setTextAlignment(0, Qt::AlignCenter);
@@ -374,11 +374,6 @@ QString TimesectiontableWidget::get_ctrl_mode_desc(unsigned char ctrl_mode)
 
 TimesectiontableWidget::~TimesectiontableWidget()
 {
-    if (timesection_edit_dlg_ != NULL)
-    {
-        delete timesection_edit_dlg_;
-        timesection_edit_dlg_ = NULL;
-    }
     if (handler_ != NULL)
     {
         delete handler_;
