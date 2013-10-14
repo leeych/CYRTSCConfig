@@ -369,6 +369,12 @@ void SignalerOnlineSettingDlg::OnCmdSetConfig(QByteArray &content)
             return;
         }
         QByteArray array = file.readAll();
+        unsigned sz = array.size() + 11;
+        char temp[4] = {'\0'};
+        memcpy(temp, &sz, 4);
+        array.insert(0, "CYT4");
+        array.insert(4, temp, 4);
+        array.append("END");
         file.close();
         conn_tip_label_->setText(STRING_SOCKET_SEND_CONFIG);
         SyncCommand::GetInstance()->SendConfigData(array, this, SLOT(OnCmdSendConfig(QByteArray&)));
