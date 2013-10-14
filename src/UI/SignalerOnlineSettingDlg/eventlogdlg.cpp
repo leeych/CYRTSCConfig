@@ -31,7 +31,6 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     handler_ = handler;
     tip_label_->clear();
     UpdateUI();
-    resize(640, 420);
     exec();
 }
 

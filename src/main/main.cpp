@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     dir += "icon.png";
     window.setWindowIcon(QIcon(dir));
 
+	window.setMinimumSize(800, 500);
     QDesktopWidget *desktop = QApplication::desktop();
     window.move((desktop->width() - window.width())/2,(desktop->height() - window.height())/2);
     window.show();

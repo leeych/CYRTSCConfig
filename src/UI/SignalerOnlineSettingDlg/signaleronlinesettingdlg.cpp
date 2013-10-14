@@ -144,8 +144,9 @@ void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 
 void SignalerOnlineSettingDlg::OnLogButtonClicked()
 {
+	event_log_dlg_->resize(640, 420);
+	event_log_dlg_->move((desktop_->width()-event_log_dlg_->width())/2, (desktop_->height()-event_log_dlg_->height())/2);
     event_log_dlg_->Initialize(ip_, handler_);
-    event_log_dlg_->move((desktop_->width()-event_log_dlg_->width())/2, (desktop_->height()-event_log_dlg_->height())/2);
 }
 
 void SignalerOnlineSettingDlg::OnFlowButtonClicked()

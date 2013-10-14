@@ -152,10 +152,10 @@ void SignalerStatusWidget::OnTableCellDoubleClicked(int row, int col)
     if (signaler_online_dlg_ == NULL)
     {
         return;
-    }
+	}
+	QDesktopWidget *desktop = QApplication::desktop();
+	signaler_edit_dlg_->move((desktop->width()-signaler_edit_dlg_->size().width())/2,(desktop->height()-signaler_edit_dlg_->size().height())/2);
     signaler_edit_dlg_->Initialize(id, handler_);
-    QDesktopWidget *desktop = QApplication::desktop();
-    signaler_edit_dlg_->move((desktop->width()-signaler_edit_dlg_->width())/2,(desktop->height()-signaler_edit_dlg_->height())/2);
 }
 
 void SignalerStatusWidget::OnTableRowUpdateSlot(int)
