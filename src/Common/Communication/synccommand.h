@@ -8,7 +8,7 @@
 #define CONNECT_WAIT_TIME   (2000)
 #define WRITE_WAIT_TIME     (30000)
 #define READ_WAIT_TIME      (30000)
-#define VERSION_CHECK_TIME  (1000)
+#define VERSION_CHECK_TIME  (3000)
 
 #define REPLY_HEAD_FIX      ("CYT")
 

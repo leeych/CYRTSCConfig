@@ -436,6 +436,7 @@
 
 #define STRING_UI_SIGNALER_EVENT_READ_LOG       QObject::tr("Update eventlog")
 #define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
+#define STRING_UI_SIGNALER_EVENT_REMOVING       QObject::tr("Clearing selected event...")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
 #define STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED      QObject::tr("Export log file failed")

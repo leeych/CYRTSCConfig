@@ -7,7 +7,6 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>
-
 #include <QFile>
 #include <QFileDialog>
 
@@ -41,6 +40,13 @@ void EventLogDlg::OnReadLogButtonClicked()
 
 void EventLogDlg::OnDeleteEventButtonClicked()
 {
+    tip_label_->clear();
+    QTreeWidgetItem *item = event_tree_->currentItem();
+    if (item == NULL)
+    {
+        return;
+    }
+    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
     if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_TYPE_ERR, STRING_OK);
@@ -57,10 +63,12 @@ void EventLogDlg::OnDeleteEventButtonClicked()
     }
     this->setEnabled(true);
     SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
+    tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_REMOVING + "</font>");
 }
 
 void EventLogDlg::OnExportLogButtonClicked()
 {
+    tip_label_->clear();
     QString dir;
     MUtility::getLogDir(dir);
     QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, dir + ip_ + ".log" , "Log(*.log);;All File(*.*)");
@@ -74,11 +82,12 @@ void EventLogDlg::OnExportLogButtonClicked()
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_LOG_FAILED, STRING_OK);
         return;
     }
-    tip_label_->setText(STRING_UI_SIGNALER_EVENT_EXPORT_LOG + STRING_SUCCEEDED);
+    tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_EXPORT_LOG + STRING_SUCCEEDED + "</font>");
 }
 
 void EventLogDlg::OnExportReportButtonClicked()
 {
+    tip_label_->clear();
     QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/" + ip_ + ".html", "Html(*.html);;All File(*.*)");
     if (report_file.isNull() || report_file.isEmpty())
     {
@@ -90,7 +99,7 @@ void EventLogDlg::OnExportReportButtonClicked()
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_LOG_EXPORT_HTML_FAILED, STRING_OK);
         return;
     }
-    tip_label_->setText(STRING_UI_SIGNALER_EVENT_EXPORT_REPORT + STRING_SUCCEEDED);
+    tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_EXPORT_REPORT + STRING_SUCCEEDED + "</font>");
 }
 
 void EventLogDlg::OnEventTypeTreeItemSelected(QTreeWidgetItem *item, int col)
@@ -99,9 +108,9 @@ void EventLogDlg::OnEventTypeTreeItemSelected(QTreeWidgetItem *item, int col)
     {
         return;
     }
-//    curr_event_type_id_ = item->text(0).trimmed().toInt();
     QString desc = item->text(0).trimmed();
     curr_event_type_id_ = handler_->get_event_type_id_by_desc(desc);
+    remove_event_button_->setEnabled(true);
 }
 
 void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
@@ -120,17 +129,17 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
 {
     if (array.isEmpty())
     {
+        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED);
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_SOCKET_NULL, STRING_OK);
         event_log_array_.clear();
-        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED);
         return;
     }
     event_log_array_.append(array);
     if (event_log_array_.contains("EVENTLOGER"))
     {
+        tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED + "</font>");
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_FAILED, STRING_OK);
         event_log_array_.clear();
-        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_FAILED);
         return;
     }
 
@@ -138,7 +147,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     {
         ParseEventLogArray(event_log_array_);
         event_log_array_.clear();
-        tip_label_->setText(STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED);
+        tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED + "</font>");
         UpdateUI();
     }
 }
@@ -151,8 +160,8 @@ void EventLogDlg::OnCmdClearEventLog(QByteArray &array)
         return;
     }
     // TODO: is there any return value left to be determined
-    tip_label_->setText(STRING_UI_SIGNALER_EVENT_LOG_DELETE_LOG + STRING_SUCCEEDED);
-//    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
+    tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_LOG_DELETE_LOG + STRING_SUCCEEDED + "</font>");
+    SyncCommand::GetInstance()->ReadEventLogFile(this, SLOT(OnCmdReadEventLog(QByteArray&)));
 }
 
 void EventLogDlg::InitPage()
@@ -216,6 +225,11 @@ void EventLogDlg::InitSignalSlots()
     connect(export_report_button_, SIGNAL(clicked()), this, SLOT(OnExportReportButtonClicked()));
     connect(event_tree_, SIGNAL(itemPressed(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemSelected(QTreeWidgetItem*,int)));
     connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
+
+//    connect(read_log_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
+//    connect(remove_event_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
+//    connect(export_log_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
+//    connect(export_report_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
 }
 
 void EventLogDlg::UpdateEventDetailTree()
@@ -268,6 +282,17 @@ void EventLogDlg::UpdateUI()
     handler_->init_from_file(file_name_);
     UpdateEventTypeTree();
     UpdateEventDetailTree();
+    QTreeWidgetItem *item = event_tree_->currentItem();
+    if (item == NULL)
+    {
+        remove_event_button_->setEnabled(false);
+        return;
+    }
+    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
+    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
+    {
+        remove_event_button_->setEnabled(false);
+    }
 }
 
 void EventLogDlg::UpdateEventTypeTree()

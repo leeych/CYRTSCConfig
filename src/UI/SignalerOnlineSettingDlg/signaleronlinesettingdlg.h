@@ -90,6 +90,8 @@ private:
 
     void EnableDialogs(bool enable);
     bool ParseConfigArray(QByteArray &byte_array);
+    bool SaveTabPageData();
+    bool SaveTempConfigFile();
 
 private:
     MDatabase *db_ptr_;

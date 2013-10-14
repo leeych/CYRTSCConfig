@@ -124,11 +124,16 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
 
 void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 {
+    if (!SaveTempConfigFile())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+        return;
+    }
+    conn_tip_label_->clear();
     conn_tip_label_->setText(STRING_REQUEST_SEND_CFG);
+    tmp_file_ = cfg_file_;
     SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
     UpdateButtonStatus(false);
-//    curr_cmd_ = ReqSetConfig;
-//    cmd_timer_->start(CMD_WAIT_TIME);
     ui_lock_id_ = startTimer(READ_WAIT_TIME);
 }
 
@@ -147,7 +152,11 @@ void SignalerOnlineSettingDlg::OnSendButtonClicked()
     }
     conn_tip_label_->setText(STRING_SOCKET_SEND_CONFIG);
     tmp_file_ = file_name;
-    OnUpdateButtonClicked();
+//    OnUpdateButtonClicked();
+    conn_tip_label_->setText(STRING_REQUEST_SEND_CFG);
+    SyncCommand::GetInstance()->SetConfiguration(this, SLOT(OnCmdSetConfig(QByteArray&)));
+    UpdateButtonStatus(false);
+    ui_lock_id_ = startTimer(READ_WAIT_TIME);
 }
 
 void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
@@ -183,21 +192,11 @@ void SignalerOnlineSettingDlg::OnSettingButtonClicked()
 
 void SignalerOnlineSettingDlg::OnSaveAsbuttonClicked()
 {
-    bool u_status = unitparam_widget_->OnOkButtonClicked();
-    if (!u_status)
+    if (!SaveTabPageData())
     {
         return;
     }
-    schedule_widget_->OnSaveActionClicked();
-    timesection_widget_->OnSaveActionClicked();
-    stage_timing_widget_->OnSaveActionClicked();
-    timing_widget_->OnSaveActionClicked();
-    phase_err_widget_->OnSaveButtonClicked();
-    phase_widget_->OnSaveActionClicked();
-    channel_widget_->OnSaveActionClicked();
-    detector_widget_->OnSaveActionClicked();
-
-    QString file_name = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "user/config/cy_tsc.dat", "Data(*.dat);;All File(*.*)");
+    QString file_name = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "data/cy_tsc.dat", "Data(*.dat);;All File(*.*)");
     if (file_name.isNull() || file_name.isEmpty())
     {
         return;
@@ -226,10 +225,10 @@ void SignalerOnlineSettingDlg::OnConnectedSlot()
     sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(QByteArray&)));
     conn_button_->setEnabled(true);
     EnableDialogs(true);
-//    if (ver_check_id_ == 0)
-//    {
-//        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
-//    }
+    if (ver_check_id_ == 0)
+    {
+        ver_check_id_ = startTimer(VERSION_CHECK_TIME);
+    }
 }
 
 void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
@@ -294,6 +293,8 @@ void SignalerOnlineSettingDlg::OnCmdTimerTimeoutSlot()
 
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
+    curr_cmd_ = NoneCmd;
+    cmd_timer_->stop();
     if (content.isEmpty())
     {
         conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_READ_FILE_FAILED + "</font>");
@@ -421,21 +422,20 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
     }
     if (content.contains("CONFIGOK"))
     {
+        conn_tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_CONFIG + STRING_SUCCEEDED + "</font>");
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_SUCCEEDED, STRING_OK);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
-        conn_tip_label_->clear();
-        return;
+        UpdateTabPage();
     }
-    if (content.contains("CONFIGER"))
+    else if (content.contains("CONFIGER"))
     {
+        conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_CONFIG + STRING_FAILED + "</font>");
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_CONFIG + STRING_FAILED, STRING_OK);
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
         UpdateButtonStatus(true);
-        conn_tip_label_->clear();
-        return;
     }
 }
 
@@ -553,7 +553,8 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
 
 void SignalerOnlineSettingDlg::InitTabPage()
 {
-    QFont font(STRING_FONT_SONGTI, 11);
+    QFont font;
+    font.setPixelSize(11);
     dialog_tab_ = new MTabWidget(this);
     dialog_tab_->setTabBarFont(font);
 
@@ -685,5 +686,41 @@ bool SignalerOnlineSettingDlg::ParseConfigArray(QByteArray &byte_array)
     byte_array.remove(0, 4);    // remove content length
     int index = byte_array.indexOf("END");
     byte_array.remove(index, sizeof("END"));
+    return true;
+}
+
+bool SignalerOnlineSettingDlg::SaveTabPageData()
+{
+    bool status = unitparam_widget_->OnOkButtonClicked();
+    if (!status)
+    {
+        return false;
+    }
+    schedule_widget_->OnSaveActionClicked();
+    timesection_widget_->OnSaveActionClicked();
+    stage_timing_widget_->OnSaveActionClicked();
+    timing_widget_->OnSaveActionClicked();
+    phase_err_widget_->OnSaveButtonClicked();
+    phase_widget_->OnSaveActionClicked();
+    channel_widget_->OnSaveActionClicked();
+    detector_widget_->OnSaveActionClicked();
+    return true;
+}
+
+bool SignalerOnlineSettingDlg::SaveTempConfigFile()
+{
+    if (!SaveTabPageData())
+    {
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED, STRING_OK);
+        return false;
+    }
+    FileReaderWriter writer;
+    writer.InitDatabase(db_ptr_);
+    bool status = writer.WriteFile(cfg_file_.toStdString().c_str());
+    if (!status)
+    {
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED, STRING_OK);
+        return false;
+    }
     return true;
 }
