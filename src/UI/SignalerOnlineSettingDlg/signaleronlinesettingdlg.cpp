@@ -299,6 +299,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         conn_tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_READ_FILE_FAILED + "</font>");
         config_byte_array_.clear();
         QFile::remove(cfg_file_);
+        UpdateButtonStatus(true);
         return;
     }
     config_byte_array_.append(content);
@@ -317,6 +318,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED, STRING_OK);
             conn_tip_label_->setText(STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED);
             config_byte_array_.clear();
+            UpdateButtonStatus(true);
             return;
         }
         qint64 sz = file.write(config_byte_array_);
@@ -329,9 +331,11 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
         else
         {
             dialog_tab_->setEnabled(true);
-            update_button_->setEnabled(true);
+            is_cfg_read_ = true;
+            UpdateButtonStatus(true);
             UpdateTabPage();
         }
+        UpdateButtonStatus(true);
         file.close();
     }
     else

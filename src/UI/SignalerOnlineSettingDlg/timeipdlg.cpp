@@ -49,6 +49,7 @@ void TimeIPDlg::OnSyncTimeButtonClicked()
 {
     QDateTime datetime = QDateTime::currentDateTime();
     unsigned int seconds = datetime.toTime_t();
+    seconds += 60*60*8;
     SyncCommand::GetInstance()->SyncSignalerTime(seconds, this, SLOT(OnCmdSyncSignalerTime(QByteArray&)));
     sync_time_button_->setEnabled(false);
 }
