@@ -1041,7 +1041,7 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
 {
     if (array.contains("DETECTDATAER"))
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA + STRING_FAILED, STRING_OK);
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_EMPTY, STRING_OK);
         int index = array.indexOf("DETECTDATAER");
         array.remove(index, QString("DETECTDATAER").size()+1);
         return false;

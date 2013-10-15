@@ -542,6 +542,7 @@
 #define STRING_UI_SIGNALER_DETECTOR_TOTAL_FLOW  QObject::tr("Total flow")
 #define STRING_UI_SGINALER_DETECTOR_READ_FLOW   QObject::tr("Flow read")
 #define STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW  QObject::tr("Clear flow")
+#define STRING_UI_SIGNALER_DETECTOR_EMPTY       QObject::tr("Detector flow info is empty")
 
 #define STRING_UI_SIGNALER_MONITOR_SIGNALER_RECORD  QObject::tr("Signaler record")
 #define STRING_UI_SIGNALER_MONITOR_LIGHT_STATUS     QObject::tr("Lights status")
