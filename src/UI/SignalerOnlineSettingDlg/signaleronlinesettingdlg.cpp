@@ -554,7 +554,7 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
 void SignalerOnlineSettingDlg::InitTabPage()
 {
     QFont font;
-    font.setPixelSize(11);
+    font.setPixelSize(13);
     dialog_tab_ = new MTabWidget(this);
     dialog_tab_->setTabBarFont(font);
 
