@@ -174,3 +174,21 @@ QString MUtility::phaseBitsDesc(unsigned int phase)
     }
     return str.left(str.size() - 1);
 }
+
+QString MUtility::bitsDesc(unsigned int phase_ids)
+{
+    QString str;
+    for (int i = 1; i <= 32; i++)
+    {
+        if ((phase_ids & 0x01) == 0x01)
+        {
+            str += QString::number(i) + "/";
+        }
+        phase_ids = phase_ids >> 1;
+    }
+    if (str.isEmpty())
+    {
+        return "-";
+    }
+    return str.left(str.size() - 1);
+}

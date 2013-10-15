@@ -146,9 +146,9 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
     if (event_log_array_.endsWith("END"))
     {
         ParseEventLogArray(event_log_array_);
+        UpdateUI();
         event_log_array_.clear();
         tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED + "</font>");
-        UpdateUI();
     }
 }
 
@@ -281,7 +281,8 @@ void EventLogDlg::UpdateUI()
 {
     handler_->init_from_file(file_name_);
     UpdateEventTypeTree();
-    UpdateEventDetailTree();
+    QList<LogParam> log_param_list = handler_->get_event_log_list(0);
+    UpdateEventDetailTree(log_param_list);
     QTreeWidgetItem *item = event_tree_->currentItem();
     if (item == NULL)
     {
@@ -335,19 +336,25 @@ void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)
 {
     QString head_str(byte_arr.left(4));
-    char const *content = byte_arr.data();
     if (head_str != QString("CYT6"))
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_INCORRECT, STRING_OK);
         return;
     }
     // package len considered to validate
+    byte_arr.remove(0, 4);
+    char char_len[4] = {'\0'};
+    char_len[0] = byte_arr.at(0);
+    char_len[1] = byte_arr.at(1);
+    char_len[2] = byte_arr.at(2);
+    char_len[3] = byte_arr.at(3);
     unsigned int len = 0;
-    memcpy(&len, content + 4, 4);
+    memcpy(&len, char_len, 4);
     len = len-4-3;
+    byte_arr.remove(0, 4);
     char cy_header[18] = {'\0'};
-    memcpy(cy_header, content + 8, sizeof(cy_header));
-    byte_arr.remove(0, 4+4+18);
+    memcpy(cy_header, byte_arr.data(), 18);
+    byte_arr.remove(0, 18);
     int index = byte_arr.indexOf("END");
     byte_arr.remove(index, 3);
 

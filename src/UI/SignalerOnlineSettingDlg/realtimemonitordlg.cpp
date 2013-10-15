@@ -1376,6 +1376,8 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     stage_id_label_->setText(str);
     str = MUtility::phaseBitsDesc(channel_status_bak_.phase_id);
     phase_id_label_->setText(str);
+    qDebug() << "stage_id:" << curr_stage_id_
+             << "phase_id:" << channel_status_bak_.phase_id << str;
     UpdateLightTreeColor();
 
     return true;
