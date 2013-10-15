@@ -16,17 +16,25 @@ EventLogHandler::~EventLogHandler()
     descriptor_->DisposeDescriptor();
 }
 
-void EventLogHandler::init(const EventLog_t &event_log)
+void EventLogHandler::init(const EventClass_t &event_type, const EventLog_t &event_log)
 {
     event_log_map_.clear();
     log_map_.clear();
     event_map_.clear();
+    clear_time_map_.clear();
 
+    unsigned char id = 0;
     LogParam logparam;
     LogParamMap log_map;
     int index = 0;
     for (int i = 0; i < MAX_EVENTCLASS_LINE; i++)
     {
+        id = event_type.EventClassList[i].EventClassId;
+        if (id != 0)
+        {
+            clear_time_map_.insert(id, event_type.EventClassList[i].EventClassClearTime);
+        }
+
         for (int j = 0; j < MAX_EVENTLOG; j++)
         {
             if (is_event_log_valid(event_log.EventLogList[j + i * MAX_EVENTLOG]))
@@ -58,10 +66,12 @@ void EventLogHandler::init_from_file(const QString &file_name)
     }
     QByteArray array = file.readAll();
     EventLog_t loginfo;
+    EventClass_t event_type_info;
     EventLog event_log;
     memcpy(&event_log, array.data(), sizeof(loginfo));
+    memcpy(&event_type_info, &event_log.event_type_info, sizeof(event_log.event_type_info));
     memcpy(&loginfo, &event_log.log_info, sizeof(event_log.log_info));
-    init(loginfo);
+    init(event_type_info, loginfo);
     file.close();
 }
 
@@ -108,12 +118,6 @@ QList<QString> EventLogHandler::get_all_event_type_desc_list()
 {
     return descriptor_->get_log_desc_list();
 }
-
-//QList<EventParam> EventLogHandler::get_event_type_list()
-//{
-//    QList<EventParam> event_list;
-//    return event_list;
-//}
 
 QList<QString> EventLogHandler::get_event_type_desc_list()
 {
@@ -173,6 +177,11 @@ QString EventLogHandler::get_datetime_desc(unsigned int seconds)
 unsigned char EventLogHandler::get_event_type_id_by_desc(const QString &desc)
 {
     return descriptor_->get_event_type_id(desc);
+}
+
+unsigned int EventLogHandler::get_event_type_clear_time(unsigned char event_type_id)
+{
+    return clear_time_map_.value(event_type_id);
 }
 
 bool EventLogHandler::export_event_log(const QString &file_name)

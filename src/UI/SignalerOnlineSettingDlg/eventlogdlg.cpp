@@ -309,22 +309,13 @@ void EventLogDlg::UpdateEventTypeTree()
     QList<QString> event_desc_list = handler_->get_all_event_type_desc_list();
 #endif
     QString str;
-    QList<LogParam> log_list;
     for (int i = 0; i < event_desc_list.size(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(event_tree_);
         str = event_desc_list.at(i);
         item->setText(0, event_desc_list.at(i));
         unsigned int id_secs = handler_->get_event_type_id_by_desc(str);
-        log_list = handler_->get_event_log_list(id_secs);
-        if (!log_list.isEmpty())
-        {
-            id_secs = log_list.at(0).log_time;
-        }
-        else
-        {
-            id_secs = 0;
-        }
+        id_secs = handler_->get_event_type_clear_time(id_secs);
         str = MUtility::secondsToDateTime(id_secs);
         item->setText(1, str);
 
