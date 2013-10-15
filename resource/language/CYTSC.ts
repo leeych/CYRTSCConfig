@@ -679,7 +679,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="200"/>
-        <location filename="../../include/macrostring.h" line="562"/>
+        <location filename="../../include/macrostring.h" line="563"/>
         <source>Stage ID</source>
         <translation>阶段号</translation>
     </message>
@@ -1497,7 +1497,7 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="423"/>
-        <location filename="../../include/macrostring.h" line="572"/>
+        <location filename="../../include/macrostring.h" line="573"/>
         <source>Parse signaler configuration file</source>
         <translation>解析信号机配置文件</translation>
     </message>
@@ -1991,117 +1991,122 @@
         <translation>清空流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="546"/>
+        <location filename="../../include/macrostring.h" line="545"/>
+        <source>Detector flow info is empty</source>
+        <translation>检测器流量为空！</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="547"/>
         <source>Signaler record</source>
         <translation>信号机状态记录</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="547"/>
+        <location filename="../../include/macrostring.h" line="548"/>
         <source>Lights status</source>
         <translation>信号灯状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="548"/>
+        <location filename="../../include/macrostring.h" line="549"/>
         <source>Driver status</source>
         <translation>驱动板状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="549"/>
+        <location filename="../../include/macrostring.h" line="550"/>
         <source>Detector status</source>
         <translation>检测器状态</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="551"/>
+        <location filename="../../include/macrostring.h" line="552"/>
         <source>Road status monitor</source>
         <translation>路口交通监控</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="552"/>
+        <location filename="../../include/macrostring.h" line="553"/>
         <source>Status param</source>
         <translation>状态参数</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="554"/>
+        <location filename="../../include/macrostring.h" line="555"/>
         <source>Signaler status info</source>
         <translation>信号机状态信息</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="555"/>
+        <location filename="../../include/macrostring.h" line="556"/>
         <source>Lights color</source>
         <translation>灯色</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="556"/>
+        <location filename="../../include/macrostring.h" line="557"/>
         <source>Driver id</source>
         <translation>驱动板号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="557"/>
+        <location filename="../../include/macrostring.h" line="558"/>
         <source>Driver type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="558"/>
+        <location filename="../../include/macrostring.h" line="559"/>
         <source>Detector id</source>
         <translation>检测器号</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="559"/>
+        <location filename="../../include/macrostring.h" line="560"/>
         <source>Detector flow</source>
         <translation>流量</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="561"/>
+        <location filename="../../include/macrostring.h" line="562"/>
         <source>Cycle time</source>
         <translation>周期时长</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="563"/>
+        <location filename="../../include/macrostring.h" line="564"/>
         <source>Current phase id</source>
         <translation>当前相位</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="564"/>
+        <location filename="../../include/macrostring.h" line="565"/>
         <source>Phase time</source>
         <translation>相位时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="565"/>
+        <location filename="../../include/macrostring.h" line="566"/>
         <source>Signaler time</source>
         <translation>信号机时间</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="566"/>
+        <location filename="../../include/macrostring.h" line="567"/>
         <source>Green-Yellow-Red</source>
         <translation>绿灯-黄灯-红灯</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="568"/>
+        <location filename="../../include/macrostring.h" line="569"/>
         <source>Statistics</source>
         <translation>统计</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="569"/>
+        <location filename="../../include/macrostring.h" line="570"/>
         <source>This request needs to disable networking first, continue?</source>
         <translation>这个请求需要先断开网络连接，是否继续?</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="571"/>
+        <location filename="../../include/macrostring.h" line="572"/>
         <source>Signaler network disconnected</source>
         <translation>网络连接已断开</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="573"/>
+        <location filename="../../include/macrostring.h" line="574"/>
         <source>Parse socket package error</source>
         <translation>解析网络数据包出错</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="574"/>
+        <location filename="../../include/macrostring.h" line="575"/>
         <source>Require vehicle detector data</source>
         <translation>获取车辆检测器数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="575"/>
+        <location filename="../../include/macrostring.h" line="576"/>
         <source>Require detector status info data</source>
         <translation>获取检测器状态信息</translation>
     </message>
