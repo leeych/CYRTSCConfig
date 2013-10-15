@@ -1127,11 +1127,11 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     }
     QString head(array.left(4));
     QString tail(array.right(3));
-    if (head != QString("CYT4") || tail != QString("END"))
+    if (!(array.left(4).contains("CYT4") && array.right(3).contains("END")))
     {
         return false;
     }
-    array.remove(0, head.count());
+    array.remove(0, 4);
     unsigned char temp[4] = {'\0'};
     for (int i = 0; i < 4; i++)
     {
@@ -1139,10 +1139,10 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     }
     int len = 0;
     memcpy(&len, temp, 4);
-    array.remove(0, sizeof(len));
+    array.remove(0, 4);
     int idx = array.indexOf(tail);
-    array.remove(idx, tail.count());
-    if (len-4-3-4 != array.count())
+    array.remove(idx, 3);
+    if (len-4-3-4 != array.size())
     {
         return false;
     }

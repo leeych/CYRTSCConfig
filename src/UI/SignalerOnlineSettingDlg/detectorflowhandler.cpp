@@ -104,6 +104,11 @@ bool DetectorFlowHandler::remove_detector_flow(unsigned char detector_id, unsign
     return false;
 }
 
+void DetectorFlowHandler::clear_detector_flow()
+{
+    detector_list_.clear();
+}
+
 int DetectorFlowHandler::index_of_detector_flow_list(unsigned char detector_id, unsigned short data_id)
 {
     int idx = -1;

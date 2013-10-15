@@ -18,10 +18,9 @@ EventLogHandler::~EventLogHandler()
 
 void EventLogHandler::init(const EventLog_t &event_log)
 {
-//    if (event_log.FactEventLogNum == 0)
-//    {
-//        return;
-//    }
+    event_log_map_.clear();
+    log_map_.clear();
+    event_map_.clear();
 
     LogParam logparam;
     LogParamMap log_map;

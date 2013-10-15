@@ -72,6 +72,15 @@ void SyncCommand::ClearEventLog(const std::string &param, QObject *target, const
     qDebug() << (Command::ClearEventInfo + param).c_str() << " bytes:" << sz;
 }
 
+void SyncCommand::ClearEventLog(const std::string &param)
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        qint64 sz = socket_->write((Command::ClearEventInfo + param).c_str());
+        qDebug() << (Command::ClearEventInfo + param).c_str() << "bytes:" << sz;
+    }
+}
+
 void SyncCommand::StartMonitoring(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);

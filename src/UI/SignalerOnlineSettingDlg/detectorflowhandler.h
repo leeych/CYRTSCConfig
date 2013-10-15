@@ -54,6 +54,7 @@ public:
     int get_detector_flow_num(unsigned char detector_id);
     void set_detector_flow(const DetectorData_t &item);
     bool remove_detector_flow(unsigned char detector_id, unsigned short data_id);
+    void clear_detector_flow();
 
     int index_of_detector_flow_list(unsigned char detector_id, unsigned short data_id);
 

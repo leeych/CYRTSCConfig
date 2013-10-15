@@ -27,7 +27,7 @@ signals:
 public slots:
     void OnReadFlowButtonClicked();
     void OnClearFowButtonClicked();
-    void OnOkButtonClicked();
+    void OnCalculateButtonClicked();
     void OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *, int);
     void OnDateTimeChanged(const QDateTime &datetime);
 
@@ -45,6 +45,7 @@ private:
     void UpdateFlowInfoTree();
     void UpdateFlowInfoTree(const QList<DetectorFlowInfo> &flow_list);
     void SetDetectorFlow(unsigned char detector_id);
+    void ResetDetectorFlowInfo();
 
     void InitTree(QTreeWidget *tree, const QStringList &header);
     void SetDateTimeEdit(QDateTimeEdit *edit);
@@ -57,9 +58,9 @@ private:
     unsigned char curr_detector_id_;
     DetectorFlowHandler *handler_;
     SyncCommand *sync_cmd_;
-    DetectorFlowInfo detector_status_info_;
+//    DetectorFlowInfo detector_status_info_;
     DetectorData_t *detector_array_;
-    QList<DetectorFlowInfo> detector_list_;
+//    QList<DetectorFlowInfo> detector_list_;
     QList<QTreeWidgetItem *> detector_item_list_;
     QList<unsigned char> detector_flow_list_;
 
@@ -70,7 +71,7 @@ private:
     QDateTimeEdit *start_time_editor_, *end_time_editor_;
     QLineEdit *total_flow_lineedit_;
 
-    QPushButton *read_flow_button_, *clear_flow_button_, *ok_button_;
+    QPushButton *read_flow_button_, *clear_flow_button_, *calculate_button_;
 };
 
 #endif // DETECTORFLOWDLG_H

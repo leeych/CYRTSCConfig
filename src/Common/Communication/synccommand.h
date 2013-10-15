@@ -39,6 +39,7 @@ public:
 
     void ReadEventLogFile(QObject *target, const std::string &slot);
     void ClearEventLog(const std::string &param, QObject *target, const std::string &slot);
+    void ClearEventLog(const std::string &param);
 
     void StartMonitoring(QObject *target, const std::string &slot);
     void StartMonitoring();

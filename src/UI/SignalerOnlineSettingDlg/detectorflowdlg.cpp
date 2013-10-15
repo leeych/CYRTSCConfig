@@ -50,13 +50,28 @@ void DetectorFlowDlg::OnReadFlowButtonClicked()
 void DetectorFlowDlg::OnClearFowButtonClicked()
 {
     sync_cmd_->ClearDetectorFlowInfo();
-//    this->setEnabled(false);
+    this->setEnabled(false);
+    QTime t;
+    t.start();
+    while (t.elapsed() < 2000)
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+    ResetDetectorFlowInfo();
+    OnReadFlowButtonClicked();
+    this->setEnabled(true);
 }
 
-void DetectorFlowDlg::OnOkButtonClicked()
+void DetectorFlowDlg::OnCalculateButtonClicked()
 {
-    unsigned int start_secs = start_time_editor_->dateTime().toUTC().toTime_t(),
-            end_secs = end_time_editor_->dateTime().toUTC().toTime_t();
+    QDateTime start_time = start_time_editor_->dateTime();
+    QDateTime end_time = end_time_editor_->dateTime();
+    QDateTime utc_time = QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
+    unsigned int start_secs = utc_time.secsTo(start_time);
+    unsigned int end_secs = utc_time.secsTo(end_time);
+    QString str = MUtility::secondsToDateTime(end_secs);
+    QString desc = start_time_editor_->dateTime().toString("yyyy-MM-dd hh:mm:ss");
+    desc = end_time_editor_->dateTime().toString("yyyy-MM-dd hh:mm:ss");
     QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow(curr_detector_id_, start_secs, end_secs);
     UpdateFlowInfoTree(flow_list);
     unsigned int flow_count = 0;
@@ -127,6 +142,10 @@ void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
         {
             QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
         }
+        else
+        {
+            UpdateFlowInfoTree();
+        }
         break;
     case 'B':
         status = ParseRealtimeFlowInfoContent(array);
@@ -164,13 +183,15 @@ void DetectorFlowDlg::InitPage()
                    << STRING_UI_SIGNALER_DETECTOR_NUM << STRING_UI_SIGNALER_DETECTOR_PHASE;
     InitTree(flow_tree_, flow_header);
     flow_tree_->setColumnWidth(0, 80);
-    flow_tree_->setColumnWidth(1, 120);
+    flow_tree_->setColumnWidth(1, 180);
     flow_tree_->setColumnWidth(2, 80);
 //    flow_tree_->setMinimumWidth(320);
     start_time_editor_ = new QDateTimeEdit;
+//    start_time_editor_->setTimeSpec(Qt::LocalTime);
     end_time_editor_ = new QDateTimeEdit;
+//    end_time_editor_->setTimeSpec(Qt::LocalTime);
     SetDateTimeEdit(start_time_editor_);
-    start_time_editor_->setDateTime(QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss"));
+    start_time_editor_->setDateTime(QDateTime::fromString("1970-01-01 00:00:01", "yyyy-MM-dd hh:mm:ss"));
     SetDateTimeEdit(end_time_editor_);
     end_time_editor_->setDateTime(QDateTime::currentDateTime());
     QLabel *total_flow_label = new QLabel(STRING_UI_SIGNALER_DETECTOR_TOTAL_FLOW + ":");
@@ -199,13 +220,13 @@ void DetectorFlowDlg::InitPage()
 
     read_flow_button_ = new QPushButton(STRING_UI_SGINALER_DETECTOR_READ_FLOW);
     clear_flow_button_ = new QPushButton(STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW);
-    ok_button_ = new QPushButton(STRING_UI_SIGNALER_MONITOR_FLOW_STATISTIC);
+    calculate_button_ = new QPushButton(STRING_UI_SIGNALER_MONITOR_FLOW_STATISTIC);
 
     QHBoxLayout *button_hlayout = new QHBoxLayout;
     button_hlayout->addWidget(read_flow_button_);
     button_hlayout->addWidget(clear_flow_button_);
     button_hlayout->addStretch(1);
-    button_hlayout->addWidget(ok_button_);
+    button_hlayout->addWidget(calculate_button_);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addLayout(tree_hlayout);
@@ -217,7 +238,7 @@ void DetectorFlowDlg::InitSignalSlots()
 {
     connect(read_flow_button_, SIGNAL(clicked()), this, SLOT(OnReadFlowButtonClicked()));
     connect(clear_flow_button_, SIGNAL(clicked()), this, SLOT(OnClearFowButtonClicked()));
-    connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
+    connect(calculate_button_, SIGNAL(clicked()), this, SLOT(OnCalculateButtonClicked()));
     connect(detector_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnDetectorIDTreeDoubleClicked(QTreeWidgetItem*,int)));
 //    connect(start_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)), Qt::QueuedConnection);
 //    connect(end_time_editor_, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(OnDateTimeChanged(QDateTime)), Qt::QueuedConnection);
@@ -297,6 +318,20 @@ void DetectorFlowDlg::SetDetectorFlow(unsigned char detector_id)
     detector_flow_list_[detector_id]++;
 }
 
+void DetectorFlowDlg::ResetDetectorFlowInfo()
+{
+    if (detector_array_ != NULL)
+    {
+        delete [] detector_array_;
+        detector_array_ = NULL;
+    }
+    for (int i = 0; i < detector_flow_list_.size(); i++)
+    {
+        detector_flow_list_[i] = 0;
+    }
+    handler_->clear_detector_flow();
+}
+
 void DetectorFlowDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 {
     int col_count = header.size();
@@ -319,7 +354,7 @@ void DetectorFlowDlg::SetDateTimeEdit(QDateTimeEdit *edit)
 {
     QString dir;
     MUtility::getImageDir(dir);
-    edit->setFixedHeight(26);
+    edit->setFixedHeight(25);
     edit->setDisplayFormat(QString("yyyy-MM-dd hh:mm:ss"));
     edit->setCalendarPopup(true);
     edit->setStyleSheet("QDateTimeEdit::drop-down {"
@@ -403,8 +438,6 @@ bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
         delete [] detector_array_;
         detector_array_ = NULL;
     }
-    UpdateFlowInfoTree();
-
     return true;
 }
 // CYTB+检测器编号(1字节)+END

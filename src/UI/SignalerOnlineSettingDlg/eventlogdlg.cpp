@@ -55,7 +55,7 @@ void EventLogDlg::OnDeleteEventButtonClicked()
         return;
     }
     QString str = QString::number(curr_event_type_id_);
-    SyncCommand::GetInstance()->ClearEventLog(str.toStdString(), this, SLOT(OnCmdClearEventLog(QByteArray&)));
+    SyncCommand::GetInstance()->ClearEventLog(str.toStdString());
     this->setEnabled(false);
     QTime t;
     t.start();
