@@ -6,6 +6,9 @@
 #include "bottombuttonswidget.h"
 #include "phaseeditdlg.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 PhasetableWidget::PhasetableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
@@ -73,6 +76,7 @@ void PhasetableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *item, int col)
     Q_UNUSED(col);
     if (phase_edit_dlg_ != NULL)
     {
+        WIDGET_CENTRALIZE(phase_edit_dlg_)
         unsigned char id = item->text(0).toInt();
         phase_edit_dlg_->Initialize(id, handler_);
     }
@@ -119,6 +123,7 @@ void PhasetableWidget::OnEditActionClicked()
         return;
     }
     Q_ASSERT(item != NULL);
+    WIDGET_CENTRALIZE(phase_edit_dlg_)
     unsigned char phase_id = item->text(0).toInt();
     phase_edit_dlg_->Initialize(phase_id, handler_);
 }

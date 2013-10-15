@@ -8,6 +8,9 @@
 #include "detectorhandler.h"
 #include "bottombuttonswidget.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 DetectortableWidget::DetectortableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
@@ -103,6 +106,7 @@ void DetectortableWidget::OnTableCellDoubleClicked(int row, int col)
     {
         return;
     }
+    WIDGET_CENTRALIZE(detector_edit_dlg_)
     unsigned char detector_id = detector_table_->item(row, 0)->text().toInt();
     detector_edit_dlg_->Initialize(detector_id, handler_);
 }
@@ -129,6 +133,7 @@ void DetectortableWidget::OnEditActionClicked()
     {
         return;
     }
+    WIDGET_CENTRALIZE(detector_edit_dlg_)
     unsigned char detector_id = detector_table_->item(row, 0)->text().toInt();
     detector_edit_dlg_->Initialize(detector_id, handler_);
 }

@@ -2,10 +2,14 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QDebug>
+#include <QDesktopWidget>
+#include <QApplication>
 
 #include "phaseconflicttablewidget.h"
 #include "macrostring.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
 
 PhaseconflicttableWidget::PhaseconflicttableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
@@ -53,6 +57,7 @@ void PhaseconflicttableWidget::OnTableCellDoubleClicked(int row, int col)
         {
             return;
         }
+        WIDGET_CENTRALIZE(phase_edit_dlg_)
         unsigned char phase_id = conflict_table_->item(row, 0)->text().toInt();
         phase_edit_dlg_->Initialize(phase_id, handler_);
     }
@@ -81,6 +86,7 @@ void PhaseconflicttableWidget::OnEditActionClicked()
         {
             return;
         }
+        WIDGET_CENTRALIZE(phase_edit_dlg_)
         unsigned char phase_id = conflict_table_->item(row, 0)->text().toInt();
         phase_edit_dlg_->Initialize(phase_id, handler_);
     }

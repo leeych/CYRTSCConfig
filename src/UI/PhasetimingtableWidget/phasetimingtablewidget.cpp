@@ -2,10 +2,13 @@
 #include "macrostring.h"
 #include "phasetimingeditdlg.h"
 #include "bottombuttonswidget.h"
-
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>
+
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 
 PhasetimingtableWidget::PhasetimingtableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
@@ -106,6 +109,7 @@ void PhasetimingtableWidget::OnEditActionClicked()
     {
         return;
     }
+    WIDGET_CENTRALIZE(phase_timing_edit_dlg_)
     unsigned char id =item->text(0).toInt();
     phase_timing_edit_dlg_->Initialize(id, handler_);
 }
@@ -156,6 +160,7 @@ void PhasetimingtableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *item, int 
     {
         return;
     }
+    WIDGET_CENTRALIZE(phase_timing_edit_dlg_)
     unsigned char timing_id = item->text(0).toInt();
     phase_timing_edit_dlg_->Initialize(timing_id, handler_);
 }

@@ -8,6 +8,9 @@
 #include <QHeaderView>
 #include <QMessageBox>
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 TimesectiontableWidget::TimesectiontableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
 {
@@ -96,6 +99,7 @@ void TimesectiontableWidget::OnTreeItemDoubleClicked(QTreeWidgetItem *, int)
     {
         return;
     }
+    WIDGET_CENTRALIZE(timesection_edit_dlg_)
     unsigned char section_id = item->text(0).toInt();
     timesection_edit_dlg_->Initialize(section_id, handler_);
 }
@@ -121,6 +125,7 @@ void TimesectiontableWidget::OnEditActionClicked()
     {
         return;
     }
+    WIDGET_CENTRALIZE(timesection_edit_dlg_)
     unsigned char time_section_id = item->text(0).toInt();
     timesection_edit_dlg_->Initialize(time_section_id, handler_);
 }

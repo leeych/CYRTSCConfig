@@ -8,6 +8,9 @@
 #include "timinghandler.h"
 #include "bottombuttonswidget.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 
 TimingplanWidget::TimingplanWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
@@ -97,6 +100,7 @@ void TimingplanWidget::OnEditActionClicked()
         {
             return;
         }
+        WIDGET_CENTRALIZE(timing_edit_dlg_)
         unsigned char id = timing_table_->item(row, 0)->text().toInt();
         timing_edit_dlg_->Initialize(id, handler_);
     }
@@ -141,6 +145,7 @@ void TimingplanWidget::OnTableCellDoubleClicked(int row, int col)
 	{
 		return;
 	}
+    WIDGET_CENTRALIZE(timing_edit_dlg_)
     unsigned char timing_id = timing_table_->item(row, 0)->text().toInt();
     timing_edit_dlg_->Initialize(timing_id, handler_);
 }

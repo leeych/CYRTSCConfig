@@ -5,6 +5,9 @@
 #include "channeltablewidget.h"
 #include "macrostring.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
+
 
 ChanneltableWidget::ChanneltableWidget(const QString& name, QWidget* parent)
     : QWidget(parent), widget_name_(name)
@@ -73,6 +76,7 @@ void ChanneltableWidget::OnTableCellDoubleClicked(int row, int col)
         {
             return;
         }
+        WIDGET_CENTRALIZE(channel_edit_dlg_);
         unsigned char channel_id = channel_table_->item(row, 0)->text().toInt();
         channel_edit_dlg_->Initialize(channel_id, handler_);
     }
@@ -105,6 +109,7 @@ void ChanneltableWidget::OnEditActionClicked()
     {
         return;
     }
+    WIDGET_CENTRALIZE(channel_edit_dlg_);
     unsigned char channel_id = channel_table_->item(row, 0)->text().toInt();
     channel_edit_dlg_->Initialize(channel_id, handler_);
 }

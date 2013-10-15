@@ -8,6 +8,8 @@
 #include "scheduledlg.h"
 #include "schedulehandler.h"
 
+#define WIDGET_CENTER
+#include "utilmacros.h"
 
 ScheduleTableWidget::ScheduleTableWidget(const QString &name, QWidget *parent)
     : QWidget(parent), name_(name)
@@ -103,6 +105,7 @@ void ScheduleTableWidget::OnEditActionClicked()
     {
         return;
     }
+    WIDGET_CENTRALIZE(schedule_dlg_)
     unsigned char sched_id = schedule_table_->item(row, 0)->text().toInt();
     schedule_dlg_->Initialize(sched_id, handler_);
 }
