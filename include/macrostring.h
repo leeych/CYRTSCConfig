@@ -411,6 +411,8 @@
 #define STRING_UI_SIGNALER_READ_SYSTIME     QObject::tr("Read sys time")
 #define STRING_UI_SIGNALER_SYNC_TIME        QObject::tr("Sync time")
 #define STRING_UI_SIGNALER_REFRESH          QObject::tr("Refresh")
+#define STRING_UI_SIGNALER_READ_NETWORK     QObject::tr("Read network address")
+#define STRING_UI_SIGNALER_SET_NETWORK      QObject::tr("Set network address")
 #define STRING_UI_SIGNALER_WRITE_IP         QObject::tr("Set signaler IP")
 #define STRING_UI_SIGNALER_NETWORK          QObject::tr("Network configuration")
 #define STRING_UI_SIGNALER_SYNC_TIME_NULL   QObject::tr("Sync time return socket package is null")

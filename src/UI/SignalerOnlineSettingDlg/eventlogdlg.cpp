@@ -30,6 +30,8 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     handler_ = handler;
     tip_label_->clear();
     UpdateUI();
+    QTreeWidgetItem *item = event_tree_->itemAt(0, 0);
+    event_tree_->setCurrentItem(item);
     exec();
 }
 
@@ -171,9 +173,9 @@ void EventLogDlg::InitPage()
     QStringList event_header;
     event_header << STRING_UI_SIGNALER_EVENT_TYPE << STRING_UI_SIGNALER_EVENT_CLEARTIME;
     InitTree(event_tree_, event_header);
-    event_tree_->setMaximumWidth(240);
-    event_tree_->setColumnWidth(0, event_tree_->width()*2/3);
-    event_tree_->setColumnWidth(1, event_tree_->width()*1/3);
+    event_tree_->setMaximumWidth(270);
+    event_tree_->setColumnWidth(0, event_tree_->width()*1/3);
+    event_tree_->setColumnWidth(1, event_tree_->width()*2/3);
 
     event_detail_tree_ = new QTreeWidget;
     QStringList detail_header;
@@ -306,10 +308,26 @@ void EventLogDlg::UpdateEventTypeTree()
 #if 1
     QList<QString> event_desc_list = handler_->get_all_event_type_desc_list();
 #endif
+    QString str;
+    QList<LogParam> log_list;
     for (int i = 0; i < event_desc_list.size(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(event_tree_);
+        str = event_desc_list.at(i);
         item->setText(0, event_desc_list.at(i));
+        unsigned int id_secs = handler_->get_event_type_id_by_desc(str);
+        log_list = handler_->get_event_log_list(id_secs);
+        if (!log_list.isEmpty())
+        {
+            id_secs = log_list.at(0).log_time;
+        }
+        else
+        {
+            id_secs = 0;
+        }
+        str = MUtility::secondsToDateTime(id_secs);
+        item->setText(1, str);
+
         item_list.append(item);
     }
     event_tree_->addTopLevelItems(item_list);

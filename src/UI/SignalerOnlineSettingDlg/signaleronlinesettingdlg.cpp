@@ -169,7 +169,7 @@ void SignalerOnlineSettingDlg::OnMonitorButtonClicked()
 void SignalerOnlineSettingDlg::OnLogButtonClicked()
 {
     conn_tip_label_->clear();
-	event_log_dlg_->resize(640, 420);
+    event_log_dlg_->resize(700, 450);
     event_log_dlg_->move((desktop_->width()-event_log_dlg_->size().width())/2, (desktop_->height()-event_log_dlg_->size().height())/2);
     event_log_dlg_->Initialize(ip_, handler_);
 }

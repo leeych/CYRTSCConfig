@@ -230,8 +230,8 @@ void TimeIPDlg::InitPage()
     setWindowTitle(STRING_UI_SIGNALER_TIME_NETWORK_TITLE);
     read_sys_time_button_ = new QPushButton(STRING_UI_SIGNALER_READ_SYSTIME);
     sync_time_button_ = new QPushButton(STRING_UI_SIGNALER_SYNC_TIME);
-    refresh_button_ = new QPushButton(STRING_UI_SIGNALER_REFRESH);
-    write_ip_button_ = new QPushButton(STRING_UI_SIGNALER_WRITE_IP);
+    read_network_button_ = new QPushButton(STRING_UI_SIGNALER_READ_NETWORK);
+    write_ip_button_ = new QPushButton(STRING_UI_SIGNALER_SET_NETWORK);
 
     QGroupBox *time_grp = new QGroupBox(STRING_UI_SIGNALER_TIME_GRP);
     QLabel *sys_time_label = new QLabel(STRING_UI_SIGNALER_SYS_TIME + ":");
@@ -266,7 +266,7 @@ void TimeIPDlg::InitPage()
     grid_layout->addWidget(mask_lineedit_, 1, 1, 1, 1, Qt::AlignCenter);
     grid_layout->addWidget(gateway_label, 2, 0, 1, 1, Qt::AlignCenter);
     grid_layout->addWidget(gateway_lineedit_, 2, 1, 1, 1, Qt::AlignCenter);
-    grid_layout->addWidget(refresh_button_, 3, 0, 1, 1, Qt::AlignCenter);
+    grid_layout->addWidget(read_network_button_, 3, 0, 1, 1, Qt::AlignCenter);
     grid_layout->addWidget(write_ip_button_, 3, 1, 1, 1, Qt::AlignCenter);
     network_grp->setLayout(grid_layout);
 
@@ -284,7 +284,7 @@ void TimeIPDlg::InitSignalSlots()
 {
     connect(read_sys_time_button_, SIGNAL(clicked()), this, SLOT(OnReadSystimeButtonClicked()));
     connect(sync_time_button_, SIGNAL(clicked()), this, SLOT(OnSyncTimeButtonClicked()));
-    connect(refresh_button_, SIGNAL(clicked()), this, SLOT(OnRefreshButtonClicked()));
+    connect(read_network_button_, SIGNAL(clicked()), this, SLOT(OnRefreshButtonClicked()));
     connect(write_ip_button_, SIGNAL(clicked()), this, SLOT(OnWriteIPButtonClicked()));
     connect(cmd_timer_, SIGNAL(timeout()), this, SLOT(OnCmdTimerTimeoutSlot()));
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
@@ -301,7 +301,7 @@ void TimeIPDlg::EnableButtonExcept(bool enable, QPushButton *btn_ptr)
     {
         button_list_.append(read_sys_time_button_);
         button_list_.append(sync_time_button_);
-        button_list_.append(refresh_button_);
+        button_list_.append(read_network_button_);
         button_list_.append(write_ip_button_);
     }
     for (int i = 0; i < button_list_.size(); i++)

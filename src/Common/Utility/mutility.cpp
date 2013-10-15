@@ -149,12 +149,18 @@ QString MUtility::trimmedAll(const QString &ip)
 
 QString MUtility::secondsToDateTime(unsigned long seconds)
 {
+    QString str;
+    if (seconds == 0)
+    {
+        return str;
+    }
     if (seconds >= 60*60*8)     // east 8 time-zoon
     {
         seconds -= 60*60*8;
     }
     QDateTime datetime = QDateTime::fromTime_t(seconds);
-    return datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+    str = datetime.toString("yyyy-MM-dd hh:mm:ss ddd");
+    return str;
 }
 
 QString MUtility::phaseBitsDesc(unsigned int phase)

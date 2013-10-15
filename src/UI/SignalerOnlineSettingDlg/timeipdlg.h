@@ -65,7 +65,7 @@ private:
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;
-    QPushButton *refresh_button_, *write_ip_button_;
+    QPushButton *read_network_button_, *write_ip_button_;
     QLabel *sys_time_text_label_;
     QLineEdit *ip_lineedit_, *mask_lineedit_, *gateway_lineedit_;
 };

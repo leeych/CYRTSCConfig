@@ -118,7 +118,7 @@ void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
         return;
     }
     bool status = false;
-    unsigned char cmd_id = array.at(4);
+    unsigned char cmd_id = array.at(3);
     switch (cmd_id)
     {
     case '9':
@@ -381,6 +381,7 @@ bool DetectorFlowDlg::ParseDetectorDataContent(QByteArray &array)
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
+    array.remove(0, 4);
     int sz = array.size();
     int data_sz = sizeof(DetectorData_t);
     if (sz % data_sz != 0)
