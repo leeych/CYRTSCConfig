@@ -9,6 +9,13 @@
 #include <QMessageBox>
 #include <QIODevice>
 
+#define STOP_TIMER
+#ifdef STOP_TIMER
+#define STOP_CMD_TIMER(timer) \
+    if (timer->isActive()){ timer->stop();}
+#else
+#define STOP_CMD_TIMER(timer)
+#endif
 
 TimeIPDlg::TimeIPDlg(QWidget *parent) :
     QDialog(parent)
@@ -75,10 +82,19 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     QString gateway = gateway_lineedit_->text().trimmed();
     param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
+    SyncCommand::GetInstance()->disconnectFromHost();
+    this->setEnabled(false);
+    QTime t;
+    t.start();
+    while (t.elapsed() < 2000)
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
     connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
     SyncCommand::GetInstance()->connectToHost(ip, 12810);
     curr_cmd_ = WriteNetwork;
     cmd_timer_->start(30000);
+    this->setEnabled(true);
 }
 
 void TimeIPDlg::OnCmdTimerTimeoutSlot()
@@ -177,6 +193,8 @@ void TimeIPDlg::OnCmdSyncSignalerTime(QByteArray &array_content)
 
 void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
 {
+    STOP_CMD_TIMER(cmd_timer_)
+
     if (array_content.isEmpty())
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_NETWORK_CFG_NULL, STRING_OK);
@@ -194,6 +212,7 @@ void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
 
 void TimeIPDlg::OnConnectEstablish()
 {
+    STOP_CMD_TIMER(cmd_timer_)
     SyncCommand::GetInstance()->InitParseHandler(this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
 }
 

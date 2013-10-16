@@ -1256,16 +1256,18 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 
     return true;
 }
-
+// CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
 {
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
+    array.remove(0, 4);
     int sz = array.size();
     int data_sz = sizeof(DetectorData_t);
     if (sz % data_sz != 0)
     {
+        array.remove(0, sz);
         return false;
     }
     int count = sz / data_sz;
