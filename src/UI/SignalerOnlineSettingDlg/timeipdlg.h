@@ -30,7 +30,7 @@ signals:
 public slots:
     void OnReadSystimeButtonClicked();
     void OnSyncTimeButtonClicked();
-    void OnRefreshButtonClicked();
+    void OnReadIPButtonClicked();
     void OnWriteIPButtonClicked();
 
     void OnCmdTimerTimeoutSlot();

@@ -30,8 +30,9 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     handler_ = handler;
     tip_label_->clear();
     UpdateUI();
-    QTreeWidgetItem *item = event_tree_->itemAt(0, 0);
+    QTreeWidgetItem *item = event_tree_->itemAt(0, 1);
     event_tree_->setCurrentItem(item);
+    OnReadLogButtonClicked();
     exec();
 }
 

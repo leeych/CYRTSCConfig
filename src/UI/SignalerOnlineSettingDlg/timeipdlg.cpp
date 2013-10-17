@@ -62,12 +62,14 @@ void TimeIPDlg::OnSyncTimeButtonClicked()
     sync_time_button_->setEnabled(false);
 }
 
-void TimeIPDlg::OnRefreshButtonClicked()
+void TimeIPDlg::OnReadIPButtonClicked()
 {
+    read_network_button_->setEnabled(false);
     SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(QByteArray&)));
     EnableButtonExcept(false, NULL);
     curr_cmd_ = ReadNetwork;
     cmd_timer_->start(31000);
+    read_network_button_->setEnabled(true);
 }
 
 void TimeIPDlg::OnWriteIPButtonClicked()
@@ -143,6 +145,7 @@ void TimeIPDlg::OnCmdReadTscTime(QByteArray &array_content)
 
 void TimeIPDlg::OnCmdReadNetworkingInfo(QByteArray &content)
 {
+    STOP_CMD_TIMER(cmd_timer_)
     QString network(content.data());
     if (network.left(4) != QString("CYT8") || network.right(3) != QString("END"))
     {
@@ -309,7 +312,7 @@ void TimeIPDlg::InitSignalSlots()
 {
     connect(read_sys_time_button_, SIGNAL(clicked()), this, SLOT(OnReadSystimeButtonClicked()));
     connect(sync_time_button_, SIGNAL(clicked()), this, SLOT(OnSyncTimeButtonClicked()));
-    connect(read_network_button_, SIGNAL(clicked()), this, SLOT(OnRefreshButtonClicked()));
+    connect(read_network_button_, SIGNAL(clicked()), this, SLOT(OnReadIPButtonClicked()));
     connect(write_ip_button_, SIGNAL(clicked()), this, SLOT(OnWriteIPButtonClicked()));
     connect(cmd_timer_, SIGNAL(timeout()), this, SLOT(OnCmdTimerTimeoutSlot()));
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));

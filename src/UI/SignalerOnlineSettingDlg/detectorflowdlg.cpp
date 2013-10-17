@@ -38,6 +38,7 @@ DetectorFlowDlg::~DetectorFlowDlg()
 void DetectorFlowDlg::Initialize()
 {
     UpdateUI();
+    OnReadFlowButtonClicked();
     exec();
 }
 
@@ -260,6 +261,7 @@ void DetectorFlowDlg::UpdateUI()
 {
 //    UpdateDetectorTree();
     UpdateFlowInfoTree();
+    OnCalculateButtonClicked();
 }
 
 void DetectorFlowDlg::InitDetectorTreeContent()
