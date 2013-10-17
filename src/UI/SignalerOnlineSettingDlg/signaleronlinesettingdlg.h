@@ -50,6 +50,7 @@ public:
 
 signals:
     void updateTabPageSignal(void *);
+    void versionCheckedSignal();
 
 public slots:
     void OnConnectButtonClicked();
@@ -62,6 +63,8 @@ public slots:
     void OnSettingButtonClicked();
     void OnSaveAsbuttonClicked();
     void OnMoreButtonToggled(bool toggled);
+
+    void OnNetworkSettingSlot(bool flag);
 
     void OnConnectedSlot();
     void OnDisconnectedSlot();
@@ -113,8 +116,9 @@ private:
 //    int cmd_timer_id_;  // used for socket cmd has no reply
     int ver_check_id_;  // check version
     int ui_lock_id_;    // enable ui except for buttons
-
     QByteArray config_byte_array_;
+
+    bool is_edit_ip_;   // used for network setting etc. ip
 
 private:
     QWidget *more_widget_;

@@ -25,6 +25,7 @@ public:
     };
     
 signals:
+    void networkSettingSignal(bool flag);
     
 public slots:
     void OnReadSystimeButtonClicked();
@@ -62,6 +63,7 @@ private:
     QTimer *cmd_timer_;
     int timer_id_;
     CurrentCmd curr_cmd_;
+    bool has_disconnected_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

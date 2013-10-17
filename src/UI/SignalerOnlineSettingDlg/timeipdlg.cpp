@@ -23,6 +23,7 @@ TimeIPDlg::TimeIPDlg(QWidget *parent) :
     timer_id_ = 0;
     cmd_timer_ = new QTimer(this);
     curr_cmd_ = NoneCmd;
+    has_disconnected_ = false;
     InitPage();
     InitSignalSlots();
 }
@@ -66,7 +67,7 @@ void TimeIPDlg::OnRefreshButtonClicked()
     SyncCommand::GetInstance()->ReadSignalerNetworkInfo(this, SLOT(OnCmdReadNetworkingInfo(QByteArray&)));
     EnableButtonExcept(false, NULL);
     curr_cmd_ = ReadNetwork;
-    cmd_timer_->start(30000);
+    cmd_timer_->start(31000);
 }
 
 void TimeIPDlg::OnWriteIPButtonClicked()
@@ -82,18 +83,20 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     QString gateway = gateway_lineedit_->text().trimmed();
     param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
+    emit networkSettingSignal(true);
     SyncCommand::GetInstance()->disconnectFromHost();
+    has_disconnected_ = true;
     this->setEnabled(false);
     QTime t;
     t.start();
-    while (t.elapsed() < 2000)
+    while (t.elapsed() < 1000)
     {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
-    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
     SyncCommand::GetInstance()->connectToHost(ip, 12810);
     curr_cmd_ = WriteNetwork;
-    cmd_timer_->start(30000);
+    cmd_timer_->start(31000);
     this->setEnabled(true);
 }
 
@@ -212,8 +215,11 @@ void TimeIPDlg::OnCmdWriteIPAddress(QByteArray &array_content)
 
 void TimeIPDlg::OnConnectEstablish()
 {
-    STOP_CMD_TIMER(cmd_timer_)
-    SyncCommand::GetInstance()->InitParseHandler(this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
+    STOP_CMD_TIMER(cmd_timer_);
+    if (has_disconnected_)
+    {
+        SyncCommand::GetInstance()->InitParseHandler(this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
+    }
 }
 
 void TimeIPDlg::OnConnectError(QAbstractSocket::SocketError)

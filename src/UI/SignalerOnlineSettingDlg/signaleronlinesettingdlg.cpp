@@ -30,7 +30,7 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 
-#define CMD_WAIT_TIME   30000
+#define CMD_WAIT_TIME   31000
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -45,6 +45,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
 
     cmd_timer_ = new QTimer(this);
     curr_cmd_ = NoneCmd;
+    is_edit_ip_ = false;
 
     conn_status_ = false;
     is_cfg_read_ = false;
@@ -219,6 +220,11 @@ void SignalerOnlineSettingDlg::OnMoreButtonToggled(bool toggled)
     more_widget_->setHidden(!toggled);
 }
 
+void SignalerOnlineSettingDlg::OnNetworkSettingSlot(bool flag)
+{
+    is_edit_ip_ = flag;
+}
+
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     UpdateConnectStatus(true);
@@ -250,6 +256,11 @@ void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
     conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
 	more_button_->setChecked(true);
     sync_cmd_->ReleaseSignalSlots();
+    if (is_edit_ip_)
+    {
+        emit versionCheckedSignal();
+        is_edit_ip_ = false;
+    }
 }
 
 void SignalerOnlineSettingDlg::OnDisconnectedSlot()
@@ -531,6 +542,8 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(log_button_, SIGNAL(clicked()), this, SLOT(OnLogButtonClicked()));
     connect(flow_button_, SIGNAL(clicked()), this, SLOT(OnFlowButtonClicked()));
     connect(setting_button_, SIGNAL(clicked()), this, SLOT(OnSettingButtonClicked()));
+    connect(this, SIGNAL(versionCheckedSignal()), time_ip_dlg_, SLOT(OnConnectEstablish()));
+    connect(time_ip_dlg_, SIGNAL(networkSettingSignal(bool)), this, SLOT(OnNetworkSettingSlot(bool)));
 
     connect(saveas_button_, SIGNAL(clicked()), this, SLOT(OnSaveAsbuttonClicked()));
     connect(more_button_, SIGNAL(toggled(bool)), this, SLOT(OnMoreButtonToggled(bool)));
