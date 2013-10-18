@@ -1,4 +1,5 @@
-#include <QtGui>
+#include <QMessageBox>
+#include <QStatusBar>
 #include "mainwindow.h"
 #include "mutility.h"
 #include "macrostring.h"

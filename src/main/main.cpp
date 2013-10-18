@@ -17,9 +17,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QTextCodec *tc=QTextCodec::codecForName("utf8");
-    QTextCodec::setCodecForCStrings(tc);
-
     SystemIniter initializer;
     SystemIniter::DirError err = initializer.InitUserDir();
     if (err == SystemIniter::None)
