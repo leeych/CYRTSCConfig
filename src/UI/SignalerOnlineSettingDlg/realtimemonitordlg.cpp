@@ -175,6 +175,7 @@ void RealtimeMonitorDlg::OnCountDownTimerOutSlot()
 void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
 {
     cfg_array_.append(array);
+    qDebug() << "OnCmdReadSignalerConfigFile config file size:" << cfg_array_.size();
     if (!cfg_array_.left(4).contains("CYT4"))
     {
         cfg_array_.clear();
@@ -227,6 +228,7 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
             {
                 UpdateScheduleInfo();
             }
+            qDebug() << "parse config file size:" << cfg_array_.size();
             sync_cmd_->GetLightStatus(this, SLOT(OnCmdParseParam(QByteArray&)));
         }
     }
@@ -251,7 +253,13 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         {
             break;
         }
+        if (!(recv_array_.contains("CYT") || recv_array_.contains("END")))
+        {
+            recv_array_.clear();
+            break;
+        }
         cmd_id = recv_array_.at(3);
+        qDebug() << "OnCmdParseParam " << recv_array_.left(4);
         switch (cmd_id)
         {
         case '0':
@@ -283,7 +291,15 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             break;
         case '4':
-    //        status = ParseConfigContent(array);
+            status = ParseConfigContent(recv_array_);
+            if (status)
+            {
+                QFile file(cfg_file_ + ".tmp");
+                file.open(QIODevice::WriteOnly);
+                file.write(recv_array_);
+                file.close();
+                recv_array_.clear();
+            }
             break;
         case '5':
             status = ParseCountDownContent(recv_array_);
@@ -661,13 +677,10 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 
 void RealtimeMonitorDlg::UpdateUI()
 {
-//    sync_cmd_->ReadSignalerTime(this, SLOT(OnCmdParseParam(QByteArray&)));
     phase_time_lcd_->display("00-00-00");
-
-    QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss ddd");
+    QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss");
     signaler_time_label_->setText(str);
     tree_grp_->hide();
-
     if (InitTscParam())
     {
         UpdateScheduleInfo();
@@ -1152,9 +1165,10 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     }
     return true;
 }
-
+// CYT1+通道号+信号灯状态+END
 bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 {
+    qDebug() << "Parse begine MonitorContent size";
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
@@ -1299,6 +1313,7 @@ bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
 // CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
 bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 {
+    qDebug() << "Parse Light status";
     array.remove(0, 4);
     char array_size = 0;
     char num_1 = 0;
@@ -1389,6 +1404,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 // CYTA+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 {
+    qDebug() << "Parse detector fault";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 1)
@@ -1407,6 +1423,7 @@ bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 // CYTC+数据总长度（4字节）+驱动板状态数据字节流+END
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
+    qDebug() << "Parse driver status";
     array.remove(0, 4);
     unsigned int len = 0;
     memcpy(&len, array.data(), 4);
@@ -1436,6 +1453,7 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 // CYTD+驱动板编号(1字节)+状态(1字节)+END
 bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 {
+    qDebug() << "Parse realtime driver info";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 3)
@@ -1453,6 +1471,7 @@ bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 // CYTE+通道号(1字节) + 标志(1字节) + 故障类型(1字节) + END
 bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 {
+    qDebug() << "Parse realtime light status";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 3)
@@ -1472,11 +1491,13 @@ bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 // CYTB+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
 {
+    qDebug() << "Parse realtime detector flow";
     array.remove(0, 4);
     memcpy(&detector_id_, array.data(), 1);
     array.remove(0, 1);
     if (!array.left(3).contains("END"))
     {
+//        array.remove(0, 3);
         return false;
     }
     array.remove(0, 3);
