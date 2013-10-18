@@ -184,9 +184,18 @@ unsigned int EventLogHandler::get_event_type_clear_time(unsigned char event_type
     return clear_time_map_.value(event_type_id);
 }
 
-bool EventLogHandler::export_event_log(const QString &file_name)
+bool EventLogHandler::event_log_record_empty()
 {
     if (event_log_map_.isEmpty())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool EventLogHandler::export_event_log(const QString &file_name)
+{
+    if (event_log_record_empty())
     {
         return false;
     }
@@ -232,7 +241,7 @@ bool EventLogHandler::export_event_log(const QString &file_name)
 
 bool EventLogHandler::export_report(const QString &file_name)
 {
-    if (event_log_map_.isEmpty())
+    if (event_log_record_empty())
     {
         return false;
     }

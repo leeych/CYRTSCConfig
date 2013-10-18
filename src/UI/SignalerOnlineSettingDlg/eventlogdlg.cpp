@@ -79,6 +79,11 @@ void EventLogDlg::OnExportLogButtonClicked()
     {
         return;
     }
+    if (handler_->event_log_record_empty())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_lOG_EMPTY, STRING_OK);
+        return;
+    }
     bool status = handler_->export_event_log(log_file);
     if (!status)
     {

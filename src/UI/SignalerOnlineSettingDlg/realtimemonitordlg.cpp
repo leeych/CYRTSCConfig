@@ -1120,15 +1120,17 @@ void RealtimeMonitorDlg::ReadSignalerConfigFile()
 
 bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
 {
+    qDebug() << "config file size:" << array.size();
     if (array.isEmpty())
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
         return false;
     }
-    QString head(array.left(4));
+//    QString head(array.left(4));
     QString tail(array.right(3));
     if (!(array.left(4).contains("CYT4") && array.right(3).contains("END")))
     {
+        array.clear();
         return false;
     }
     array.remove(0, 4);
@@ -1137,13 +1139,15 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     {
         temp[i] = array.at(i);
     }
-    int len = 0;
+    unsigned int len = 0;
     memcpy(&len, temp, 4);
     array.remove(0, 4);
     int idx = array.indexOf(tail);
     array.remove(idx, 3);
-    if (len-4-3-4 != array.size())
+    len -= (4+3+4);
+    if (len != array.size())
     {
+        array.clear();
         return false;
     }
     return true;

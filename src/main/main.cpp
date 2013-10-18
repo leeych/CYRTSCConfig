@@ -54,10 +54,10 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    MainWindow window;
     QSplashScreen *splash = new QSplashScreen(QPixmap(dir + "splash.png"));
     splash->show();
     splash->showMessage(STRING_MAIN_INITIALIZE, Qt::AlignBottom | Qt::AlignLeft, Qt::white);
+    MainWindow window;
     QTime t;
     t.start();
     while (t.elapsed() < 2000)
