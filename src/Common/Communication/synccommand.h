@@ -21,6 +21,10 @@ public:
     void DistroyInstance();
     QTcpSocket *getSocket();
 
+    void setSocketAddress(const QString &ip, unsigned int port);
+    QString getSocketIp() const;
+    unsigned int getSocketPort() const;
+
     void connectToHost(const QString &ip, unsigned int port);
     void InitParseHandler(QObject *target, const std::string &slot);
     void ReleaseSignalSlots();

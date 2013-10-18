@@ -24,6 +24,7 @@ TimeIPDlg::TimeIPDlg(QWidget *parent) :
     cmd_timer_ = new QTimer(this);
     curr_cmd_ = NoneCmd;
     has_disconnected_ = false;
+    port_ = 0;
     InitPage();
     InitSignalSlots();
 }
@@ -95,8 +96,8 @@ void TimeIPDlg::OnWriteIPButtonClicked()
     {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
-//    connect(SyncCommand::GetInstance(), SIGNAL(connectedSignal()), this, SLOT(OnConnectEstablish()));
-    SyncCommand::GetInstance()->connectToHost(ip, 12810);
+    port_ = SyncCommand::GetInstance()->getSocketPort();
+    SyncCommand::GetInstance()->connectToHost(ip, port_);
     curr_cmd_ = WriteNetwork;
     cmd_timer_->start(31000);
     this->setEnabled(true);

@@ -1996,6 +1996,10 @@
         <translation>检测器流量为空！</translation>
     </message>
     <message>
+        <source>Get detector flow</source>
+        <translation type="obsolete">获取检测器流量</translation>
+    </message>
+    <message>
         <location filename="../../include/macrostring.h" line="547"/>
         <source>Signaler record</source>
         <translation>信号机状态记录</translation>

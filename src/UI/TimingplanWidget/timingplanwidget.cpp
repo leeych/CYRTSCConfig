@@ -30,7 +30,7 @@ const QString &TimingplanWidget::widget_name()
 
 void TimingplanWidget::UpdateTable()
 {
-    timing_table_->clear();
+    timing_table_->clearContents();
     QList<TimingParam> timing_list = handler_->get_timing_plan_list();
     int table_row = timing_list.size();
     timing_table_->setRowCount(table_row);
@@ -67,7 +67,7 @@ void TimingplanWidget::UpdateTable()
         item_phase_timing->setTextAlignment(Qt::AlignCenter);
         timing_table_->setItem(i, 4, item_phase_timing);
     }
-    InitTableHeader();
+//    InitTableHeader();
 }
 
 void TimingplanWidget::OnAddActionClicked()

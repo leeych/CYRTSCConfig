@@ -141,7 +141,7 @@ void SignalerOnlineSettingDlg::OnUpdateButtonClicked()
 void SignalerOnlineSettingDlg::OnSendButtonClicked()
 {
     conn_tip_label_->clear();
-    QString file_name = QFileDialog::getOpenFileName(NULL, STRING_OPEN, "./", "Data(*.dat);;All File(*.*)");
+    QString file_name = QFileDialog::getOpenFileName(this, STRING_OPEN, "./", "Data(*.dat);;All File(*.*)");
     if (file_name.isNull() || file_name.isEmpty())
     {
         return;

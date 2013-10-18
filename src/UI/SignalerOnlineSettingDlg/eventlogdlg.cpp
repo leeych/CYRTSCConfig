@@ -118,6 +118,7 @@ void EventLogDlg::OnEventTypeTreeItemSelected(QTreeWidgetItem *item, int col)
 
 void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col)
 {
+    tip_label_->clear();
     if (item == NULL || col < 0)
     {
         return;

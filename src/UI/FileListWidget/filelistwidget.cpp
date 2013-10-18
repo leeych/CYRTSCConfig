@@ -22,7 +22,7 @@ FileListWidget::FileListWidget(QWidget *parent)
 
 void FileListWidget::OnAddFileAction()
 {
-    open_file_name_ = QFileDialog::getOpenFileName(0, STRING_UI_OPEN_FILE, "./", "Data(*.dat);;All File(*.*)");
+    open_file_name_ = QFileDialog::getOpenFileName(this, STRING_UI_OPEN_FILE, "./", "Data(*.dat);;All File(*.*)");
     if (open_file_name_.isNull() || open_file_name_.isEmpty())
     {
         return;
@@ -48,7 +48,7 @@ void FileListWidget::OnAddFileAction()
 
 void FileListWidget::OnNewFileAction()
 {
-    new_file_name_ = QFileDialog::getSaveFileName(0, STRING_UI_NEW_FILE, "./", "Data(*.dat);;All File(*.*)");
+    new_file_name_ = QFileDialog::getSaveFileName(this, STRING_UI_NEW_FILE, "./", "Data(*.dat);;All File(*.*)");
 	if (new_file_name_.isNull() || new_file_name_.isEmpty())
 	{
 		return;
@@ -77,7 +77,7 @@ void FileListWidget::OnNewFileAction()
 
 void FileListWidget::OnSaveAsFileAction()
 {
-    QString file_name = QFileDialog::getSaveFileName(NULL, STRING_UI_SAVEAS, "./", "Data(*.dat);;All File(*.*)");
+    QString file_name = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./", "Data(*.dat);;All File(*.*)");
     if (file_name.isNull() || file_name.isEmpty())
     {
         return;
@@ -151,7 +151,7 @@ void FileListWidget::OnClearListAction()
 	{
 		file_table_->removeRow(i);
 	}
-    file_table_->clear();
+    file_table_->clearContents();
 	file_path_map_.clear();
 	file_count_ = 0;
     emit updateTabPageSignal();
@@ -296,7 +296,7 @@ bool FileListWidget::SaveDataFile()
 {
 	if (curr_file_name_.isEmpty())
 	{
-		QString file_name = QFileDialog::getSaveFileName(NULL, STRING_UI_SAVE, "./", "Data(*.dat);;All File(*.*)");
+        QString file_name = QFileDialog::getSaveFileName(this, STRING_UI_SAVE, "./", "Data(*.dat);;All File(*.*)");
 		if (file_name.isNull() || file_name.isEmpty())
 		{
 			return false;

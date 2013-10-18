@@ -64,6 +64,7 @@ private:
     int timer_id_;
     CurrentCmd curr_cmd_;
     bool has_disconnected_;
+    int port_;
 
 private:
     QPushButton *read_sys_time_button_, *sync_time_button_;

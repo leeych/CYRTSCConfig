@@ -973,8 +973,8 @@ void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
     }
     QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
     int flow_count = item->text(2).toInt();
-    item->setText(2, QString::number(++flow_count));
-    item->setTextAlignment(2, Qt::AlignCenter);
+    item->setText(1, QString::number(++flow_count));
+    item->setTextAlignment(1, Qt::AlignCenter);
 }
 
 void RealtimeMonitorDlg::UpdateDetectorStatusInfo(unsigned char detector_id, unsigned char flag)
@@ -985,8 +985,8 @@ void RealtimeMonitorDlg::UpdateDetectorStatusInfo(unsigned char detector_id, uns
     }
     QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
     QString str = detector_fault_desc_map_.value(flag);
-    item->setText(1, str);
-    item->setTextAlignment(1, Qt::AlignCenter);
+    item->setText(2, str);
+    item->setTextAlignment(2, Qt::AlignCenter);
 }
 
 void RealtimeMonitorDlg::ResetButtonStatus(const QPushButton *self_btn)
@@ -1378,8 +1378,6 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
     stage_id_label_->setText(str);
     str = MUtility::phaseBitsDesc(channel_status_bak_.phase_id);
     phase_id_label_->setText(str);
-    qDebug() << "stage_id:" << curr_stage_id_
-             << "phase_id:" << channel_status_bak_.phase_id << str;
     UpdateLightTreeColor();
 
     return true;

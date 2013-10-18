@@ -27,7 +27,7 @@ const QString &ChanneltableWidget::widget_name()
 
 void ChanneltableWidget::UpdateTable()
 {
-    channel_table_->clear();
+    channel_table_->clearContents();
     QString str;
     QList<ChannelParam> channel_list = handler_->get_channel_list();
     int table_row = channel_list.size();
@@ -64,7 +64,7 @@ void ChanneltableWidget::UpdateTable()
         item_lane->setTextAlignment(Qt::AlignCenter);
         channel_table_->setItem(i, 4, item_lane);
     }
-    InitTableHeader();
+//    InitTableHeader();
 }
 
 void ChanneltableWidget::OnTableCellDoubleClicked(int row, int col)

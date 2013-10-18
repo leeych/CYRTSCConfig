@@ -28,7 +28,7 @@ const QString &DetectortableWidget::widget_name()
 
 void DetectortableWidget::UpdateTable()
 {
-    detector_table_->clear();
+    detector_table_->clearContents();
     QString str;
     QList<DetectorParam> detector_list = handler_->get_detector_list();
     int table_row = detector_list.size();
@@ -91,7 +91,7 @@ void DetectortableWidget::UpdateTable()
         item_share->setTextAlignment(Qt::AlignCenter);
         detector_table_->setItem(i, 8, item_share);
     }
-    InitTableHeader();
+//    InitTableHeader();
 }
 
 void DetectortableWidget::OnTableCellDoubleClicked(int row, int col)

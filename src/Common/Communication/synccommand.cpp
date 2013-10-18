@@ -24,6 +24,22 @@ QTcpSocket *SyncCommand::getSocket()
     return socket_;
 }
 
+void SyncCommand::setSocketAddress(const QString &ip, unsigned int port)
+{
+    ip_ = ip;
+    port_ = port;
+}
+
+QString SyncCommand::getSocketIp() const
+{
+    return ip_;
+}
+
+unsigned int SyncCommand::getSocketPort() const
+{
+    return port_;
+}
+
 void SyncCommand::connectToHost(const QString &ip, unsigned int port)
 {
     ip_ = ip;

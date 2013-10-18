@@ -53,6 +53,7 @@ void DetectorFlowDlg::OnReadFlowButtonClicked()
 
 void DetectorFlowDlg::OnClearFowButtonClicked()
 {
+    tip_label_->clear();
     sync_cmd_->ClearDetectorFlowInfo();
     this->setEnabled(false);
     QTime t;
@@ -65,10 +66,12 @@ void DetectorFlowDlg::OnClearFowButtonClicked()
     UpdateUI();
     OnReadFlowButtonClicked();
     this->setEnabled(true);
+    tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW + STRING_SUCCEEDED + "</font>");
 }
 
 void DetectorFlowDlg::OnCalculateButtonClicked()
 {
+    tip_label_->clear();
     QDateTime start_time = start_time_editor_->dateTime();
     QDateTime end_time = end_time_editor_->dateTime();
     QDateTime utc_time = QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
@@ -88,6 +91,7 @@ void DetectorFlowDlg::OnCalculateButtonClicked()
 
 void DetectorFlowDlg::OnDetectorIDTreeDoubleClicked(QTreeWidgetItem *item, int col)
 {
+    tip_label_->clear();
     if (item == NULL || col < 0)
     {
         return;
@@ -152,10 +156,12 @@ void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
         status = ParseDetectorDataContent(array);
         if (!status)
         {
+            tip_label_->setText("<font color=\"Red\">" + STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR + "</font>");
             QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
         }
         else
         {
+            tip_label_->setText("<font color=\"Green\">" + STRING_UI_SGINALER_DETECTOR_READ_FLOW + STRING_SUCCEEDED + "</font>");
             UpdateFlowInfoTree();
         }
         break;
@@ -243,6 +249,8 @@ void DetectorFlowDlg::InitPage()
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addLayout(tree_hlayout);
     vlayout->addLayout(button_hlayout);
+    tip_label_ = new QLabel;
+    vlayout->addWidget(tip_label_, 0, Qt::AlignLeft);
     setLayout(vlayout);
 }
 

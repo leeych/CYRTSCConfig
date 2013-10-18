@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QDateTimeEdit>
 #include <QList>
+#include <QLabel>
 
 #include "detectorflowhandler.h"
 #include "tsc.h"
@@ -58,15 +59,14 @@ private:
     unsigned char curr_detector_id_;
     DetectorFlowHandler *handler_;
     SyncCommand *sync_cmd_;
-//    DetectorFlowInfo detector_status_info_;
     DetectorData_t *detector_array_;
-//    QList<DetectorFlowInfo> detector_list_;
     QList<QTreeWidgetItem *> detector_item_list_;
     QList<unsigned char> detector_flow_list_;
 
     QByteArray recv_array_;
 
 private:
+    QLabel *tip_label_;
     QTreeWidget *detector_tree_, *flow_tree_;
     QDateTimeEdit *start_time_editor_, *end_time_editor_;
     QLineEdit *total_flow_lineedit_;

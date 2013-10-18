@@ -71,10 +71,8 @@ void PhaseconflicttableWidget::OnUpdateTableRowSlot(unsigned char phase_id)
         return;
     }
     QString str = get_conflict_desc(phase_id);
-    qDebug() << str;
     QTableWidgetItem* item = conflict_table_->item(row, 1);
     item->setText(str);
-    //item->setTextAlignment(Qt::AlignCenter);
 }
 
 void PhaseconflicttableWidget::OnEditActionClicked()

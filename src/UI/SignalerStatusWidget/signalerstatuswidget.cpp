@@ -336,8 +336,8 @@ QColor SignalerStatusWidget::get_status_text_color(SignalerParam::SignalerStatus
 
 void SignalerStatusWidget::UpdateTable()
 {
-	signaler_table_->clear();
-	InitTableHeader();
+    signaler_table_->clearContents();
+//	InitTableHeader();
     QList<SignalerParam> signaler_list = handler_->get_signaler_list();
     int table_row = signaler_list.size();
     QString str;
