@@ -2,7 +2,7 @@
 <signaler_setting>
     <signaler>
         <name>真正的信号机</name>
-        <IP>192.168.10.252</IP>
+        <IP>192.168.10.250</IP>
         <port>12810</port>
         <location>华亿科学园</location>
         <branch>黄科路口</branch>

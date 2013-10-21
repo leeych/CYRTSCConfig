@@ -388,6 +388,8 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
     ResetButtonStatus(NULL);
     ResetChannelColor();
     // TODO: window closed handler
+//    emit realtimeMonitorClosedSignal();
+    sync_cmd_->disconnectFromHost();
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
@@ -566,6 +568,7 @@ void RealtimeMonitorDlg::InitSignalSlots()
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
+//    connect(this, SIGNAL(realtimeMonitorClosedSignal()), SyncCommand::GetInstance(), SLOT(OnDisconnected()));
 }
 
 void RealtimeMonitorDlg::InitPixmap()

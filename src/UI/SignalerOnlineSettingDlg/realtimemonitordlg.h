@@ -88,6 +88,7 @@ public:
     void Initialize(const QString &ip);
 
 signals:
+    void realtimeMonitorClosedSignal();
     
 public slots:
     void OnSignalerRecordButtonToggled(bool checked);
