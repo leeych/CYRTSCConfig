@@ -389,7 +389,7 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
     ResetChannelColor();
     // TODO: window closed handler
 //    emit realtimeMonitorClosedSignal();
-    sync_cmd_->disconnectFromHost();
+//    sync_cmd_->disconnectFromHost();
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
