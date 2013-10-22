@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-10-11T14:56:27
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = TscAboutDlg
 TEMPLATE = lib
 

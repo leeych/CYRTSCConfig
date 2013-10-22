@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-10T14:56:08
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = TSCLogin
 TEMPLATE = lib
 

@@ -167,6 +167,12 @@ void ChanneltableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void ChanneltableWidget::updateSlot()
+{
+    channel_table_->horizontalHeader()->viewport()->update();
+    channel_table_->viewport()->update();
+}
+
 void ChanneltableWidget::InitPage()
 {
     InitTable();
@@ -206,7 +212,8 @@ void ChanneltableWidget::InitTable()
     channel_table_->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     channel_table_->verticalHeader()->setHidden(true);
     channel_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    channel_table_->horizontalHeader()->setClickable(false);
+//    channel_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(channel_table_, false)
     channel_table_->horizontalHeader()->setStretchLastSection(true);
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));

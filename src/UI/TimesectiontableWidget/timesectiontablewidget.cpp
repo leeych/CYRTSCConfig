@@ -197,6 +197,12 @@ void TimesectiontableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void TimesectiontableWidget::updateSlot()
+{
+    section_tree_widget_->header()->viewport()->update();
+    section_tree_widget_->viewport()->update();
+}
+
 void TimesectiontableWidget::InitPage()
 {
     InitTree();

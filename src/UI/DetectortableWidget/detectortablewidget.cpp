@@ -233,6 +233,12 @@ void DetectortableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void DetectortableWidget::updateSlot()
+{
+    detector_table_->horizontalHeader()->viewport()->update();
+    detector_table_->viewport()->update();
+}
+
 void DetectortableWidget::InitPage()
 {
     InitTable();
@@ -265,13 +271,14 @@ void DetectortableWidget::InitSignalSlots()
 
 void DetectortableWidget::InitTable()
 {
-    detector_table_ = new QTableWidget;
+    detector_table_ = new QTableWidget(this);
     detector_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     detector_table_->setSelectionBehavior(QTableWidget::SelectRows);
     detector_table_->setSelectionMode(QAbstractItemView::SingleSelection);
     detector_table_->verticalHeader()->setHidden(true);
     detector_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    detector_table_->horizontalHeader()->setClickable(false);
+//    detector_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(detector_table_, false)
     detector_table_->horizontalHeader()->setStretchLastSection(true);
 
     QPalette pal;

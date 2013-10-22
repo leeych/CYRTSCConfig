@@ -124,6 +124,12 @@ void PhaseconflicttableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void PhaseconflicttableWidget::updateSlot()
+{
+    conflict_table_->horizontalHeader()->viewport()->update();
+    conflict_table_->viewport()->update();
+}
+
 void PhaseconflicttableWidget::InitPage()
 {
     InitTable();
@@ -159,7 +165,8 @@ void PhaseconflicttableWidget::InitTable()
     conflict_table_->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     conflict_table_->verticalHeader()->setHidden(true);
     conflict_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    conflict_table_->horizontalHeader()->setClickable(false);
+//    conflict_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(conflict_table_, false)
     conflict_table_->horizontalHeader()->setStretchLastSection(true);
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));

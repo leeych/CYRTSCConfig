@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-10T11:21:19
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT     += xml
 QT     += network
 

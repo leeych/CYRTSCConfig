@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-08T10:33:13
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = PhasetimingtableWidget
 TEMPLATE = lib
 

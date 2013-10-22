@@ -43,6 +43,8 @@ public slots:
     void OnConnectedSlot();
     void OnDisconnectedSlot();
 
+    void updateSlot();
+
 private:
     void InitPage();
     void InitSignalSlots();

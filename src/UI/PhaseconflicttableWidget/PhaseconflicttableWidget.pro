@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-07T19:58:23
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = PhaseconflicttableWidget
 TEMPLATE = lib
 

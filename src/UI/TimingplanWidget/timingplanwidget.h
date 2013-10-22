@@ -37,6 +37,8 @@ public slots:
 
     void OnInitDatabase(void *db_ptr);
 
+    void updateSlot();
+
 protected:
     void resizeEvent(QResizeEvent *);
 

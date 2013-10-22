@@ -108,6 +108,7 @@ public slots:
 protected:
     void closeEvent(QCloseEvent *);
     void timerEvent(QTimerEvent *);
+    void resizeEvent(QResizeEvent *);
 
 private:
     void InitPage();

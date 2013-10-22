@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-06T16:17:34
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ScheduleTableWidget
 TEMPLATE = lib
 

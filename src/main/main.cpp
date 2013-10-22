@@ -17,8 +17,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QTextCodec *tc=QTextCodec::codecForName("utf8");
-    QTextCodec::setCodecForCStrings(tc);
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("GB18030-0"));
+#else
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));\
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf8"));
+#endif
+#endif
 
     SystemIniter initializer;
     SystemIniter::DirError err = initializer.InitUserDir();

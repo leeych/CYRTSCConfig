@@ -212,6 +212,12 @@ void PhasetableWidget::OnInitDatabase(void *ptr)
     handler_->init_database(ptr);
 }
 
+void PhasetableWidget::updateSlot()
+{
+    tree_widget_->header()->viewport()->update();
+    tree_widget_->viewport()->update();
+}
+
 void PhasetableWidget::InitPage()
 {
     InitTree();

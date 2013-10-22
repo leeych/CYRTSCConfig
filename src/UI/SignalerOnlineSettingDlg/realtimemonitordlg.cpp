@@ -405,6 +405,11 @@ void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
     }
 }
 
+void RealtimeMonitorDlg::resizeEvent(QResizeEvent *)
+{
+    graphics_view_->viewport()->update();
+}
+
 void RealtimeMonitorDlg::InitPage()
 {
     InitPixmap();
@@ -469,7 +474,7 @@ void RealtimeMonitorDlg::InitPage()
     phase_time_lcd_->setFrameShape(QFrame::Box);
     phase_time_lcd_->setFrameShadow(QFrame::Sunken);
     phase_time_lcd_->setSmallDecimalPoint(false);
-    phase_time_lcd_->setNumDigits(8);
+//    phase_time_lcd_->setNumDigits(8);
     phase_time_lcd_->setDigitCount(8);
     phase_time_lcd_->setMode(QLCDNumber::Dec);
     phase_time_lcd_->setSegmentStyle(QLCDNumber::Flat);
@@ -572,8 +577,6 @@ void RealtimeMonitorDlg::InitSignalSlots()
 
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
-//    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectError(QString)));
-//    connect(this, SIGNAL(realtimeMonitorClosedSignal()), SyncCommand::GetInstance(), SLOT(OnDisconnected()));
 }
 
 void RealtimeMonitorDlg::InitPixmap()
@@ -1147,7 +1150,6 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
         return false;
     }
-//    QString head(array.left(4));
     QString tail(array.right(3));
     if (!(array.left(4).contains("CYT4") && array.right(3).contains("END")))
     {
@@ -1166,7 +1168,7 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
     int idx = array.indexOf(tail);
     array.remove(idx, 3);
     len -= (4+3+4);
-    if (len != array.size())
+    if (len != (unsigned int)array.size())
     {
         array.clear();
         return false;

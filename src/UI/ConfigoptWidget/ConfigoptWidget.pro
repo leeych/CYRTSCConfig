@@ -3,9 +3,7 @@
 # Project created by QtCreator 2013-08-06T15:26:35
 #
 #-------------------------------------------------
-
-QT       += widgets
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ConfigoptWidget
 TEMPLATE = lib
 

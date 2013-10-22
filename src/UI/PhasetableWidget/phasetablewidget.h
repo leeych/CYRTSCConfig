@@ -38,6 +38,8 @@ public slots:
     void OnUpdateDataSlot();
     void OnInitDatabase(void *ptr);
 
+    void updateSlot();
+
 private:
     void InitPage();
     void InitSignalSlots();

@@ -12,4 +12,13 @@
 #define WIDGET_CENTRALIZE(widget)
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+#define SET_HEADER_CLICKABLE(table_ptr,flag) \
+    table_ptr->horizontalHeader()->setClickable(flag);
+#else
+#define SET_HEADER_CLICKABLE(table_ptr,flag) \
+    table_ptr->horizontalHeader()->setSectionsClickable(flag);
+#endif
+
+
 #endif // UTILMACROS_H

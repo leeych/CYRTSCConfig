@@ -51,6 +51,7 @@ public:
 signals:
     void updateTabPageSignal(void *);
     void versionCheckedSignal();
+    void sizeChangedSignal();
 
 public slots:
     void OnConnectButtonClicked();
@@ -80,6 +81,7 @@ public slots:
 protected:
     void closeEvent(QCloseEvent *);
     void timerEvent(QTimerEvent *);
+    void resizeEvent(QResizeEvent *);
 
 private:
     void InitPage();

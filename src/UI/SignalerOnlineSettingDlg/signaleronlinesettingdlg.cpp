@@ -473,6 +473,11 @@ void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
     }
 }
 
+void SignalerOnlineSettingDlg::resizeEvent(QResizeEvent *)
+{
+    emit sizeChangedSignal();
+}
+
 void SignalerOnlineSettingDlg::InitPage()
 {
     InitTabPage();
@@ -562,6 +567,15 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(this, SIGNAL(updateTabPageSignal(void *)), phase_err_widget_, SLOT(OnInitDatabase(void*)));
     connect(this, SIGNAL(updateTabPageSignal(void *)), channel_widget_, SLOT(OnInitDatabase(void*)));
     connect(this, SIGNAL(updateTabPageSignal(void *)), detector_widget_, SLOT(OnInitDatabase(void*)));
+
+    connect(this, SIGNAL(sizeChangedSignal()), schedule_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), timesection_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), timing_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), stage_timing_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), phase_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), phase_err_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), channel_widget_, SLOT(updateSlot()));
+    connect(this, SIGNAL(sizeChangedSignal()), detector_widget_, SLOT(updateSlot()));
 }
 
 void SignalerOnlineSettingDlg::InitTabPage()

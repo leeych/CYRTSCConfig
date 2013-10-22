@@ -1,10 +1,12 @@
 #include "tscaboutdlg.h"
 #include "macrostring.h"
 #include "mutility.h"
-#include <QtGui>
 #include <QDesktopWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+
+#define WIDGET_CENTER
+#include "utilmacros.h"
 
 
 TscAboutDlg::TscAboutDlg(QWidget *parent) :
@@ -65,8 +67,7 @@ void TscAboutDlg::InitPage()
 //                  );
 
     setFixedSize(530,270);
-    QDesktopWidget* desktop = QApplication::desktop();
-    move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
+    WIDGET_CENTRALIZE(this)
 }
 
 void TscAboutDlg::InitSignalSlots()

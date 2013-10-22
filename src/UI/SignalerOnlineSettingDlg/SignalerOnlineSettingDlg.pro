@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-09-07T10:48:03
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT      += network
 
 TARGET = SignalerOnlineSettingDlg

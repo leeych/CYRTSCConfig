@@ -276,6 +276,12 @@ void PhasetimingtableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void PhasetimingtableWidget::updateSlot()
+{
+    tree_widget_->header()->viewport()->update();
+    tree_widget_->viewport()->update();
+}
+
 void PhasetimingtableWidget::AddChild(QTreeWidgetItem *item, unsigned char phase_timing_id)
 {
 	QTreeWidgetItem *item_sub = NULL;

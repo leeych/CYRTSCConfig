@@ -178,6 +178,12 @@ void TimingplanWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void TimingplanWidget::updateSlot()
+{
+    timing_table_->horizontalHeader()->viewport()->update();
+    timing_table_->viewport()->update();
+}
+
 void TimingplanWidget::InitPage()
 {
     InitTable();
@@ -216,7 +222,8 @@ void TimingplanWidget::InitTable()
     timing_table_->setSelectionBehavior(QTableWidget::SelectRows);
     timing_table_->setSelectionMode(QAbstractItemView::SingleSelection);
     timing_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    timing_table_->horizontalHeader()->setClickable(false);
+//    timing_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(timing_table_, false)
 
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));

@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-06T15:37:10
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = FileListWidget
 TEMPLATE = lib
 

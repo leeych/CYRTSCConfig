@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-23T18:30:20
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = BottomButtonsWidget
 TEMPLATE = lib
 

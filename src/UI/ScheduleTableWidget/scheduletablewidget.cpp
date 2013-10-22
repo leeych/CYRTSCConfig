@@ -165,6 +165,12 @@ void ScheduleTableWidget::OnInitDatabase(void *db_ptr)
     handler_->init_database(db_ptr);
 }
 
+void ScheduleTableWidget::updateSlot()
+{
+    schedule_table_->horizontalHeader()->viewport()->update();
+    schedule_table_->viewport()->update();
+}
+
 void ScheduleTableWidget::InitPage()
 {
     InitContextMenu();
@@ -202,17 +208,15 @@ void ScheduleTableWidget::InitTable()
     schedule_table_->setSelectionBehavior(QTableWidget::SelectRows);
     schedule_table_->setSelectionMode(QAbstractItemView::SingleSelection);
     schedule_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    schedule_table_->horizontalHeader()->setClickable(false);
+//    schedule_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(schedule_table_, false)
 
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));
     schedule_table_->setPalette(pal);
-//    schedule_table_->setStyleSheet("font:9px; text-align:center;");
     schedule_table_->verticalHeader()->setHidden(true);
     schedule_table_->clearFocus();
-//    schedule_table_->setStyleSheet("border:0px;");
     schedule_table_->setContextMenuPolicy(Qt::CustomContextMenu);
-
     InitTableHeader();
 }
 
@@ -232,7 +236,8 @@ void ScheduleTableWidget::InitTableHeader()
     schedule_table_->setShowGrid(true);
     schedule_table_->horizontalHeader()->setStyleSheet(
                 "QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    schedule_table_->horizontalHeader()->setClickable(false);
+//    schedule_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(schedule_table_, false)
     schedule_table_->horizontalHeader()->setStretchLastSection(true);
 }
 

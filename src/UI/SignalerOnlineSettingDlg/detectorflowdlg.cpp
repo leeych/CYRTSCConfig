@@ -410,15 +410,15 @@ void DetectorFlowDlg::SetDateTimeEdit(QDateTimeEdit *edit)
     calendar->setFixedSize(210,150);
     edit->setCalendarWidget(calendar);
     edit->setAutoFillBackground(true);
-    QTableView *table = qFindChild<QTableView *>((edit->calendarWidget()));
-    QHeaderView *verticalHeader = table->verticalHeader();
-    verticalHeader->setResizeMode(QHeaderView::Fixed);
-    QHeaderView *h = table->horizontalHeader();
-    h->setResizeMode(QHeaderView::Fixed);
-    for(int i = 0; i < 7; i++)
-    {
-        h->resizeSection(i, 30);
-    }
+//    QTableView *table = qFindChild<QTableView *>((edit->calendarWidget()));
+//    QHeaderView *verticalHeader = table->verticalHeader();
+//    verticalHeader->setResizeMode(QHeaderView::Fixed);
+//    QHeaderView *h = table->horizontalHeader();
+//    h->setResizeMode(QHeaderView::Fixed);
+//    for(int i = 0; i < 7; i++)
+//    {
+//        h->resizeSection(i, 30);
+//    }
 }
 
 bool DetectorFlowDlg::CheckPackage(QByteArray &array)

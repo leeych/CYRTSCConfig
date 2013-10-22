@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-06T16:31:07
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = UIBase
 TEMPLATE = lib
 

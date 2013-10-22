@@ -194,6 +194,12 @@ void SignalerStatusWidget::OnDisconnectedSlot()
     item_status->setTextColor(get_status_text_color(SignalerParam::Offline));
 }
 
+void SignalerStatusWidget::updateSlot()
+{
+    signaler_table_->horizontalHeader()->viewport()->update();
+    signaler_table_->viewport()->update();
+}
+
 void SignalerStatusWidget::InitPage()
 {
     InitContextMenu();
@@ -230,12 +236,13 @@ void SignalerStatusWidget::InitSignalSlots()
 
 void SignalerStatusWidget::InitTable()
 {
-    signaler_table_ = new QTableWidget;
+    signaler_table_ = new QTableWidget(this);
     signaler_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     signaler_table_->setSelectionBehavior(QTableWidget::SelectRows);
     signaler_table_->setSelectionMode(QAbstractItemView::SingleSelection);
     signaler_table_->horizontalHeader()->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255)}");
-    signaler_table_->horizontalHeader()->setClickable(false);
+//    signaler_table_->horizontalHeader()->setClickable(false);
+    SET_HEADER_CLICKABLE(signaler_table_, false)
 
     QPalette pal;
     pal.setColor(QPalette::Base, QColor(233, 246, 254));

@@ -3,7 +3,7 @@
 # Project created by QtCreator 2013-08-08T08:59:37
 #
 #-------------------------------------------------
-
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DetectortableWidget
 TEMPLATE = lib
 
