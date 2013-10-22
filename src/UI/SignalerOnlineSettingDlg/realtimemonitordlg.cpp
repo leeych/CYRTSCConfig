@@ -191,6 +191,7 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
     int ret = -1;
     if (!res)
     {
+        qDebug() << "Parse config file failed";
         ret = QMessageBox::question(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
         if (ret == 0)
         {
@@ -206,9 +207,11 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
     }
     else
     {
+        qDebug() << "Parse config file succeeded";
         QFile file(cfg_file_);
 retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
+            qDebug() << "Save temp config file failed";
             ret = QMessageBox::question(this, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
             if (ret == 0)
             {
@@ -222,7 +225,6 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         else
         {
             file.write(cfg_array_);
-//            file.flush();
             file.close();
             if (InitTscParam())
             {
@@ -236,6 +238,7 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 
 void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 {
+    qDebug() << "OnCmdParseParam content" << recv_array_.left(4);
     recv_array_.append(array);
     if (!CheckPackage(recv_array_))
     {
@@ -387,8 +390,10 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
     }
     ResetButtonStatus(NULL);
     ResetChannelColor();
+    UpdateLightTreeColor();
     // TODO: window closed handler
-//    emit realtimeMonitorClosedSignal();
+    cfg_array_.clear();
+    recv_array_.clear();
 //    sync_cmd_->disconnectFromHost();
 }
 
