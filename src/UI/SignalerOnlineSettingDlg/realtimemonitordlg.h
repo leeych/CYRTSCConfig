@@ -19,6 +19,8 @@
 #include <QTimer>
 #include <QDateTime>
 
+#include <QKeyEvent>
+
 #include "tscparam.h"
 
 // 1. GetConfigure
@@ -109,6 +111,8 @@ protected:
     void closeEvent(QCloseEvent *);
     void timerEvent(QTimerEvent *);
     void resizeEvent(QResizeEvent *);
+    void keyPressEvent(QKeyEvent *key);
+//    void keyReleaseEvent(QKeyEvent *);
 
 private:
     void InitPage();

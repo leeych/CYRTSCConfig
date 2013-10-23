@@ -13,6 +13,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 
+
 #define RESET_FLAG
 
 #ifdef RESET_FLAG
@@ -401,6 +402,16 @@ void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
 void RealtimeMonitorDlg::resizeEvent(QResizeEvent *)
 {
     graphics_view_->viewport()->update();
+}
+
+void RealtimeMonitorDlg::keyPressEvent(QKeyEvent *key)
+{
+    if (key->key() == Qt::Key_Escape)
+    {
+        closeEvent(&QCloseEvent());
+        accept();
+    }
+    QDialog::keyPressEvent(key);
 }
 
 void RealtimeMonitorDlg::InitPage()

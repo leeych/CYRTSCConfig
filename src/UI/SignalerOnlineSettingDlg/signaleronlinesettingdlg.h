@@ -82,6 +82,7 @@ protected:
     void closeEvent(QCloseEvent *);
     void timerEvent(QTimerEvent *);
     void resizeEvent(QResizeEvent *);
+    void keyPressEvent(QKeyEvent *key);
 
 private:
     void InitPage();

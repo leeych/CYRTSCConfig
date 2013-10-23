@@ -478,6 +478,15 @@ void SignalerOnlineSettingDlg::resizeEvent(QResizeEvent *)
     emit sizeChangedSignal();
 }
 
+void SignalerOnlineSettingDlg::keyPressEvent(QKeyEvent *key)
+{
+    if (key->key() == Qt::Key_Escape)
+    {
+        closeEvent(&QCloseEvent());
+    }
+    QDialog::keyPressEvent(key);
+}
+
 void SignalerOnlineSettingDlg::InitPage()
 {
     InitTabPage();
