@@ -1,6 +1,6 @@
 #include "filereaderwriter.h"
 #include <memory.h>
-
+#include <QDebug>
 
 FileReaderWriter::FileReaderWriter()
 {
@@ -64,6 +64,7 @@ bool FileReaderWriter::ReadFile(const char *file_path, TSCParam &param)
     FILE *fp = fopen(file_path, "rb");
     if (fp == NULL)
     {
+        qDebug() << file_path << " file pointer is null";
         return false;
     }
     ResetParam();

@@ -2106,16 +2106,21 @@
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="575"/>
+        <source>Read temp config file</source>
+        <translation>打开信号机配置文件</translation>
+    </message>
+    <message>
+        <location filename="../../include/macrostring.h" line="576"/>
         <source>Parse socket package error</source>
         <translation>解析网络数据包出错</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="576"/>
+        <location filename="../../include/macrostring.h" line="577"/>
         <source>Require vehicle detector data</source>
         <translation>获取车辆检测器数据</translation>
     </message>
     <message>
-        <location filename="../../include/macrostring.h" line="577"/>
+        <location filename="../../include/macrostring.h" line="578"/>
         <source>Require detector status info data</source>
         <translation>获取检测器状态信息</translation>
     </message>
