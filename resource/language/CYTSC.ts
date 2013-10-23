@@ -2097,7 +2097,7 @@
     <message>
         <location filename="../../include/macrostring.h" line="571"/>
         <source>This request needs to disable networking first, continue?</source>
-        <translation>这个请求需要先断开网络连接，是否继续?</translation>
+        <translation>设置过程中网络连接可能会断开，是否继续?</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="573"/>
