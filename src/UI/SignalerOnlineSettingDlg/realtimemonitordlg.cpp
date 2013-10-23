@@ -35,7 +35,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
     total_stage_count_ = 0;
-	curr_stage_id_ = 0;
+    curr_stage_id_ = 0;
     count_down_seconds_ = 0;
     count_down_light_ = 0;
     handler_ = new DetectorFlowHandler;
@@ -44,8 +44,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     InitSignalSlots();
     InitCtrlModeDesc();
     InitFaultDesc();
-	ResetChannelColor();
-
+    ResetChannelColor();
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
@@ -73,7 +72,9 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
     UpdateUI();
     CloseAllLights();
-	ResetChannelColor();
+    ResetChannelColor();
+    cfg_array_.clear();
+    recv_array_.clear();
     count_down_timer_->start(1000);
     exec();
 }
@@ -140,29 +141,21 @@ void RealtimeMonitorDlg::OnSignalerTimeTimerOutSlot()
 
 void RealtimeMonitorDlg::OnCountDownTimerOutSlot()
 {
+#define FORMAT_COUNT_DOWN(text, count_down) \
+    if (count_down != 0) { --count_down; } \
+    str.sprintf(text, count_down);
+
     QString str;
     switch (count_down_light_)
     {
     case Red:
-        if (count_down_seconds_ != 0)
-        {
-            --count_down_seconds_;
-        }
-        str.sprintf("00-00-%02d", count_down_seconds_);
+        FORMAT_COUNT_DOWN("00-00-%02d", count_down_seconds_)
         break;
     case Yellow:
-        if (count_down_seconds_ != 0)
-        {
-            --count_down_seconds_;
-        }
-        str.sprintf("00-%02d-00", count_down_seconds_);
+        FORMAT_COUNT_DOWN("00-%02d-00", count_down_seconds_)
         break;
     case Green:
-        if (count_down_seconds_ != 0)
-        {
-            --count_down_seconds_;
-        }
-        str.sprintf("%02d-00-00", count_down_seconds_);
+        FORMAT_COUNT_DOWN("%02d-00-00", count_down_seconds_)
         break;
     case Off:
         break;
