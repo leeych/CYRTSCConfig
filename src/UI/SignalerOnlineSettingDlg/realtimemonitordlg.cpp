@@ -70,8 +70,13 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     MUtility::getUserDir(cfg_file_);
     cfg_file_ += "/monitor/" + ip_ + ".mdat";
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadSignalerConfigFile(QByteArray&)));
+
     setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_MONITOR);
-    UpdateUI();
+    tree_grp_->hide();
+    phase_time_lcd_->display("00-00-00");
+    QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss");
+    signaler_time_label_->setText(str);
+
     CloseAllLights();
     ResetChannelColor();
     cfg_array_.clear();
@@ -196,6 +201,7 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
         else if (ret == 1)
         {
             cfg_array_.clear();
+            emit readyReadConfigSignal();
             return;
         }
     }
@@ -370,7 +376,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
     }
 }
 
-void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
+void RealtimeMonitorDlg::exitOnClose()
 {
     StopMonitoring();
 //    signaler_timer_->stop();
@@ -388,7 +394,11 @@ void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
     // TODO: window closed handler
     cfg_array_.clear();
     recv_array_.clear();
-//    sync_cmd_->disconnectFromHost();
+}
+
+void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
+{
+    exitOnClose();
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
@@ -408,8 +418,7 @@ void RealtimeMonitorDlg::keyPressEvent(QKeyEvent *key)
 {
     if (key->key() == Qt::Key_Escape)
     {
-        closeEvent(&QCloseEvent());
-        accept();
+        exitOnClose();
     }
     QDialog::keyPressEvent(key);
 }
@@ -581,6 +590,7 @@ void RealtimeMonitorDlg::InitSignalSlots()
 
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
+    connect(this, SIGNAL(readyReadConfigSignal()), this, SLOT(updateUISlot()));
 }
 
 void RealtimeMonitorDlg::InitPixmap()
@@ -690,12 +700,8 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
     header_view->setDefaultAlignment(Qt::AlignCenter);
 }
 
-void RealtimeMonitorDlg::UpdateUI()
+void RealtimeMonitorDlg::updateUISlot()
 {
-    phase_time_lcd_->display("00-00-00");
-    QString str = date_time_.toString("yyyy-MM-dd hh:mm:ss");
-    signaler_time_label_->setText(str);
-    tree_grp_->hide();
     if (InitTscParam())
     {
         UpdateScheduleInfo();

@@ -91,6 +91,7 @@ public:
 
 signals:
     void realtimeMonitorClosedSignal();
+    void readyReadConfigSignal();
     
 public slots:
     void OnSignalerRecordButtonToggled(bool checked);
@@ -104,6 +105,7 @@ public slots:
 
     // on cmd
     void OnCmdReadSignalerConfigFile(QByteArray &array);
+    void updateUISlot();
     // Parse all the tcp socket command return result
     void OnCmdParseParam(QByteArray &array);
 
@@ -120,8 +122,8 @@ private:
     void InitPixmap();
     void InitTree(QTreeWidget *tree, const QStringList &header);
 
-    void UpdateUI();
     void UpdateScheduleInfo();
+    void exitOnClose();
 
     void InitFaultDesc();
     void InitLightTreeContent();

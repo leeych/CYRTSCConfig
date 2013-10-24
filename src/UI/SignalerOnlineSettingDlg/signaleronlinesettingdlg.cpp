@@ -482,7 +482,9 @@ void SignalerOnlineSettingDlg::keyPressEvent(QKeyEvent *key)
 {
     if (key->key() == Qt::Key_Escape)
     {
-        closeEvent(&QCloseEvent());
+        conn_tip_label_->clear();
+        sync_cmd_->disconnectFromHost();
+        cmd_timer_->stop();
     }
     QDialog::keyPressEvent(key);
 }
