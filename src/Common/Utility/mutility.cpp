@@ -198,3 +198,9 @@ QString MUtility::bitsDesc(unsigned int phase_ids)
     }
     return str.left(str.size() - 1);
 }
+
+QString MUtility::helpDir()
+{
+    QString strdir = QCoreApplication::applicationDirPath() + "/help/";
+    return strdir;
+}

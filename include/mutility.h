@@ -30,6 +30,7 @@ public:
     static QString secondsToDateTime(unsigned long seconds);
     static QString phaseBitsDesc(unsigned int phase);
     static QString bitsDesc(unsigned int phase_ids);
+    static QString helpDir();
 };
 
 #endif // MUTILITY_H
