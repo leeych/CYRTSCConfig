@@ -26,7 +26,8 @@ const QString &PhasetableWidget::widget_name()
 
 void PhasetableWidget::UpdateTree()
 {
-    tree_widget_->takeTopLevelItem(0);
+    tree_widget_->clear();
+//    tree_widget_->takeTopLevelItem(0);
     QString str;
     QList<PhaseParam> phase_list = handler_->get_phase_list();
     int tree_level = phase_list.size();
