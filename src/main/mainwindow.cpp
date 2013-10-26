@@ -102,13 +102,19 @@ void MainWindow::OnConfigurationToolButtonClicked()
 void MainWindow::OnHelpToolButtonClicked()
 {
 //    about_dlg_->exec();
-    QString file_path = MUtility::helpDir() + "help.pdf";
+    QString file_path = MUtility::helpDir().toUtf8() + "help.pdf";
+//    QFile file("log.log");
+//    if (file.open(QIODevice::WriteOnly | QIODevice::Append))
+//    {
+//        file.write(file_path.toAscii());
+//        file.close();
+//    }
     if (!QFile::exists(file_path))
     {
         QMessageBox::warning(this, STRING_TIP, STRING_FILE_NOT_EXISTS, STRING_OK);
         return;
     }
-    bool state = QDesktopServices::openUrl(QUrl(file_path));
+    bool state = QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
     if (!state)
     {
         QMessageBox::warning(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
