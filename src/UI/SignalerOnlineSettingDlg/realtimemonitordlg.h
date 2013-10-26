@@ -143,6 +143,8 @@ private:
 	void ResetChannelColor();
     bool CheckPackage(QByteArray &array);
 
+    void test();
+
     enum LightColor
     {
         Red = 0,
@@ -225,6 +227,8 @@ private:
 
     DetectorData_t *detector_array_;    // used for get detectorinfo
     driboardstatus_t driver_info_;      // used for driver board
+
+    LightColor pre_color_;      // used for CYTF
 
     // request reply
     BeginMonitorInfo begin_monitor_info_;

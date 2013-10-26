@@ -41,6 +41,8 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     count_down_light_ = 0;
     handler_ = new DetectorFlowHandler;
 
+    pre_color_ = Off;
+
     InitPage();
     InitSignalSlots();
     InitCtrlModeDesc();
@@ -65,7 +67,7 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
 }
 
 void RealtimeMonitorDlg::Initialize(const QString &ip)
-{
+{    
     ip_ = ip;
     MUtility::getUserDir(cfg_file_);
     cfg_file_ += "/monitor/" + ip_ + ".mdat";
@@ -263,12 +265,13 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         }
         cmd_id = recv_array_.at(3);
         qDebug() << "OnCmdParseParam " << recv_array_.left(4);
-#if 1
+#if 0
         cmd_id = QString::number(qrand() % 4).at(0).toLatin1();
         recv_array_.clear();
         recv_array_.append("CYTF");
         recv_array_.append(cmd_id);
         recv_array_.append("END");
+        cmd_id = recv_array_.at(3);
 #endif
         switch (cmd_id)
         {
@@ -1109,6 +1112,20 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
     return true;
 }
 
+void RealtimeMonitorDlg::test()
+{
+    QString str("CYTF");
+//    str.append(QString::number(qrand()%4));
+    int tmp = qrand() % 4;
+    char ch = tmp + '\0';
+    str.append(ch);
+    str.append("END");
+    qDebug() << str;
+    QByteArray array;
+    array.append(str);
+    ParseAllLightOnContent(array);
+}
+
 void RealtimeMonitorDlg::CloseAllLights()
 {
     for (int i = 0; i < pix_item_list_.size(); i++)
@@ -1546,12 +1563,16 @@ bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
     array.remove(0, 4);
     for (int i = 1; i < 13; i++)
     {
+        SetVehicleLight(pre_color_, i, false);
         SetVehicleLight((LightColor)light_state, i, true);
     }
     for (int j = 13; j <= 16; j++)
     {
+        SetPedestrianLight(pre_color_, j, false);
         SetPedestrianLight((LightColor)light_state, j, true);
     }
+    pre_color_ = (LightColor)light_state;
+    qDebug() << "light color:" << light_state;
     return true;
 }
 
