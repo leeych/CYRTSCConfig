@@ -71,6 +71,7 @@ public slots:
     void OnDisconnectedSlot();
     void OnConnectErrorSlot(QString err);
 
+    void OnConnTimerTimeoutSlot();
     void OnCmdTimerTimeoutSlot();
     // cmd call back
     void OnCmdGetVerId(QByteArray &content);
@@ -89,6 +90,7 @@ private:
     void InitSignalSlots();
     void InitTabPage();
 
+    void EnableNetworkErrorTip(bool enable);
     void UpdateUI();
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
@@ -105,6 +107,7 @@ private:
     QTcpSocket *socket_;
     EventLogHandler *handler_;
     QTimer *cmd_timer_;
+    QTimer *conn_timer_;        // used for connection timeout
 
     SockCmd curr_cmd_;
 

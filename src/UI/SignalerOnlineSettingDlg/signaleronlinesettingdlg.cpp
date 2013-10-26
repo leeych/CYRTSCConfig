@@ -44,6 +44,7 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
     monitor_dlg_ = new RealtimeMonitorDlg(this);
 
     cmd_timer_ = new QTimer(this);
+    conn_timer_ = new QTimer(this);
     curr_cmd_ = NoneCmd;
     is_edit_ip_ = false;
 
@@ -108,6 +109,7 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     else
     {
         sync_cmd_->connectToHost(ip_, port_);
+        conn_timer_->start(5000);
         conn_tip_label_->setText(STRING_UI_SIGNALER_CONNECTING_TIP);
         conn_button_->setEnabled(false);
     }
@@ -275,6 +277,13 @@ void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
     conn_button_->setEnabled(true);
     // disable other dialog
     EnableDialogs(false);
+}
+
+void SignalerOnlineSettingDlg::OnConnTimerTimeoutSlot()
+{
+    conn_timer_->stop();
+    conn_tip_label_->setText(STRING_UI_SIGNALER_NETWORK_OUTOFF);
+    // TODO: update
 }
 
 void SignalerOnlineSettingDlg::OnCmdTimerTimeoutSlot()
@@ -564,9 +573,10 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
     connect(saveas_button_, SIGNAL(clicked()), this, SLOT(OnSaveAsbuttonClicked()));
     connect(more_button_, SIGNAL(toggled(bool)), this, SLOT(OnMoreButtonToggled(bool)));
 
-    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
-    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
+//    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
     connect(cmd_timer_, SIGNAL(timeout()), this, SLOT(OnCmdTimerTimeoutSlot()));
+    connect(conn_timer_, SIGNAL(timeout()), this, SLOT(OnConnTimerTimeoutSlot()));
 
     // tab page slots
     connect(this, SIGNAL(updateTabPageSignal(void *)), unitparam_widget_, SLOT(OnInitDatabase(void*)));
@@ -615,6 +625,20 @@ void SignalerOnlineSettingDlg::InitTabPage()
     dialog_tab_->addTab(phase_err_widget_, STRING_UI_PHASE_CONFLICT);
     dialog_tab_->addTab(channel_widget_, STRING_UI_CHANNEL);
     dialog_tab_->addTab(detector_widget_, STRING_UI_DETECTOR);
+}
+
+void SignalerOnlineSettingDlg::EnableNetworkErrorTip(bool enable)
+{
+    if (enable)
+    {
+        connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
+        connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
+    }
+    else
+    {
+        disconnect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), conn_tip_label_, SLOT(setText(QString)));
+        disconnect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
+    }
 }
 
 void SignalerOnlineSettingDlg::UpdateUI()

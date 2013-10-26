@@ -427,6 +427,7 @@
 #define STRING_UI_SIGNALER_CONFIG_BUSY_WAIT         QObject::tr("Signaler is busy, wait for a while and retry later")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
+#define STRING_UI_SIGNALER_NETWORK_OUTOFF   QObject::tr("Network unreachable")
 
 #define STRING_UI_SIGNALER_EVENT_TYPE       QObject::tr("Event type")
 #define STRING_UI_SIGNALER_EVENT_CLEARTIME  QObject::tr("Event log clear time")
