@@ -148,7 +148,8 @@ private:
         Red = 0,
         Yellow,
         Green,
-        Off
+        Off,
+        Invalid
     };
 
     enum Direction
@@ -186,15 +187,17 @@ private:
     bool ParseRealTimeFlowContent(QByteArray &array);
     bool ParseDriverRealTimeStatusContent(QByteArray &array);
     bool ParseLightRealTimeStatusContent(QByteArray &array);
+    bool ParseAllLightOnContent(QByteArray &array);
 
 private:
     SyncCommand *sync_cmd_;
     QList<QPushButton *> button_list_;
-    QMap<unsigned char, QString> ctrl_mode_desc_map_;
     DetectorFlowHandler *handler_;
     QList<QTreeWidgetItem *> light_item_list_;
     QList<QTreeWidgetItem *> detector_item_list_;
     QList<QTreeWidgetItem *> driver_item_list_;
+
+    QList<unsigned char> channel_id_list_;
 
     QString ip_;
     QString cfg_file_;
@@ -240,6 +243,7 @@ private:
     ChannelStatusInfo channel_status_info_;
     ChannelStatusInfo channel_status_bak_;  // used for revert lights' status
 
+    QMap<unsigned char, QString> ctrl_mode_desc_map_;
     QMap<unsigned char, QString> light_flag_desc_map_;
     QMap<unsigned char, QString> light_fault_desc_map_;
     QMap<unsigned char, QString> driver_fault_desc_map_;

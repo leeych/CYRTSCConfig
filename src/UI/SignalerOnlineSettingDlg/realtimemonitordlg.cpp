@@ -249,7 +249,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         return;
     }
     bool status = false;
-    char cmd_id = 0;
+    char cmd_id = '\0';
     while (true)
     {
         if (recv_array_.size() < 4)
@@ -263,6 +263,13 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
         }
         cmd_id = recv_array_.at(3);
         qDebug() << "OnCmdParseParam " << recv_array_.left(4);
+#if 1
+        cmd_id = QString::number(qrand() % 4).at(0).toLatin1();
+        recv_array_.clear();
+        recv_array_.append("CYTF");
+        recv_array_.append(cmd_id);
+        recv_array_.append("END");
+#endif
         switch (cmd_id)
         {
         case '0':
@@ -365,6 +372,13 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             break;
         case 'E':
             status = ParseLightRealTimeStatusContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
+            }
+            break;
+        case 'F':
+            status = ParseAllLightOnContent(recv_array_);
             if (!status)
             {
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
@@ -638,6 +652,11 @@ void RealtimeMonitorDlg::InitPixmap()
     QPointF *pt15_2 = new QPointF(358, 344);
     QPointF *pt16_2 = new QPointF(342, 361);
     QPointF *pt16 = new QPointF(108, 361);
+
+    for (int i = 0; i < 20; i++)
+    {
+        channel_id_list_.append(i+1);
+    }
 
     channel_point_list_ << pt1 << pt2 << pt3 << pt4 << pt5 << pt6 << pt7 << pt8 << pt9 << pt10
                         << pt11 << pt12 << pt13 << pt14 << pt15 << pt16 << pt13_2 << pt14_2 << pt15_2 << pt16_2;
@@ -1120,6 +1139,8 @@ void RealtimeMonitorDlg::SetPedestrianLight(RealtimeMonitorDlg::LightColor color
         light_list_.at(index*4 + 3)->setVisible(enable);
         light_list_.at(index*4 + 3 + 4*4)->setVisible(enable);
         break;
+    case Invalid:
+        break;
     default:
         break;
     }
@@ -1141,6 +1162,8 @@ void RealtimeMonitorDlg::SetVehicleLight(RealtimeMonitorDlg::LightColor color, i
         break;
     case Green:
         pix_item_list_.at(index + Green)->setVisible(enable);
+        break;
+    case Invalid:
         break;
     default:
         break;
@@ -1266,7 +1289,7 @@ bool RealtimeMonitorDlg::ParseCountDownContent(QByteArray &array)
     }
     return true;
 }
-
+// CYT7+时间秒数(4字节)+END
 bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 {
     array.remove(0, 4);
@@ -1505,6 +1528,30 @@ bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
     // TODO: update ui
     UpdateLightTreeStatus(light_status);
 
+    return true;
+}
+// CYTF+状态(3:关，0：红，1：黄) + END
+bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
+{
+    qDebug() << "Parse all lights turn on";
+    array.remove(0, 4);
+    unsigned char light_state = 0;
+    memcpy(&light_state, array.data(), 1);
+    int index = array.indexOf("END");
+    if (index != 1)
+    {
+        array.remove(0, index);
+        return false;
+    }
+    array.remove(0, 4);
+    for (int i = 1; i < 13; i++)
+    {
+        SetVehicleLight((LightColor)light_state, i, true);
+    }
+    for (int j = 13; j <= 16; j++)
+    {
+        SetPedestrianLight((LightColor)light_state, j, true);
+    }
     return true;
 }
 

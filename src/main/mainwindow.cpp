@@ -102,7 +102,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 void MainWindow::OnHelpToolButtonClicked()
 {
 //    about_dlg_->exec();
-    QString file_path = MUtility::helpDir() + "help.chm";
+    QString file_path = MUtility::helpDir() + "help.pdf";
     if (!QFile::exists(file_path))
     {
         QMessageBox::warning(this, STRING_TIP, STRING_FILE_NOT_EXISTS, STRING_OK);
