@@ -72,6 +72,12 @@ void EventLogDlg::OnDeleteEventButtonClicked()
 void EventLogDlg::OnExportLogButtonClicked()
 {
     tip_label_->clear();
+    if (handler_->event_log_record_empty())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_lOG_EMPTY, STRING_OK);
+        return;
+    }
+
     QString dir;
     MUtility::getLogDir(dir);
     QString log_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, dir + ip_ + ".log" , "Log(*.log);;All File(*.*)");
@@ -79,11 +85,7 @@ void EventLogDlg::OnExportLogButtonClicked()
     {
         return;
     }
-    if (handler_->event_log_record_empty())
-    {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_lOG_EMPTY, STRING_OK);
-        return;
-    }
+
     bool status = handler_->export_event_log(log_file);
     if (!status)
     {
@@ -96,7 +98,15 @@ void EventLogDlg::OnExportLogButtonClicked()
 void EventLogDlg::OnExportReportButtonClicked()
 {
     tip_label_->clear();
-    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, "./user/report/" + ip_ + ".html", "Html(*.html);;All File(*.*)");
+    if (handler_->event_log_record_empty())
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_lOG_EMPTY, STRING_OK);
+        return;
+    }
+
+    QString dir;
+    MUtility::getReportDir(dir);
+    QString report_file = QFileDialog::getSaveFileName(this, STRING_UI_SAVEAS, dir + ip_ + ".html", "Html(*.html);;All File(*.*)");
     if (report_file.isNull() || report_file.isEmpty())
     {
         return;

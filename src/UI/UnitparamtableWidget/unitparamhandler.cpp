@@ -3,6 +3,7 @@
 UnitparamHandler::UnitparamHandler()
 {
     db_ = MDatabase::GetInstance();
+    memset(&unit_param_, 0x00, sizeof(unit_param_));
 }
 
 UnitparamHandler::~UnitparamHandler()
@@ -21,7 +22,8 @@ void UnitparamHandler::reset_database()
 
 void UnitparamHandler::init()
 {
-    unit_param_ = db_->get_unit_table();
+//    unit_param_ = db_->get_unit_table();
+    memcpy(&unit_param_, &(db_->get_unit_table()), sizeof(unit_param_));
 }
 
 bool UnitparamHandler::get_unitparam(Unit_t &unitparam)

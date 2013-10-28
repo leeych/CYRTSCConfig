@@ -95,11 +95,14 @@ private:
     void UpdateConnectStatus(bool status);
     void UpdateButtonStatus(bool enable);
     void UpdateTabPage();
+    void LoadDataBase();
 
     void EnableDialogs(bool enable);
     bool ParseConfigArray(QByteArray &byte_array);
     bool SaveTabPageData();
     bool SaveTempConfigFile();
+
+    void clearTimerResource();
 
 private:
     MDatabase *db_ptr_;
@@ -113,6 +116,8 @@ private:
 
     QString cfg_file_;
     QString tmp_file_;  // used for send and update config file
+    QString pre_ip_;
+    unsigned int pre_port_;
     QString ip_;
     unsigned int port_;
     bool conn_status_;

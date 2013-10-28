@@ -62,7 +62,8 @@ bool SyncCommand::syncConnectToHost(const QString &ip, unsigned port)
 
 void SyncCommand::closeConnection()
 {
-    socket_->close();
+//    socket_->close();
+    socket_->abort();
 }
 
 bool SyncCommand::isConnectionValid() const

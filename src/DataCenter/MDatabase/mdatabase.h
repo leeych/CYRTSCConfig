@@ -21,9 +21,20 @@
 class MDatabase
 {
 public:
+    MDatabase();
+    ~MDatabase();
+
     static MDatabase *GetInstance();
+//    {
+//        if (instance_ != NULL)
+//        {
+//            instance_ = new MDatabase;
+//        }
+//        return instance_;
+//    }
 
     void DestroyInstance();
+    void ResetData();
 
     void set_tsc_header(const TSCHeader_t& header);
     void set_unit_table(const Unit_t &ut);
@@ -77,8 +88,6 @@ public:
 
 //    SignalerMap &get_signaler_map();
 
-    MDatabase();
-    ~MDatabase();
 
 private:
 	unsigned char get_phasetiming_phase_id(unsigned int phase_id_bits);

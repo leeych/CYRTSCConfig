@@ -27,7 +27,8 @@ void FileListWidget::OnAddFileAction()
     {
         return;
     }
-    bool state = reader_writer_->ReadFile(open_file_name_.toStdString().data());
+
+    bool state = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), open_file_name_.toStdString().data());
     if (state)
     {
 		int index = open_file_name_.lastIndexOf("/");
@@ -173,7 +174,7 @@ void FileListWidget::OnFileTableItemDoubleClicked(int row, int col)
         return;
     }
 
-    bool status = reader_writer_->ReadFile(file_name.toStdString().c_str());
+    bool status = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), file_name.toStdString().c_str());
     if (status)
     {
         curr_file_name_ = file_name;

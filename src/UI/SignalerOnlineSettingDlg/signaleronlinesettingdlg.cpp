@@ -86,20 +86,35 @@ SignalerOnlineSettingDlg::~SignalerOnlineSettingDlg()
 
 void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
 {
+    MUtility::getConfigDir(cfg_file_);
+    cfg_file_ += ip + ".dat";
+    UpdateUI();
+
+    if (!QFile::exists(cfg_file_))
+    {
+        UpdateTabPage();
+    }
+
+    if (ip_ != ip || port_ != port)
+    {
+        update_button_->setEnabled(false);
+    }
+    pre_ip_ = ip_;
+    pre_port_ = port_;
+
     ip_ = ip;
     port_ = port;
-    MUtility::getConfigDir(cfg_file_);
-    cfg_file_ += ip_ + ".dat";
-    UpdateUI();
+
     exec();
 }
 
 void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 {
-    EnableNetworkErrorTip(true);
+//    EnableNetworkErrorTip(true);
     conn_tip_label_->clear();
     if (conn_status_)
     {
+        EnableNetworkErrorTip(true);
         sync_cmd_->disconnectFromHost();
         if (ver_check_id_ != 0)
         {
@@ -112,11 +127,12 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 //        conn_button_->setEnabled(false);
 //        sync_cmd_->syncConnectToHost(ip_, port_);
 
-        EnableNetworkErrorTip(false);
+//        EnableNetworkErrorTip(false);
         sync_cmd_->connectToHost(ip_, port_);
         conn_timer_->start(SOCKET_WAIT_MS);
         conn_tip_label_->setText(STRING_UI_SIGNALER_CONNECTING_TIP);
         conn_button_->setEnabled(false);
+        conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
     }
 }
 
@@ -234,6 +250,9 @@ void SignalerOnlineSettingDlg::OnNetworkSettingSlot(bool flag)
 
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
+    conn_timer_->stop();
+
+    EnableNetworkErrorTip(true);
     UpdateConnectStatus(true);
     sync_cmd_->ReadTscVersion(this, SLOT(OnCmdGetVerId(QByteArray&)));
     conn_button_->setEnabled(true);
@@ -278,7 +297,8 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 
 void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
 {
-    QMessageBox::information(this, STRING_TIP, err, STRING_OK);
+//    QMessageBox::information(this, STRING_TIP, err, STRING_OK);
+    conn_tip_label_->setText(err);
     conn_button_->setEnabled(true);
     // disable other dialog
     EnableDialogs(false);
@@ -286,11 +306,11 @@ void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
 
 void SignalerOnlineSettingDlg::OnConnTimerTimeoutSlot()
 {
-    sync_cmd_->closeConnection();
     conn_timer_->stop();
-    EnableNetworkErrorTip(true);
-    if (!sync_cmd_->isConnectionValid())
+//    EnableNetworkErrorTip(true);
+    if (sync_cmd_->isConnectionValid())
     {
+        sync_cmd_->closeConnection();
         conn_tip_label_->setText(STRING_UI_SIGNALER_NETWORK_OUTOFF);
         // TODO: update
         conn_button_->setEnabled(true);
@@ -470,11 +490,28 @@ void SignalerOnlineSettingDlg::OnCmdSendConfig(QByteArray &content)
     }
 }
 
-void SignalerOnlineSettingDlg::closeEvent(QCloseEvent *)
+void SignalerOnlineSettingDlg::clearTimerResource()
 {
     conn_tip_label_->clear();
     sync_cmd_->disconnectFromHost();
+    sync_cmd_->closeConnection();
+    update_button_->setEnabled(false);
     cmd_timer_->stop();
+    if (ver_check_id_ != 0)
+    {
+        killTimer(ver_check_id_);
+        ver_check_id_ = 0;
+    }
+    if (ui_lock_id_ != 0)
+    {
+        killTimer(ui_lock_id_);
+        ui_lock_id_ = 0;
+    }
+}
+
+void SignalerOnlineSettingDlg::closeEvent(QCloseEvent *)
+{
+    clearTimerResource();
 }
 
 void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
@@ -502,9 +539,7 @@ void SignalerOnlineSettingDlg::keyPressEvent(QKeyEvent *key)
 {
     if (key->key() == Qt::Key_Escape)
     {
-        conn_tip_label_->clear();
-        sync_cmd_->disconnectFromHost();
-        cmd_timer_->stop();
+        clearTimerResource();
     }
     QDialog::keyPressEvent(key);
 }
@@ -657,7 +692,14 @@ void SignalerOnlineSettingDlg::UpdateUI()
     setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
     UpdateButtonStatus(false);
     update_button_->setEnabled(is_cfg_read_);
-//    UpdateButtonStatus(true);
+    conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
+    conn_tip_label_->clear();
+
+    // clear edit tables' contents
+    db_ptr_->ResetData();
+    emit updateTabPageSignal((void *)db_ptr_);
+    LoadDataBase();
+    return;
 }
 
 void SignalerOnlineSettingDlg::UpdateConnectStatus(bool status)
@@ -702,13 +744,17 @@ void SignalerOnlineSettingDlg::UpdateButtonStatus(bool enable)
 void SignalerOnlineSettingDlg::UpdateTabPage()
 {
     FileReaderWriter param_reader;
-    param_reader.InitDatabase(db_ptr_);
-    if (!param_reader.ReadFile(cfg_file_.toStdString().c_str()))
+//    param_reader.InitDatabase(db_ptr_);
+    if (!param_reader.ReadFile(db_ptr_, cfg_file_.toStdString().c_str()))
     {
         return;
     }
     emit updateTabPageSignal((void *)db_ptr_);
+    LoadDataBase();
+}
 
+void SignalerOnlineSettingDlg::LoadDataBase()
+{
     unitparam_widget_->OnUpdateDataSlot();
     unitparam_widget_->UpdateUI();
 

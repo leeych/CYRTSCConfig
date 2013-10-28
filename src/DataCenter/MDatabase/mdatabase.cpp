@@ -4,19 +4,34 @@
 
 MDatabase *MDatabase::instance_ = NULL;
 
-MDatabase *MDatabase::GetInstance()
-{
-    if (instance_ != NULL)
-    {
-        instance_ = new MDatabase;
-    }
-    return instance_;
-}
+
 
 void MDatabase::DestroyInstance()
 {
     delete instance_;
     instance_ = NULL;
+}
+
+void MDatabase::ResetData()
+{
+    memset(&tsc_header_, 0x00, sizeof(tsc_header_));
+    char company_name[9]={'C','H','A','O','Y','U','A','N','\0'};
+    char product_name[4]={'T','S','M','\0'}; //Traffic Signal Machine
+    char product_version[6]={'1','.','0','.','0','\0'};
+    memcpy(&tsc_header_.CompanyName, &company_name, sizeof(company_name));
+    memcpy(&tsc_header_.ProductName, &product_name, sizeof(product_name));
+    memcpy(&tsc_header_.ProductId, &product_version, sizeof(product_version));
+
+    memset(&sched_table_, 0x00, sizeof(sched_table_));
+    memset(&unit_table_, 0x00, sizeof(unit_table_));
+    memset(&timesection_table_, 0x00, sizeof(timesection_table_));
+    memset(&pattern_table_, 0x00, sizeof(pattern_table_));
+    memset(&timeconfig_table_, 0x00, sizeof(timeconfig_table_));
+    memset(&phase_table_, 0x00, sizeof(phase_table_));
+    memset(&phase_conflict_table_, 0x00, sizeof(phase_conflict_table_));
+    memset(&channel_table_, 0x00, sizeof(channel_table_));
+    memset(&channel_hint_table_, 0x00, sizeof(channel_hint_table_));
+    memset(&detector_table_, 0x00, sizeof(detector_table_));
 }
 
 void MDatabase::set_tsc_header(const TSCHeader_t &header)
@@ -652,6 +667,15 @@ MDatabase::MDatabase()
 
 MDatabase::~MDatabase()
 {
+}
+
+MDatabase *MDatabase::GetInstance()
+{
+    if (instance_ == NULL)
+    {
+        instance_ = new MDatabase;
+    }
+    return instance_;
 }
 
 QList<unsigned char> MDatabase::get_id_list_by_bits_op(unsigned int phase_ids)

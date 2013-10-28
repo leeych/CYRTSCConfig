@@ -16,9 +16,9 @@ public:
     ~FileReaderWriter();
 
     void InitDatabase(MDatabase *db_ptr);
-    void ResetDatabase();
+    MDatabase *defaultDatabase();
 
-    bool ReadFile(const char* file_path);
+    bool ReadFile(MDatabase *db, const char* file_path);
     bool ReadFile(const char *file_path, TSCParam &param);
     bool WriteFile(const char* file_path);
     bool WriteFile(const TSCParam &param, const char *file_path);

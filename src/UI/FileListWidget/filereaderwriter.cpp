@@ -16,12 +16,13 @@ void FileReaderWriter::InitDatabase(MDatabase *db_ptr)
     db_ = db_ptr;
 }
 
-void FileReaderWriter::ResetDatabase()
+MDatabase* FileReaderWriter::defaultDatabase()
 {
     db_ = MDatabase::GetInstance();
+    return db_;
 }
 
-bool FileReaderWriter::ReadFile(const char* file_path)
+bool FileReaderWriter::ReadFile(MDatabase *db, const char* file_path)
 {
 	open_file_path_ = std::string(file_path);
 	FILE *fp = fopen(file_path, "rb");
@@ -29,6 +30,7 @@ bool FileReaderWriter::ReadFile(const char* file_path)
 	{
 		return false;
 	}
+    db_ = db;
 	ResetParam();
 	fseek(fp, 0, SEEK_SET);
 	fread(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
