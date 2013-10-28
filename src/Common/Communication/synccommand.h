@@ -26,6 +26,9 @@ public:
     unsigned int getSocketPort() const;
 
     void connectToHost(const QString &ip, unsigned int port);
+    bool syncConnectToHost(const QString &ip, unsigned port);
+    void closeConnection();
+    bool isConnectionValid() const;
     void InitParseHandler(QObject *target, const std::string &slot);
     void ReleaseSignalSlots();
     void disconnectFromHost();

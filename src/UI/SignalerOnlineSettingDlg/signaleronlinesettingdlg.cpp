@@ -96,6 +96,7 @@ void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
 
 void SignalerOnlineSettingDlg::OnConnectButtonClicked()
 {
+    EnableNetworkErrorTip(true);
     conn_tip_label_->clear();
     if (conn_status_)
     {
@@ -108,8 +109,12 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     }
     else
     {
+//        conn_button_->setEnabled(false);
+//        sync_cmd_->syncConnectToHost(ip_, port_);
+
+        EnableNetworkErrorTip(false);
         sync_cmd_->connectToHost(ip_, port_);
-        conn_timer_->start(5000);
+        conn_timer_->start(SOCKET_WAIT_MS);
         conn_tip_label_->setText(STRING_UI_SIGNALER_CONNECTING_TIP);
         conn_button_->setEnabled(false);
     }
@@ -281,9 +286,15 @@ void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
 
 void SignalerOnlineSettingDlg::OnConnTimerTimeoutSlot()
 {
+    sync_cmd_->closeConnection();
     conn_timer_->stop();
-    conn_tip_label_->setText(STRING_UI_SIGNALER_NETWORK_OUTOFF);
-    // TODO: update
+    EnableNetworkErrorTip(true);
+    if (!sync_cmd_->isConnectionValid())
+    {
+        conn_tip_label_->setText(STRING_UI_SIGNALER_NETWORK_OUTOFF);
+        // TODO: update
+        conn_button_->setEnabled(true);
+    }
 }
 
 void SignalerOnlineSettingDlg::OnCmdTimerTimeoutSlot()

@@ -21,16 +21,7 @@
 class MDatabase
 {
 public:
-    static MDatabase* GetInstance()
-    {
-//        if (instance_ == NULL)
-//        {
-//            instance_ = new MDatabase;
-//        }
-//        return instance_;
-        static MDatabase instance;
-        return &instance;
-    }
+    static MDatabase *GetInstance();
 
     void DestroyInstance();
 

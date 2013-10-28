@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+
+#define SOCKET_WAIT_MS                  3000
+
 #define STRING_TIP                      QObject::tr("Tip")
 #define STRING_YES                      QObject::tr("Yes")
 #define STRING_NO                       QObject::tr("No")

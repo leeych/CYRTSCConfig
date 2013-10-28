@@ -47,6 +47,29 @@ void SyncCommand::connectToHost(const QString &ip, unsigned int port)
     socket_->connectToHost(ip, port);
 }
 
+bool SyncCommand::syncConnectToHost(const QString &ip, unsigned port)
+{
+    ip_ = ip;
+    port_ = port;
+    socket_->connectToHost(ip, port);
+    if (!socket_->waitForConnected(SOCKET_WAIT_MS))
+    {
+        OnConnectError(socket_->error());
+        return false;
+    }
+    return true;
+}
+
+void SyncCommand::closeConnection()
+{
+    socket_->close();
+}
+
+bool SyncCommand::isConnectionValid() const
+{
+    return socket_->isValid();
+}
+
 void SyncCommand::disconnectFromHost()
 {
     socket_->disconnectFromHost();

@@ -2,20 +2,22 @@
 #include <list>
 #include <algorithm>
 
-//MDatabase *MDatabase::GetInstance()
-//{
-//    if (instance_ != NULL)
-//    {
-//        instance_ = new MDatabase;
-//    }
-//    return instance_;
-//}
+MDatabase *MDatabase::instance_ = NULL;
 
-//void MDatabase::DestroyInstance()
-//{
-//    delete instance_;
-//    instance_ = NULL;
-//}
+MDatabase *MDatabase::GetInstance()
+{
+    if (instance_ != NULL)
+    {
+        instance_ = new MDatabase;
+    }
+    return instance_;
+}
+
+void MDatabase::DestroyInstance()
+{
+    delete instance_;
+    instance_ = NULL;
+}
 
 void MDatabase::set_tsc_header(const TSCHeader_t &header)
 {
