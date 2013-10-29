@@ -104,6 +104,10 @@ void SignalerStatusWidget::OnSaveActionClicked()
     {
 		QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED + "!", STRING_OK);
     }
+    else
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_SUCCESS + "!", STRING_OK);
+    }
 }
 
 void SignalerStatusWidget::OnAdvancedActionClicked()
