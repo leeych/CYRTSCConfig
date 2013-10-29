@@ -140,7 +140,6 @@ private:
     void UpdateTreeGroupBox(const QString &title, QWidget *tree);
     void InitCtrlModeDesc();
     bool InitTscParam();
-	void ResetChannelColor();
     bool CheckPackage(QByteArray &array);
 
     void test();
@@ -153,6 +152,7 @@ private:
         Off,
         Invalid
     };
+    void ResetChannelColor(LightColor color);
 
     enum Direction
     {

@@ -47,7 +47,7 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     InitSignalSlots();
     InitCtrlModeDesc();
     InitFaultDesc();
-    ResetChannelColor();
+    ResetChannelColor(Off);
 }
 
 RealtimeMonitorDlg::~RealtimeMonitorDlg()
@@ -67,7 +67,7 @@ RealtimeMonitorDlg::~RealtimeMonitorDlg()
 }
 
 void RealtimeMonitorDlg::Initialize(const QString &ip)
-{    
+{
     ip_ = ip;
     MUtility::getUserDir(cfg_file_);
     cfg_file_ += "/monitor/" + ip_ + ".mdat";
@@ -80,7 +80,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     signaler_time_label_->setText(str);
 
     CloseAllLights();
-    ResetChannelColor();
+    ResetChannelColor(Off);
     cfg_array_.clear();
     recv_array_.clear();
     count_down_timer_->start(1000);
@@ -106,6 +106,7 @@ void RealtimeMonitorDlg::OnLightStatusButtonToggled(bool checked)
         ResetButtonStatus(light_status_button_);
     }
     tree_grp_->setHidden(!checked);
+//    test();
 }
 
 void RealtimeMonitorDlg::OnDriverButtonToggled(bool checked)
@@ -381,11 +382,21 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             break;
         case 'F':
+        {
             status = ParseAllLightOnContent(recv_array_);
             if (!status)
             {
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
             }
+#if 0
+            recv_array_.append("CYT1");
+            char ch = 1 + '\0';
+            recv_array_.append(ch);
+            ch = 2 + '\0';
+            recv_array_.append(ch);
+            recv_array_.append("END");
+#endif
+        }
             break;
         default:
             break;
@@ -406,7 +417,7 @@ void RealtimeMonitorDlg::exitOnClose()
         ui_timer_id_ = 0;
     }
     ResetButtonStatus(NULL);
-    ResetChannelColor();
+    ResetChannelColor(Off);
     UpdateLightTreeColor();
     // TODO: window closed handler
     cfg_array_.clear();
@@ -1115,7 +1126,6 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
 void RealtimeMonitorDlg::test()
 {
     QString str("CYTF");
-//    str.append(QString::number(qrand()%4));
     int tmp = qrand() % 4;
     char ch = tmp + '\0';
     str.append(ch);
@@ -1123,7 +1133,7 @@ void RealtimeMonitorDlg::test()
     qDebug() << str;
     QByteArray array;
     array.append(str);
-    ParseAllLightOnContent(array);
+    OnCmdParseParam(array);
 }
 
 void RealtimeMonitorDlg::CloseAllLights()
@@ -1572,6 +1582,7 @@ bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
         SetPedestrianLight((LightColor)light_state, j, true);
     }
     pre_color_ = (LightColor)light_state;
+    ResetChannelColor(pre_color_);
     qDebug() << "light color:" << light_state;
     return true;
 }
@@ -1604,10 +1615,10 @@ void RealtimeMonitorDlg::StopMonitoring()
     sync_cmd_->StopMonitoring();
 }
 
-void RealtimeMonitorDlg::ResetChannelColor()
+void RealtimeMonitorDlg::ResetChannelColor(LightColor color)
 {
 	for (int i = 0; i < MAX_CHANNEL + 1; i++)
 	{
-		channel_color_array_[i] = Off;
+        channel_color_array_[i] = color;
 	}
 }
