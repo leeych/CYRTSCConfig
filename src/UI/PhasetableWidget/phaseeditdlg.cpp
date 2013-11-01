@@ -39,9 +39,24 @@ void PhaseeditDlg::OnOkButtonClicked()
         QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_GREEN_CLEAR_TIP, STRING_OK);
         return;
     }
+    if (ValidateUI() == ManClearLessGreen)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_CLEAR_GREEN_TIP, STRING_OK);
+        return;
+    }
     if (ValidateUI() == FixGreenZero)
     {
         QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_FIX_GREEN_TIP, STRING_OK);
+        return;
+    }
+    if (ValidateUI() == ManClearLessMinGreen)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_CLEAR_MIN_TIP, STRING_OK);
+        return;
+    }
+    if (ValidateUI() == FixManClearLessFix)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_FIX_MAN_CLEAR_TIP, STRING_OK);
         return;
     }
 
@@ -92,7 +107,7 @@ void PhaseeditDlg::InitPage()
     max1_green_time_spinbox_->setRange(0, 255);
     max2_green_time_spinbox_->setRange(0, 255);
     fix_green_time_spinbox_->setRange(0, 255);
-    green_flash_time_spinbox_->setRange(1, 255);
+    green_flash_time_spinbox_->setRange(3, 255);
 
     phase_mode_cmb_ = new QComboBox;
 
@@ -371,15 +386,33 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
     {
         return GreenFlashZero;
     }
-    if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_WALKMAN))
-            && ((man_green_time_spinbox_->value() == 0) || (man_clear_time_spinbox_->value() == 0)))
+    if (containsPedestrianChannel() && (man_clear_time_spinbox_->value() >= min_green_time_spinbox_->value()))
     {
-        return ManGreenClearZero;
+        return ManClearLessMinGreen;
     }
-    if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_FIX))
-            && (fix_green_time_spinbox_->value() == 0))
+    if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_WALKMAN)))
+
     {
-        return FixGreenZero;
+        if ((man_green_time_spinbox_->value() == 0) || (man_clear_time_spinbox_->value() == 0))
+        {
+            return ManGreenClearZero;
+        }
+        else if (man_clear_time_spinbox_->value() >= man_green_time_spinbox_->value())
+        {
+            return ManClearLessGreen;
+        }
+    }
+    if (phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_FIX))
+    {
+        if (fix_green_time_spinbox_->value() == 0)
+        {
+            return FixGreenZero;
+        }
+        else if (containsPedestrianChannel()
+                 && (man_clear_time_spinbox_->value() == 0 || man_clear_time_spinbox_->value() >= fix_green_time_spinbox_->value()))
+        {
+            return FixManClearLessFix;
+        }
     }
     return None;
 }
@@ -403,6 +436,20 @@ bool PhaseeditDlg::SaveData()
 	handler_->set_phase(curr_phase_id_, phase);
 	curr_phase_id_ = phase.phase_id;
     return true;
+}
+
+bool PhaseeditDlg::containsPedestrianChannel()
+{
+    bool state = false;
+    for (int i = 12; i < channel_list_.size(); i++)
+    {
+        if (channel_list_.at(i)->isChecked())
+        {
+            state = true;
+            break;
+        }
+    }
+    return state;
 }
 
 void PhaseeditDlg::OnPhaseTypeSelected( const QString& text )

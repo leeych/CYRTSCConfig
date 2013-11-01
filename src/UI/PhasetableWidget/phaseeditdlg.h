@@ -22,7 +22,11 @@ public:
         MinLargerThanMax1,
         GreenFlashZero,
         ManGreenClearZero,
+        ManClearLessGreen,
+        ManClearLessMinGreen,
+        ManClearLessFix,
         FixGreenZero,
+        FixManClearLessFix,
         None
     };
 
@@ -43,6 +47,8 @@ private:
 
     PhaseErr ValidateUI();
     bool SaveData();
+
+    bool containsPedestrianChannel();
 
     unsigned int get_channels();
     unsigned char get_spec_func();
