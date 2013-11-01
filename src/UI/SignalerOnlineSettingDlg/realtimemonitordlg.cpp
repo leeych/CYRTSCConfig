@@ -810,7 +810,7 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
                     event_id_label_->setText(str.sprintf("%d", event_id));
                     str.sprintf("%02d:%02d", start_hour, start_min);
                     start_time_label_->setText(str);
-                    str = EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
+                    str = ctrl_mode_desc_map_.value(ctrl_mode); //EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
                     ctrl_mode_label_->setText(str);
                     pattern_id = tsc_param_.time_section_table_.TimeSectionList[m][n-1].PatternId;
                 }
