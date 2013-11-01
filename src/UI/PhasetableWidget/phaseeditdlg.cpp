@@ -235,13 +235,13 @@ void PhaseeditDlg::UpdateUI()
     ResetUI();
     if (curr_phase_id_ > 0)
     {
-		for (int i = 0; i < phase_id_cmb_->count(); i++)
-		{
-			if (curr_phase_id_ == phase_id_cmb_->itemText(i).toInt())
-			{
-				phase_id_cmb_->setCurrentIndex(i);
-			}
-		}
+        for (int i = 0; i < phase_id_cmb_->count(); i++)
+        {
+            if (curr_phase_id_ == phase_id_cmb_->itemText(i).toInt())
+            {
+                phase_id_cmb_->setCurrentIndex(i);
+            }
+        }
     }
     PhaseParam phase;
     handler_->get_phase(curr_phase_id_, phase);
