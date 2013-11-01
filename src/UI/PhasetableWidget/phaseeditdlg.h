@@ -32,23 +32,24 @@ signals:
 public slots:
     void OnOkButtonClicked();
     void OnCancelButtonClicked();
-	void OnPhaseTypeSelected(const QString& text);
+    void OnPhaseTypeSelected(const QString& text);
 
 private:
     void InitPage();
     void InitSignalSlots();
     void UpdateUI();
     void ResetUI();
-    void UpdatePhaseType(unsigned char phase_type);
+    void UpdatePhaseTypeInfo(unsigned char phase_type, unsigned char detector_num);
 
     PhaseErr ValidateUI();
     bool SaveData();
 
-	unsigned int get_channels();
+    unsigned int get_channels();
+    unsigned char get_spec_func();
 
 private:
-	unsigned char curr_phase_id_;
-	unsigned char detector_num_;
+    unsigned char curr_phase_id_;
+    unsigned char detector_num_;
     PhaseHandler* handler_;
     QList<QCheckBox*> channel_list_;
 

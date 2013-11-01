@@ -9,6 +9,7 @@
 PhaseeditDlg::PhaseeditDlg(QWidget *parent) :
     QDialog(parent)
 {
+    detector_num_ = 0;
     InitPage();
     InitSignalSlots();
 }
@@ -210,7 +211,8 @@ void PhaseeditDlg::InitSignalSlots()
 {
     connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOkButtonClicked()));
     connect(cancel_button_, SIGNAL(clicked()), this, SLOT(OnCancelButtonClicked()));
-	connect(phase_mode_cmb_, SIGNAL(activated(QString)), this, SLOT(OnPhaseTypeSelected(QString)));
+    connect(phase_mode_cmb_, SIGNAL(activated(QString)), this, SLOT(OnPhaseTypeSelected(QString)));
+    connect(demote_chk_, SIGNAL(clicked(bool)), detector_num_spinbox_, SLOT(setEnabled(bool)));
 }
 
 void PhaseeditDlg::UpdateUI()
@@ -251,17 +253,20 @@ void PhaseeditDlg::UpdateUI()
     {
         green_flash_time_spinbox_->setValue(phase.phase_green_flash);
     }
-    UpdatePhaseType(phase.phase_type);
+    unsigned char spec_func = phase.phase_spec_func;
+    spec_func &= 0x1e;
+    detector_num_ = spec_func;
+    UpdatePhaseTypeInfo(phase.phase_type, detector_num_);
 
-	unsigned int channel_ids = phase.phase_channel;
-	for (int i = 0; i < channel_list_.size(); i++)
-	{
-		if ((channel_ids & 0x01) == 0x01)
-		{
-			channel_list_.at(i)->setChecked(true);
-		}
-		channel_ids = channel_ids >> 1;
-	}
+    unsigned int channel_ids = phase.phase_channel;
+    for (int i = 0; i < channel_list_.size(); i++)
+    {
+        if ((channel_ids & 0x01) == 0x01)
+        {
+            channel_list_.at(i)->setChecked(true);
+        }
+        channel_ids = channel_ids >> 1;
+    }
 }
 
 void PhaseeditDlg::ResetUI()
@@ -297,7 +302,7 @@ void PhaseeditDlg::ResetUI()
     detector_num_spinbox_->setEnabled(false);
 }
 
-void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
+void PhaseeditDlg::UpdatePhaseTypeInfo(unsigned char phase_type, unsigned char detector_num)
 {
     if ((phase_type & 0x080) == 0x080)
     {
@@ -306,11 +311,24 @@ void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
     else if ((phase_type & 0x040) == 0x040)
     {
         phase_mode_cmb_->setCurrentIndex(1);
+        demote_chk_->setEnabled(true);
+//        if (detector_num != 0)
+//        {
+            demote_chk_->setChecked(true);
+//        }
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x020) == 0x020)
     {
         phase_mode_cmb_->setCurrentIndex(2);
+        demote_chk_->setEnabled(true);
+//        if (detector_num != 0)
+//        {
+            demote_chk_->setChecked(true);
+//        }
         detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x010) == 0x010)
     {
@@ -331,6 +349,13 @@ void PhaseeditDlg::UpdatePhaseType(unsigned char phase_type)
     else if ((phase_type & 0x01) == 0x01)
     {
         phase_mode_cmb_->setCurrentIndex(7);
+        demote_chk_->setEnabled(true);
+//        if (detector_num != 0)
+//        {
+            demote_chk_->setChecked(true);
+//        }
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
 }
 
@@ -371,9 +396,9 @@ bool PhaseeditDlg::SaveData()
     phase.phase_green_flash = green_flash_time_spinbox_->value();
     phase.phase_max_green1 = max1_green_time_spinbox_->value();
     phase.phase_max_green2 = max2_green_time_spinbox_->value();
-	phase.phase_spec_func = 0x01;
 	phase.phase_channel = get_channels();
     phase.phase_type = handler_->get_phase_type_by_desc(phase_mode_cmb_->currentText().trimmed());
+    phase.phase_spec_func = get_spec_func();
     // channels to be determined
 	handler_->set_phase(curr_phase_id_, phase);
 	curr_phase_id_ = phase.phase_id;
@@ -382,16 +407,21 @@ bool PhaseeditDlg::SaveData()
 
 void PhaseeditDlg::OnPhaseTypeSelected( const QString& text )
 {
-	if (text == STRING_UI_PHASE_ELASTICITY)
-	{
-		detector_num_spinbox_->setEnabled(true);
-		detector_num_spinbox_->setValue(detector_num_);
-	}
-	else
-	{
-		detector_num_spinbox_->setEnabled(false);
-		detector_num_spinbox_->setValue(0);
-	}
+    if (text == STRING_UI_PHASE_ELASTICITY || text == STRING_UI_PHASE_DETERMINED
+            || text == STRING_UI_PHASE_MOTOR)
+    {
+        demote_chk_->setEnabled(true);
+        demote_chk_->setChecked(true);
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num_);
+    }
+    else
+    {
+        demote_chk_->setEnabled(false);
+        demote_chk_->setChecked(false);
+        detector_num_spinbox_->setEnabled(false);
+        detector_num_spinbox_->setValue(0);
+    }
 }
 
 unsigned int PhaseeditDlg::get_channels()
@@ -406,7 +436,19 @@ unsigned int PhaseeditDlg::get_channels()
 		}
     }
     qDebug() << "channel_ids:" << channel_ids;
-	return channel_ids;
+    return channel_ids;
+}
+
+unsigned char PhaseeditDlg::get_spec_func()
+{
+    unsigned char spec = 0x01;
+    spec = 0;
+    if (detector_num_spinbox_->isEnabled())
+    {
+        detector_num_ = detector_num_spinbox_->value();
+        spec |= detector_num_;
+    }
+    return spec;
 }
 
 PhaseeditDlg::~PhaseeditDlg()
