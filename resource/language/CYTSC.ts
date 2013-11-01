@@ -1213,17 +1213,17 @@
     <message>
         <location filename="../../include/macrostring.h" line="63"/>
         <source>Full induction ctrl</source>
-        <translation>全感应控制</translation>
+        <translation>全感应</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="64"/>
         <source>Main road half induction ctrl</source>
-        <translation>主道半感应控制</translation>
+        <translation>主道半感应</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="65"/>
         <source>Secondary road half induction ctrl</source>
-        <translation>次道半感应控制</translation>
+        <translation>次道半感应</translation>
     </message>
     <message>
         <location filename="../../include/macrostring.h" line="66"/>
