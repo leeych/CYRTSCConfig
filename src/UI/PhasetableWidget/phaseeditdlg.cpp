@@ -269,8 +269,9 @@ void PhaseeditDlg::UpdateUI()
         green_flash_time_spinbox_->setValue(phase.phase_green_flash);
     }
     unsigned char spec_func = phase.phase_spec_func;
-    spec_func &= 0x1e;
+    spec_func &= 0xFe;
     detector_num_ = spec_func;
+    detector_num_ = detector_num_ >> 4;
     UpdatePhaseTypeInfo(phase.phase_type, detector_num_);
 
     unsigned int channel_ids = phase.phase_channel;
@@ -489,11 +490,10 @@ unsigned int PhaseeditDlg::get_channels()
 unsigned char PhaseeditDlg::get_spec_func()
 {
     unsigned char spec = 0x01;
-    spec = 0;
     if (detector_num_spinbox_->isEnabled())
     {
         detector_num_ = detector_num_spinbox_->value();
-        spec |= detector_num_;
+        spec |= (detector_num_ << 4);
     }
     return spec;
 }
