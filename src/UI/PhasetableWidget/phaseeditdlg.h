@@ -24,6 +24,7 @@ public:
         ManGreenClearZero,
         ManClearLessGreen,
         ManClearLessMinGreen,
+        ManClearZero,
         ManClearLessFix,
         FixGreenZero,
         FixManClearLessFix,

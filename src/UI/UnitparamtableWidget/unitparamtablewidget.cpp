@@ -269,8 +269,16 @@ void UnitparamtableWidget::UpdateUI()
     server_ip_lineedit_->setEnabled(false);
 //    server_port_lineedit_->setEnabled(false);
     QHostInfo host_info = QHostInfo::fromName(QHostInfo::localHostName());
-    QHostAddress address = host_info.addresses().first();
+/*    for (int i = 0; i < host_info.addresses().size(); i++)
+    {
+        QHostAddress address(host_info.addresses().at(i).toIPv4Address());
+        QString str = address.toString();
+        qDebug() << str;
+    }
+*/
+    QHostAddress address(host_info.addresses().first().toIPv4Address());
     QString str = address.toString();
+//    QString str = address.toString();
     server_ip_lineedit_->setText(str);
 //    server_port_lineedit_->setText("12810");
     flash_time_spinbox_->setValue(param.StartUpFlash);

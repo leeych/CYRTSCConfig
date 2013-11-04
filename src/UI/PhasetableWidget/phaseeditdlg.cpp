@@ -59,6 +59,11 @@ void PhaseeditDlg::OnOkButtonClicked()
         QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_FIX_MAN_CLEAR_TIP, STRING_OK);
         return;
     }
+    if (ValidateUI() == ManClearZero)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_CLEAR_ZERO_TIP, STRING_OK);
+        return;
+    }
 
     if (SaveData())
     {
@@ -107,7 +112,7 @@ void PhaseeditDlg::InitPage()
     max1_green_time_spinbox_->setRange(0, 255);
     max2_green_time_spinbox_->setRange(0, 255);
     fix_green_time_spinbox_->setRange(0, 255);
-    green_flash_time_spinbox_->setRange(3, 255);
+    green_flash_time_spinbox_->setRange(4, 255);
 
     phase_mode_cmb_ = new QComboBox;
 
@@ -262,7 +267,7 @@ void PhaseeditDlg::UpdateUI()
     fix_green_time_spinbox_->setValue(phase.phase_fix_green);
     if (phase.phase_green_flash == 0)
     {
-        green_flash_time_spinbox_->setValue(3);
+        green_flash_time_spinbox_->setValue(4);
     }
     else
     {
@@ -315,6 +320,7 @@ void PhaseeditDlg::ResetUI()
     {
         channel_list_.at(i)->setChecked(false);
     }
+    detector_num_spinbox_->setValue(0);
     detector_num_spinbox_->setEnabled(false);
 }
 
@@ -387,10 +393,6 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
     {
         return GreenFlashZero;
     }
-    if (containsPedestrianChannel() && (man_clear_time_spinbox_->value() >= min_green_time_spinbox_->value()))
-    {
-        return ManClearLessMinGreen;
-    }
     if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_WALKMAN)))
 
     {
@@ -401,6 +403,17 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
         else if (man_clear_time_spinbox_->value() >= man_green_time_spinbox_->value())
         {
             return ManClearLessGreen;
+        }
+    }
+    if (containsPedestrianChannel())
+    {
+        if (man_clear_time_spinbox_->value() >= min_green_time_spinbox_->value())
+        {
+                return ManClearLessMinGreen;
+        }
+        else if (man_clear_time_spinbox_->value() == 0)
+        {
+            return ManClearZero;
         }
     }
     if (phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_FIX))

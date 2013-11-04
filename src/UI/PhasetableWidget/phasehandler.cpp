@@ -253,11 +253,7 @@ bool PhaseHandler::save_data()
 
 bool PhaseHandler::phase_less_than(const PhaseParam &left, const PhaseParam &right)
 {
-	if (left.phase_id > right.phase_id)
-	{
-		return false;
-	}
-	else if (left.phase_channel > right.phase_channel)
+    if (left.phase_id >= right.phase_id)
 	{
 		return false;
 	}

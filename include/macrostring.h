@@ -232,6 +232,7 @@
 #define STRING_UI_PHASE_FIX_GREEN_TIP           QObject::tr("Fix green time must larger than zero")
 #define STRING_UI_PHASE_MAN_CLEAR_MIN_TIP       QObject::tr("Walkman clear time must less than min green time")
 #define STRING_UI_PHASE_FIX_MAN_CLEAR_TIP       QObject::tr("Man clear time must larger than zero and less than fix green time")
+#define STRING_UI_PHASE_MAN_CLEAR_ZERO_TIP      QObject::tr("There is man channel, man clear time can not be zero")
 #define STRING_UI_PHASE_ENABLE          QObject::tr("Enable this phase or not")
 
 #define STRING_UI_PHASE_MOTOR           QObject::tr("Motor phase")
