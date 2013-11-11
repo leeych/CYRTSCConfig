@@ -47,6 +47,8 @@ private:
     void InitTree();
     void InitContextMenu();
 
+    bool greenConflictCheck();
+
 	QString get_phase_type_desc(unsigned char phase_type);
 	QString get_phase_ctrled_channels_desc(unsigned int channel_ids);
 

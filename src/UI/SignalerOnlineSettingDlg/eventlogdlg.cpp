@@ -10,6 +10,8 @@
 #include <QFile>
 #include <QFileDialog>
 
+#include "bytearraydump.h"
+
 EventLogDlg::EventLogDlg(QWidget *parent) :
     QDialog(parent)
 {
@@ -164,6 +166,12 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
 
     if (event_log_array_.endsWith("END"))
     {
+#if 0
+        ByteArrayDump dump;
+        QString dir;
+        MUtility::getTempDir(dir);
+        dump.dumpByteArray(dir + "event_log.dat", event_log_array_);
+#endif
         ParseEventLogArray(event_log_array_);
         UpdateUI();
         event_log_array_.clear();

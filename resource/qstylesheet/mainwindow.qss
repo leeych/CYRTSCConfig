@@ -193,6 +193,11 @@ QComboBox::item:selected
     background-color: #83c8f9;
 }
 
+QSpinBox
+{
+    min-width:60px;
+}
+
 QPushButton
 {
 	border: 1px solid #dcdcdc; border-radius: 3px;

@@ -276,7 +276,7 @@ void PhaseeditDlg::UpdateUI()
     unsigned char spec_func = phase.phase_spec_func;
     spec_func &= 0xFe;
     detector_num_ = spec_func;
-    detector_num_ = detector_num_ >> 4;
+    detector_num_ = detector_num_ >> 5;
     UpdatePhaseTypeInfo(phase.phase_type, detector_num_);
 
     unsigned int channel_ids = phase.phase_channel;
@@ -443,12 +443,21 @@ bool PhaseeditDlg::SaveData()
     phase.phase_green_flash = green_flash_time_spinbox_->value();
     phase.phase_max_green1 = max1_green_time_spinbox_->value();
     phase.phase_max_green2 = max2_green_time_spinbox_->value();
-	phase.phase_channel = get_channels();
+    phase.phase_channel = get_channels();
     phase.phase_type = handler_->get_phase_type_by_desc(phase_mode_cmb_->currentText().trimmed());
     phase.phase_spec_func = get_spec_func();
+    qDebug() << "phase spec_func:" << phase.phase_spec_func;
+
+    if (phase.phase_type == 0x040)      // determined phase
+    {
+        if (!greenConflictAvoidCheck(phase))
+        {
+            return false;
+        }
+    }
     // channels to be determined
-	handler_->set_phase(curr_phase_id_, phase);
-	curr_phase_id_ = phase.phase_id;
+    handler_->set_phase(curr_phase_id_, phase);
+    curr_phase_id_ = phase.phase_id;
     return true;
 }
 
@@ -464,6 +473,53 @@ bool PhaseeditDlg::containsPedestrianChannel()
         }
     }
     return state;
+}
+
+bool PhaseeditDlg::greenConflictAvoidCheck(const PhaseParam &phase_param)
+{
+    int index = -1;
+    unsigned char phase_id = phase_param.phase_id;
+    QList<unsigned char> phase_id_list = handler_->get_phase_id_list();
+    for (int i = 0; i < phase_id_list.size()-1; i++)
+    {
+        if (phase_id > phase_id_list.at(i) && phase_id <= phase_id_list.at(i+1))
+        {
+            index = i;
+            break;
+        }
+        else if (i == 0)
+        {
+            index = phase_id_list.size()-1;
+            break;
+        }
+        else if (phase_id == phase_id_list.at(i))
+        {
+            index = i-1;
+            break;
+        }
+    }
+    if (index < 0)
+    {
+        return false;
+    }
+    PhaseParam param;
+    if (!handler_->get_phase(phase_id_list.at(index), param))
+    {
+        return false;
+    }
+
+    qDebug() << "index:" << index << endl
+             << "curr_phase_id:" << phase_param.phase_id << "pre_phase_id:" << param.phase_id << endl
+             << "curr_phase_channel:" << phase_param.phase_channel << endl
+             << "pre_phase_channel:" << param.phase_channel;
+
+    if ((phase_param.phase_channel & param.phase_channel) != 0x00)
+    {
+        QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_AVOID_GREEN_CONFL_TIP, STRING_OK);
+        return false;
+    }
+
+    return true;
 }
 
 void PhaseeditDlg::OnPhaseTypeSelected( const QString& text )
@@ -506,7 +562,7 @@ unsigned char PhaseeditDlg::get_spec_func()
     if (detector_num_spinbox_->isEnabled())
     {
         detector_num_ = detector_num_spinbox_->value();
-        spec |= (detector_num_ << 4);
+        spec |= (detector_num_ << 5);
     }
     return spec;
 }

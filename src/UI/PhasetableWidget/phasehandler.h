@@ -27,6 +27,7 @@ public:
 
     QList<PhaseParam *> get_phase_ptr_list();
     QList<PhaseParam> &get_phase_list();
+    QList<unsigned char> get_phase_id_list();
 	unsigned char get_phase_channel_id(unsigned char phase_id);
 	QString get_phase_ctrled_channels_desc(unsigned int channel_ids);
     unsigned char get_phase_type_by_desc(const QString &desc);

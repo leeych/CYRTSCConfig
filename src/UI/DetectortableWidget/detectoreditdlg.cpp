@@ -130,6 +130,9 @@ void DetectoreditDlg::InitPage()
 	flow_spinbox_->setEnabled(false);
     share_spinbox_->setRange(0, 200);
 
+    flow_spinbox_->setMinimumWidth(40);
+    share_spinbox_->setMinimumWidth(40);
+
     ok_button_ = new QPushButton(STRING_OK);
     cancel_button_ = new QPushButton(STRING_CANCEL);
 
@@ -158,10 +161,10 @@ void DetectoreditDlg::InitPage()
     QHBoxLayout* share_hlayout = new QHBoxLayout;
     share_hlayout->addWidget(detector_share_label);
     share_hlayout->addWidget(share_spinbox_);
-    share_hlayout->addStretch(2);
+    share_hlayout->addStretch(1);
 
     QHBoxLayout* button_hlayout = new QHBoxLayout;
-    button_hlayout->addStretch(3);
+    button_hlayout->addStretch(2);
     button_hlayout->addWidget(ok_button_);
     button_hlayout->addWidget(cancel_button_);
 

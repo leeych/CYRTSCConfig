@@ -15,6 +15,7 @@
 #define STRING_OPEN                     QObject::tr("Open")
 #define STRING_FILE_NOT_EXISTS          QObject::tr("File not exists")
 #define STRING_FILE_OPEN                QObject::tr("Open file")
+#define STRING_DOCUMENT                 QObject::tr("Document")
 
 #define STRING_SUCCEEDED                QObject::tr("succeeded")
 #define STRING_FAILED                   QObject::tr("failed")
@@ -234,6 +235,7 @@
 #define STRING_UI_PHASE_FIX_MAN_CLEAR_TIP       QObject::tr("Man clear time must larger than zero and less than fix green time")
 #define STRING_UI_PHASE_MAN_CLEAR_ZERO_TIP      QObject::tr("There is man channel, man clear time can not be zero")
 #define STRING_UI_PHASE_ENABLE          QObject::tr("Enable this phase or not")
+#define STRING_UI_PHASE_AVOID_GREEN_CONFL_TIP      QObject::tr("Determined phase can not shared any channels with pre phase")
 
 #define STRING_UI_PHASE_MOTOR           QObject::tr("Motor phase")
 #define STRING_UI_PHASE_BIKE            QObject::tr("Bike phase")

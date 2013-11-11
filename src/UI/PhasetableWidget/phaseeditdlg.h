@@ -50,6 +50,7 @@ private:
     bool SaveData();
 
     bool containsPedestrianChannel();
+    bool greenConflictAvoidCheck(const PhaseParam &phase_param);
 
     unsigned int get_channels();
     unsigned char get_spec_func();

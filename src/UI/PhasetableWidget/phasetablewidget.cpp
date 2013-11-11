@@ -295,6 +295,11 @@ void PhasetableWidget::InitContextMenu()
     context_menu_->setStyleSheet(menu_qss);
 }
 
+bool PhasetableWidget::greenConflictCheck()
+{
+    return true;
+}
+
 QString PhasetableWidget::get_phase_type_desc( unsigned char phase_type )
 {
     QString str = handler_->get_phase_type_desc(phase_type);

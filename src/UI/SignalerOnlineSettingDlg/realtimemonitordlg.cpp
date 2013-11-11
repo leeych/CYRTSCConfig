@@ -13,6 +13,8 @@
 #include <QHeaderView>
 #include <QMessageBox>
 
+#include "bytearraydump.h"
+
 
 #define RESET_FLAG
 
@@ -24,6 +26,7 @@
     exp
 #endif
 
+int cnt = 1;
 
 RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     QDialog(parent)
@@ -253,6 +256,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
     }
     bool status = false;
     char cmd_id = '\0';
+//    int cnt = 1;
     while (true)
     {
         if (recv_array_.size() < 4)
@@ -264,6 +268,14 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             recv_array_.clear();
             break;
         }
+#if 0
+            ByteArrayDump dump;
+            QString dir;
+            MUtility::getTempDir(dir);
+            dump.dumpByteArray(dir + QString::number(cnt) + "test.dat", recv_array_);
+            qDebug() << "dump bytearray count:" << cnt;
+            cnt++;
+#endif
         cmd_id = recv_array_.at(3);
         qDebug() << "OnCmdParseParam " << recv_array_.left(4);
 #if 0
@@ -1339,7 +1351,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     {
         seconds -= 60*60*8;
     }
-    date_time_ = QDateTime::fromTime_t(seconds).toLocalTime();
+    date_time_ = QDateTime::fromTime_t(seconds).toUTC();
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
 
     return true;
@@ -1526,7 +1538,7 @@ bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
     qDebug() << "Parse realtime driver info";
     array.remove(0, 4);
     int index = array.indexOf("END");
-    if (index != 3)
+    if (index != 2)
     {
         array.remove(0, index + 3);
         return false;
@@ -1564,10 +1576,11 @@ bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
     array.remove(0, 4);
     unsigned char light_state = 0;
     memcpy(&light_state, array.data(), 1);
+    array.remove(0, 1);
     int index = array.indexOf("END");
-    if (index != 1)
+    if (index != 0)
     {
-        array.remove(0, index);
+        array.remove(0, index+3);
         return false;
     }
     array.remove(0, 4);
@@ -1594,9 +1607,10 @@ bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
     array.remove(0, 4);
     memcpy(&detector_id_, array.data(), 1);
     array.remove(0, 1);
-    if (!array.left(3).contains("END"))
+    int index = array.indexOf("END");
+    if (index != 0)
     {
-//        array.remove(0, 3);
+        array.remove(0, index+3);
         return false;
     }
     array.remove(0, 3);

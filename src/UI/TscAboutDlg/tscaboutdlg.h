@@ -18,6 +18,7 @@ signals:
 
 public slots:
     void OnOKButtonClicked();
+    void OnAboutButtonClicked();
 
 private:
     void InitPage();
@@ -25,7 +26,8 @@ private:
 
 private:
     QLabel *software_declare_label_, *all_right_label_, *logo_label_;
-    QPushButton *ok_button_;
+    QLabel *version_label_;
+    QPushButton *ok_button_, *about_button_;
 };
 
 #endif // TSCABOUTDLG_H

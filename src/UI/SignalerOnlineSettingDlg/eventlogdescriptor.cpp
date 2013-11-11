@@ -340,6 +340,7 @@ void EventLogDescriptor::GenSoftwareDesc()
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_WATCHDOG_OPEN + STRING_SUCCEEDED));
     tag.log_value = 7;
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_WATCHDOG_OPEN + STRING_FAILED));
+    tag.event_type_id = 1;
     tag.log_value = 8;
     log_desc_map_.insert(tag, QString(STRING_EVENT_LOG_CONFIG_FILE_OPEN + STRING_SUCCEEDED));
     tag.log_value = 9;

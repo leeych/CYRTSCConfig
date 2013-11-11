@@ -1,8 +1,6 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QFile>
-#include <QDesktopServices>
-#include <QUrl>
 
 #include "mainwindow.h"
 #include "mutility.h"
@@ -101,25 +99,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 
 void MainWindow::OnHelpToolButtonClicked()
 {
-//    about_dlg_->exec();
-    QString file_path = MUtility::helpDir().toUtf8() + "help.pdf";
-//    QFile file("log.log");
-//    if (file.open(QIODevice::WriteOnly | QIODevice::Append))
-//    {
-//        file.write(file_path.toAscii());
-//        file.close();
-//    }
-    if (!QFile::exists(file_path))
-    {
-        QMessageBox::warning(this, STRING_TIP, STRING_FILE_NOT_EXISTS, STRING_OK);
-        return;
-    }
-    bool state = QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
-    if (!state)
-    {
-        QMessageBox::warning(this, STRING_TIP, STRING_FILE_OPEN + STRING_FAILED, STRING_OK);
-        return;
-    }
+    about_dlg_->exec();
 }
 
 void MainWindow::OnSaveToolButtonClicked()
@@ -152,7 +132,7 @@ void MainWindow::OnSaveToolButtonClicked()
 
 void MainWindow::InitPage()
 {
-	setWindowTitle(STRING_MAIN_TITLE);
+    setWindowTitle(STRING_MAIN_TITLE);
     CreateToolBar();
     CreateStatusBar();
 
@@ -161,7 +141,7 @@ void MainWindow::InitPage()
     main_tab_window_ = new MTabWidget(this);
     QFont tabfont(STRING_FONT_SONGTI, 12);
     main_tab_window_->setTabBarFont(tabfont);
-//    about_dlg_ = new TscAboutDlg(this);
+    about_dlg_ = new TscAboutDlg(this);
 
     QFont font(STRING_FONT_SONGTI, 11);
     left_splitter_ = new QSplitter(Qt::Vertical);

@@ -24,7 +24,7 @@ void PhaseHandler::reset_database()
 void PhaseHandler::init()
 {
     phase_list_ = db_->get_phase_table();
-	qSort(phase_list_.begin(), phase_list_.end(), phase_less_than);
+    qSort(phase_list_.begin(), phase_list_.end(), phase_less_than);
 }
 
 void PhaseHandler::set_phase(unsigned char phase_id, const PhaseParam &phase)
@@ -106,6 +106,17 @@ QList<PhaseParam> &PhaseHandler::get_phase_list()
 {
     qSort(phase_list_.begin(), phase_list_.end(), phase_less_than);
     return phase_list_;
+}
+
+QList<unsigned char> PhaseHandler::get_phase_id_list()
+{
+    get_phase_list();
+    QList<unsigned char> phase_id_list;
+    for (int i = 0; i < phase_list_.size(); i++)
+    {
+        phase_id_list.append(phase_list_.at(i).phase_id);
+    }
+    return phase_id_list;
 }
 
 unsigned char PhaseHandler::get_max_phase_id()

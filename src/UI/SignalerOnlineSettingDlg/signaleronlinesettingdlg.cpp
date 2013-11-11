@@ -298,8 +298,15 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
 {
 //    QMessageBox::information(this, STRING_TIP, err, STRING_OK);
+    conn_timer_->stop();
+    if (ver_check_id_ != 0)
+    {
+        killTimer(ver_check_id_);
+        ver_check_id_ = 0;
+    }
     conn_tip_label_->setText(err);
     conn_button_->setEnabled(true);
+    conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
     // disable other dialog
     EnableDialogs(false);
 }
