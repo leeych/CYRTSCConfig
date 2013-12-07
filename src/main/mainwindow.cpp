@@ -99,7 +99,7 @@ void MainWindow::OnConfigurationToolButtonClicked()
 
 void MainWindow::OnHelpToolButtonClicked()
 {
-    about_dlg_->exec();
+    about_dlg_->initialize();
 }
 
 void MainWindow::OnSaveToolButtonClicked()

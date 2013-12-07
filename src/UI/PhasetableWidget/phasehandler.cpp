@@ -83,7 +83,8 @@ bool PhaseHandler::add_phase(const PhaseParam &phase)
 
 bool PhaseHandler::remove_phase(unsigned char phase_id)
 {
-    if (int idx = index_of_phase_list(phase_id) != -1)
+    int idx = index_of_phase_list(phase_id);
+    if (idx != -1)
     {
         phase_list_.removeAt(idx);
         return true;

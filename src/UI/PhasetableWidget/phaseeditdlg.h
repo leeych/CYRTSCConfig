@@ -28,6 +28,7 @@ public:
         ManClearLessFix,
         FixGreenZero,
         FixManClearLessFix,
+        DelayLessThanMinGreen,
         None
     };
 

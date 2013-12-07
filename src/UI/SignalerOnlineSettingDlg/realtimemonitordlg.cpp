@@ -343,10 +343,14 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
             }
             else if (!is_inited_)
-			{
-				signaler_timer_->start(1000);
-				sync_cmd_->StartMonitoring();
-				is_inited_ = true;
+            {
+                if (InitTscParam())
+                {
+                    UpdateScheduleInfo();
+                }
+                signaler_timer_->start(1000);
+                sync_cmd_->StartMonitoring();
+                is_inited_ = true;
             }
             break;
         case '8':
@@ -793,6 +797,7 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
     QString str;
     int n = 0;
     unsigned char pattern_id = 0;
+//    ctrl_mode_label_->setText(" -");
     for (m = 0; m < tsc_param_.time_section_table_.FactTimeSectionNum; m++)
     {
         if (tsc_param_.time_section_table_.TimeSectionList[m][0].TimeSectionId != time_section_id)
@@ -817,13 +822,13 @@ void RealtimeMonitorDlg::UpdateScheduleInfo()
                     unsigned char event_id = tsc_param_.time_section_table_.TimeSectionList[m][n-1].EventId;
                     start_hour = tsc_param_.time_section_table_.TimeSectionList[m][n-1].StartHour;
                     start_min = tsc_param_.time_section_table_.TimeSectionList[m][n-1].StartMinute;
-                    unsigned char ctrl_mode = tsc_param_.time_section_table_.TimeSectionList[m][n-1].ControlMode;
+//                    unsigned char ctrl_mode = tsc_param_.time_section_table_.TimeSectionList[m][n-1].ControlMode;
                     QString str;
                     event_id_label_->setText(str.sprintf("%d", event_id));
                     str.sprintf("%02d:%02d", start_hour, start_min);
                     start_time_label_->setText(str);
-                    str = ctrl_mode_desc_map_.value(ctrl_mode); //EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
-                    ctrl_mode_label_->setText(str);
+//                    str = ctrl_mode_desc_map_.value(ctrl_mode); //EventLogDescriptor::GetInstance()->get_ctrl_mode_desc(ctrl_mode);
+//                    ctrl_mode_label_->setText(str);
                     pattern_id = tsc_param_.time_section_table_.TimeSectionList[m][n-1].PatternId;
                 }
                 break;
@@ -917,7 +922,7 @@ void RealtimeMonitorDlg::InitLightTreeContent()
         str = STRING_LIGHT_OFF;
         item->setText(1, str);
         item->setTextColor(1, QColor(0,0,0));
-        str = STRING_UI_NORMAL;
+        str = "-";
         item->setText(2, str);
         for (int j = 0; j < 3; j++)
         {
@@ -1001,7 +1006,7 @@ void RealtimeMonitorDlg::InitDriverTreeContent()
         QTreeWidgetItem *item = new QTreeWidgetItem(driver_tree_);
         str.sprintf("%d", i+1);
         item->setText(0, str);
-        str = STRING_DIRVER_FAULT_NOT_INSTALLED;
+        str = "-";/*STRING_DIRVER_FAULT_NOT_INSTALLED*/
         item->setText(1, str);
         for (int j = 0; j < 2; j++)
         {
@@ -1033,7 +1038,7 @@ void RealtimeMonitorDlg::InitDetectorTreeContent()
         item->setText(0, str);
         str = "-";
         item->setText(1, str);
-        str = STRING_DIRVER_FAULT_NOT_INSTALLED;
+        str = "-";/*STRING_DIRVER_FAULT_NOT_INSTALLED*/
         item->setText(2, str);
         for (int j = 0; j < 3; j++)
         {
@@ -1044,6 +1049,17 @@ void RealtimeMonitorDlg::InitDetectorTreeContent()
     detector_tree_->addTopLevelItems(detector_item_list_);
 }
 
+void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id, unsigned char flow_data)
+{
+    if (!(detector_id > 0 && detector_id <= MAX_DETECTOR))
+    {
+        return;
+    }
+    QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
+    item->setText(1, QString::number(flow_data));
+    item->setTextAlignment(1, Qt::AlignCenter);
+}
+
 void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
 {
     if (!(detector_id > 0 && detector_id <= MAX_DETECTOR))
@@ -1051,8 +1067,10 @@ void RealtimeMonitorDlg::UpdateDetectorFlowInfo(unsigned char detector_id)
         return;
     }
     QTreeWidgetItem *item = detector_item_list_.at(detector_id-1);
-    int flow_count = item->text(2).toInt();
-    item->setText(1, QString::number(++flow_count));
+    int flow_count = item->text(1).toInt()+1;
+    QString str;
+    str.sprintf("%d", flow_count);
+    item->setText(1, str);
     item->setTextAlignment(1, Qt::AlignCenter);
 }
 
@@ -1087,7 +1105,7 @@ void RealtimeMonitorDlg::UpdateTreeGroupBox(const QString &title, QWidget *tree)
 
 void RealtimeMonitorDlg::InitCtrlModeDesc()
 {
-    ctrl_mode_desc_map_.insert(0, STRING_CTRL_AUTONOMOUS);
+    ctrl_mode_desc_map_.insert(0, STRING_CTRL_GIVEN_CYCLE);
     ctrl_mode_desc_map_.insert(1, STRING_CTRL_CLOSE_LIGHT);
     ctrl_mode_desc_map_.insert(2, STRING_CTRL_YELLOW_FLASH);
     ctrl_mode_desc_map_.insert(3, STRING_CTRL_ALL_RED);
@@ -1351,7 +1369,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
     {
         seconds -= 60*60*8;
     }
-    date_time_ = QDateTime::fromTime_t(seconds).toUTC();
+    date_time_ = QDateTime::fromTime_t(seconds);
     signaler_time_label_->setText(date_time_.toString("yyyy-MM-dd hh:mm:ss"));
 
     return true;
@@ -1359,6 +1377,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 // CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
 {
+    qDebug() << "CYT9--Parse detector flow content";
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
@@ -1384,18 +1403,36 @@ bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
         detector_array_ = NULL;
     }
     // TODO: update ui
+    QMap<unsigned char, unsigned char> flow_map;
     QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow_list();
+    int flow_count = 0;
     for (int i = 0; i < flow_list.size(); i++)
     {
-        UpdateDetectorFlowInfo(flow_list.at(i).detector_id);
-        UpdateDetectorStatusInfo(flow_list.at(i).detector_id, 1);
+        unsigned char id = flow_list.at(i).detector_id;
+        if (!flow_map.contains(id))
+        {
+            flow_map.insert(id, 1);
+        }
+        else
+        {
+            flow_map[id] = flow_map.value(id) + 1;
+        }
+//        UpdateDetectorFlowInfo(flow_list.at(i).detector_id);
+//        UpdateDetectorStatusInfo(flow_list.at(i).detector_id, 1);
+    }
+    QMap<unsigned char, unsigned char>::iterator iter = flow_map.begin();
+    while (iter != flow_map.end())
+    {
+        UpdateDetectorFlowInfo(iter.key(), iter.value());
+        UpdateDetectorStatusInfo(iter.key(), 1);
+        ++iter;
     }
     return true;
 }
 // CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
 bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 {
-    qDebug() << "Parse Light status";
+    qDebug() << "CYT3--Parse Light status";
     array.remove(0, 4);
     char array_size = 0;
     char num_1 = 0;
@@ -1465,6 +1502,8 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
         }
         channel_color_array_[i] = channel_status_info_.channel_vec.at(i-1);
     }
+    QString txt = ctrl_mode_desc_map_.value(channel_status_info_.work_mode);
+    ctrl_mode_label_->setText(txt);
 
     // back up channel status info
     channel_status_bak_.channel_vec = channel_status_info_.channel_vec;
@@ -1486,7 +1525,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 // CYTA+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 {
-    qDebug() << "Parse detector fault";
+    qDebug() << "CYTA--Parse detector fault";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 1)
@@ -1505,7 +1544,7 @@ bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 // CYTC+数据总长度（4字节）+驱动板状态数据字节流+END
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
-    qDebug() << "Parse driver status";
+    qDebug() << "CYTC--Parse driver status";
     array.remove(0, 4);
     unsigned int len = 0;
     memcpy(&len, array.data(), 4);
@@ -1535,7 +1574,7 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 // CYTD+驱动板编号(1字节)+状态(1字节)+END
 bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 {
-    qDebug() << "Parse realtime driver info";
+    qDebug() << "CYTD--Parse realtime driver info";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 2)
@@ -1553,7 +1592,7 @@ bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 // CYTE+通道号(1字节) + 标志(1字节) + 故障类型(1字节) + END
 bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 {
-    qDebug() << "Parse realtime light status";
+    qDebug() << "CYTE--Parse realtime light status";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 3)
@@ -1572,7 +1611,7 @@ bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 // CYTF+状态(3:关，0：红，1：黄) + END
 bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
 {
-    qDebug() << "Parse all lights turn on";
+    qDebug() << "CYTF--Parse all lights turn on";
     array.remove(0, 4);
     unsigned char light_state = 0;
     memcpy(&light_state, array.data(), 1);
@@ -1603,7 +1642,7 @@ bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
 // CYTB+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
 {
-    qDebug() << "Parse realtime detector flow";
+    qDebug() << "CYTB--Parse realtime detector flow";
     array.remove(0, 4);
     memcpy(&detector_id_, array.data(), 1);
     array.remove(0, 1);

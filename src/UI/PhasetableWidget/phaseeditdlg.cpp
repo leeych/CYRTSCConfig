@@ -64,6 +64,11 @@ void PhaseeditDlg::OnOkButtonClicked()
         QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_MAN_CLEAR_ZERO_TIP, STRING_OK);
         return;
     }
+    if (ValidateUI() == DelayLessThanMinGreen)
+    {
+        QMessageBox::information(this, STRING_WARNING, STRING_UI_PHASE_DELAY_LESS_MINGREEN_TIP, STRING_OK);
+        return;
+    }
 
     if (SaveData())
     {
@@ -112,7 +117,7 @@ void PhaseeditDlg::InitPage()
     max1_green_time_spinbox_->setRange(0, 255);
     max2_green_time_spinbox_->setRange(0, 255);
     fix_green_time_spinbox_->setRange(0, 255);
-    green_flash_time_spinbox_->setRange(4, 255);
+    green_flash_time_spinbox_->setRange(0, 255);
 
     phase_mode_cmb_ = new QComboBox;
 
@@ -385,6 +390,12 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
 {
     int min_green = min_green_time_spinbox_->value();
     int max_green1 = max1_green_time_spinbox_->value();
+    int delay_time = delay_green_time_spinbox_->value();
+    if (delay_time != 0 && delay_time >= min_green)
+    {
+        return DelayLessThanMinGreen;
+    }
+
     if (min_green > max_green1)
     {
         return MinLargerThanMax1;
@@ -394,7 +405,6 @@ PhaseeditDlg::PhaseErr PhaseeditDlg::ValidateUI()
         return GreenFlashZero;
     }
     if ((phase_mode_cmb_->currentText() == QString(STRING_UI_PHASE_WALKMAN)))
-
     {
         if ((man_green_time_spinbox_->value() == 0) || (man_clear_time_spinbox_->value() == 0))
         {
@@ -487,20 +497,15 @@ bool PhaseeditDlg::greenConflictAvoidCheck(const PhaseParam &phase_param)
             index = i;
             break;
         }
-        else if (i == 0)
-        {
-            index = phase_id_list.size()-1;
-            break;
-        }
         else if (phase_id == phase_id_list.at(i))
         {
             index = i-1;
             break;
         }
     }
-    if (index < 0)
+    if (index == -1)
     {
-        return false;
+        index = phase_id_list.size() - 1;
     }
     PhaseParam param;
     if (!handler_->get_phase(phase_id_list.at(index), param))
@@ -513,7 +518,7 @@ bool PhaseeditDlg::greenConflictAvoidCheck(const PhaseParam &phase_param)
              << "curr_phase_channel:" << phase_param.phase_channel << endl
              << "pre_phase_channel:" << param.phase_channel;
 
-    if ((phase_param.phase_channel & param.phase_channel) != 0x00)
+    if ((phase_param.phase_id != param.phase_id) && (phase_param.phase_channel & param.phase_channel) != 0x00)
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_PHASE_AVOID_GREEN_CONFL_TIP, STRING_OK);
         return false;

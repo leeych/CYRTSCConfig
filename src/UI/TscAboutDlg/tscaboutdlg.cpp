@@ -1,6 +1,7 @@
 #include "tscaboutdlg.h"
 #include "macrostring.h"
 #include "mutility.h"
+#include "configmanager.h"
 
 #include <QDesktopWidget>
 #include <QVBoxLayout>
@@ -17,12 +18,23 @@
 TscAboutDlg::TscAboutDlg(QWidget *parent) :
     QDialog(parent)
 {
+    cfg_manager_ = ConfigManager::getInstance();
     InitPage();
     InitSignalSlots();
 }
 
 TscAboutDlg::~TscAboutDlg()
 {
+}
+
+void TscAboutDlg::initialize()
+{
+    QString ini_path;
+    MUtility::getMainDir(ini_path);
+    ini_path += "app.ini";
+    QString ver = cfg_manager_->getAppSettingInfo(ini_path).soft_version_;
+    version_label_->setText(ver_prefix_+ver);
+    exec();
 }
 
 void TscAboutDlg::OnOKButtonClicked()
@@ -53,7 +65,8 @@ void TscAboutDlg::InitPage()
                                          "</font><br /><br /><font size=\"3\">" + STRING_UI_ABOUT_DECLARE + "</font>");
     software_declare_label_->setAlignment(Qt::AlignCenter);
     all_right_label_ = new QLabel(STRING_UI_ABOUT_COPYRIGHT);
-    version_label_ = new QLabel(STRING_UI_ABOUT_VERSION+" :v1.0.1");
+    version_label_ = new QLabel(STRING_UI_ABOUT_VERSION+" :v");
+    ver_prefix_ = version_label_->text().trimmed();
     QString dir;
     MUtility::getImageDir(dir);
     logo_label_ = new QLabel;

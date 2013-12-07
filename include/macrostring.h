@@ -56,6 +56,7 @@
 #define STRING_CONNECT_PROXY_PROTOCOL   QObject::tr("Proxy protocol error")
 #define STRING_CONNECT_UNKNOWN          QObject::tr("Unknown error")
 
+#define STRING_CTRL_GIVEN_CYCLE         QObject::tr("Given cycle ctrl")
 #define STRING_CTRL_AUTONOMOUS          QObject::tr("Autonomous ctrl")
 #define STRING_CTRL_CLOSE_LIGHT         QObject::tr("Close lights ctrl")
 #define STRING_CTRL_YELLOW_FLASH        QObject::tr("Yellow flash ctrl")
@@ -236,6 +237,7 @@
 #define STRING_UI_PHASE_MAN_CLEAR_ZERO_TIP      QObject::tr("There is man channel, man clear time can not be zero")
 #define STRING_UI_PHASE_ENABLE          QObject::tr("Enable this phase or not")
 #define STRING_UI_PHASE_AVOID_GREEN_CONFL_TIP      QObject::tr("Determined phase can not shared any channels with pre phase")
+#define STRING_UI_PHASE_DELAY_LESS_MINGREEN_TIP    QObject::tr("Delay time must less than min green time")
 
 #define STRING_UI_PHASE_MOTOR           QObject::tr("Motor phase")
 #define STRING_UI_PHASE_BIKE            QObject::tr("Bike phase")

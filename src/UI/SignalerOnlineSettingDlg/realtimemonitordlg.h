@@ -133,6 +133,7 @@ private:
     void InitDriverTreeContent();
     void UpdateDriverStatusInfo(unsigned char driver_id, unsigned char status);
     void InitDetectorTreeContent();
+    void UpdateDetectorFlowInfo(unsigned char detector_id, unsigned char flow_data);
     void UpdateDetectorFlowInfo(unsigned char detector_id);
     void UpdateDetectorStatusInfo(unsigned char detector_id, unsigned char flag);
 

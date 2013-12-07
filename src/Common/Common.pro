@@ -7,4 +7,5 @@ SUBDIRS += \
     Communication \
     CommandCallback \
     LogExportor \
-    SystemIniter
+    SystemIniter \
+    ConfigManager

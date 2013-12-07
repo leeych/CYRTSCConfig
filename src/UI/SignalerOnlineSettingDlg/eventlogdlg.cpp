@@ -173,6 +173,7 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
         dump.dumpByteArray(dir + "event_log.dat", event_log_array_);
 #endif
         ParseEventLogArray(event_log_array_);
+        SyncCommand::GetInstance()->ReleaseSignalSlots();
         UpdateUI();
         event_log_array_.clear();
         tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED + "</font>");

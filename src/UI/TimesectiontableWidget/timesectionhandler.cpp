@@ -169,7 +169,7 @@ QString TimesectionHandler::get_ctrl_mode_desc(unsigned char ctrl_mode)
     switch (ctrl_mode)
     {
     case 0:
-        str = STRING_UI_UNIT_AUTO_CONTORL;
+        str = STRING_CTRL_GIVEN_CYCLE;/*STRING_UI_UNIT_AUTO_CONTORL*/;
         break;
     case 1:
         str = STRING_UI_UNIT_CLOSE_LIGHTS;
@@ -234,21 +234,16 @@ QString TimesectionHandler::get_ctrl_mode_desc(unsigned char ctrl_mode)
 QList<unsigned char> TimesectionHandler::get_timing_id_list()
 {
     QList<unsigned char> timing_id_list;
-    //for (int i = 0; i < db_->get_pattern_table().FactPatternNum; i++)
-    //{
-    //    timing_id_list.append(db_->get_pattern_table().PatternList[i].PatternId);
-    //}
-    //qSort(timing_id_list);
-	for (unsigned char i = 1; i <= 32; i++)
-	{
-		timing_id_list.append(i);
-	}
+    for (unsigned char i = 1; i <= 32; i++)
+    {
+        timing_id_list.append(i);
+    }
     return timing_id_list;
 }
 
 unsigned char TimesectionHandler::get_ctrl_mode_by_desc(const QString &str)
 {
-    if (str == STRING_UI_UNIT_AUTO_CONTORL)
+    if (str == STRING_CTRL_GIVEN_CYCLE)
     {
         return 0;
     }
