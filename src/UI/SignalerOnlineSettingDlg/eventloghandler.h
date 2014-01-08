@@ -46,6 +46,7 @@ public:
     QList<QString> get_all_event_type_desc_list();
     QList<QString> get_event_type_desc_list();
     QList<LogParam> get_event_log_list(unsigned char event_type_id);
+    QList<LogParam> get_event_log_list(unsigned int start_secs, unsigned int end_secs);
 
     QString get_log_desc(unsigned char event_type_id, unsigned int log_value);
     QString get_datetime_desc(unsigned int seconds);
@@ -57,12 +58,14 @@ public:
     bool export_report(const QString &file_name);
 
 private:
-    typedef QMap<unsigned int, LogParam> LogParamMap;   // qmap<logvalue, logparam>
+    typedef QMap<unsigned int, LogParam> LogParamMap;   // qmap<logvalue, logparam> / qmap<log_id, logparam>
     typedef QMap<unsigned char, LogParamMap>::iterator EventLogIter;
 
     bool is_event_log_valid(const EventLogList_t &loginfo);
     bool is_event_log_exists(unsigned char event_type_id, unsigned int log_value);
     EventLogIter index_of_event_log(unsigned char event_type_id, unsigned int log_value);
+
+    static bool less_than(const LogParam &lhs, const LogParam &rhs);
 
 private:
     QMap<unsigned char, EventParam> event_map_;

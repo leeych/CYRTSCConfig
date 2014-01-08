@@ -2,12 +2,14 @@
 #include "macrostring.h"
 #include "synccommand.h"
 #include "command.h"
+#include "mutility.h"
 
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QIODevice>
+#include <QRegExpValidator>
 
 #define STOP_TIMER
 #ifdef STOP_TIMER
@@ -75,15 +77,31 @@ void TimeIPDlg::OnReadIPButtonClicked()
 
 void TimeIPDlg::OnWriteIPButtonClicked()
 {
+    QStringList param_list;
+    QString ip = ip_lineedit_->text().trimmed();
+    QString netmask = mask_lineedit_->text().trimmed();
+    QString gateway = gateway_lineedit_->text().trimmed();
+    if (!MUtility::checkIPString(ip))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_TIME_NETWORK_IP_ERROR, STRING_OK);
+        return;
+    }
+    else if (!MUtility::checkIPString(netmask))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_TIME_NETWORK_NETMASK_ERROR, STRING_OK);
+        return;
+    }
+    else if (!MUtility::checkIPString(gateway))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_TIME_NETWORK_GATEWAY_ERROR, STRING_OK);
+        return;
+    }
+
     int ret = QMessageBox::question(this, STRING_TIP, STRING_UI_SIGNALER_WRITE_IP_REQUEST_TIP, STRING_OK, STRING_NO);
     if (ret != 0)
     {
         return;
     }
-    QStringList param_list;
-    QString ip = ip_lineedit_->text().trimmed();
-    QString netmask = mask_lineedit_->text().trimmed();
-    QString gateway = gateway_lineedit_->text().trimmed();
     param_list << "0" << Trimmed(gateway) << Trimmed(ip) << Trimmed(netmask);
     SyncCommand::GetInstance()->ConfigNetwork(param_list, this, SLOT(OnCmdWriteIPAddress(QByteArray&)));
     emit networkSettingSignal(true);
@@ -275,7 +293,10 @@ void TimeIPDlg::InitPage()
 
     QGroupBox *network_grp = new QGroupBox(STRING_UI_SIGNALER_NETWORK_GRP);
     QLabel *ip_label = new QLabel(STRING_IP + ":");
-    ip_lineedit_ = new QLineEdit;
+    ip_lineedit_ = new QLineEdit(this);
+//    QRegExp reg("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)");
+//    QRegExpValidator *validator = new QRegExpValidator(reg);
+//    ip_lineedit_->setValidator(validator);
     ip_lineedit_->setInputMask("000.000.000.000");
 
     QLabel *mask_label = new QLabel(STRING_MASK + ":");

@@ -28,7 +28,7 @@ void FileListWidget::OnAddFileAction()
         return;
     }
 
-    bool state = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), open_file_name_.toStdString().data());
+    bool state = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), open_file_name_);
     if (state)
     {
 		int index = open_file_name_.lastIndexOf("/");
@@ -54,6 +54,11 @@ void FileListWidget::OnNewFileAction()
 	{
 		return;
 	}
+    QString post_fix = new_file_name_.right(4);
+    if (!(post_fix.left(1) == "." && post_fix.right(3).toUpper() == "DAT"))
+    {
+        new_file_name_.append(".dat");
+    }
     bool state = reader_writer_->WriteFile(new_file_name_.toStdString().data());
     if (state)
     {
@@ -174,7 +179,7 @@ void FileListWidget::OnFileTableItemDoubleClicked(int row, int col)
         return;
     }
 
-    bool status = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), file_name.toStdString().c_str());
+    bool status = reader_writer_->ReadFile(reader_writer_->defaultDatabase(), file_name.toUtf8().data());
     if (status)
     {
         curr_file_name_ = file_name;

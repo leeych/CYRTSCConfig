@@ -24,6 +24,8 @@ public:
 
     DirError InitUserDir();
     DirError InitDataDir();
+
+    bool initLogParams();
 };
 
 #endif // SYSTEMINITER_H

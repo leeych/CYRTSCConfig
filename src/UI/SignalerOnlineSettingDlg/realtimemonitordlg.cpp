@@ -15,6 +15,9 @@
 
 #include "bytearraydump.h"
 
+#define MDEBUG_BRIEF_ENABLE
+#include "mdebug.h"
+
 
 #define RESET_FLAG
 
@@ -26,7 +29,8 @@
     exp
 #endif
 
-int cnt = 1;
+#define HEARTBEAT_MS    (8000)
+
 
 RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     QDialog(parent)
@@ -34,10 +38,14 @@ RealtimeMonitorDlg::RealtimeMonitorDlg(QWidget *parent) :
     sync_cmd_ = SyncCommand::GetInstance();
     signaler_timer_ = new QTimer(this);
     count_down_timer_ = new QTimer(this);
+    heart_beat_timer_ = new QTimer(this);
+    milliseconds_ = 0;
+
     is_inited_ = false;
     is_first_light_ = true;
     ui_timer_id_ = 0;
     is_uitimer_started_ = false;
+    is_cycle_end_ = false;
     total_stage_count_ = 0;
     curr_stage_id_ = 0;
     count_down_seconds_ = 0;
@@ -87,6 +95,7 @@ void RealtimeMonitorDlg::Initialize(const QString &ip)
     cfg_array_.clear();
     recv_array_.clear();
     count_down_timer_->start(1000);
+
     exec();
 }
 
@@ -117,6 +126,7 @@ void RealtimeMonitorDlg::OnDriverButtonToggled(bool checked)
     if (checked)
     {
         sync_cmd_->GetDriverBoardInfo();
+//        heartBeatHandler();
         UpdateTreeGroupBox(STRING_UI_SIGNALER_MONITOR_DRIVER_STATUS, driver_tree_);
         ResetButtonStatus(driver_button_);
     }
@@ -128,6 +138,7 @@ void RealtimeMonitorDlg::OnDetectorButtonToggled(bool checked)
     if (checked)
     {
         sync_cmd_->GetDetectorFlowData();
+//        heartBeatHandler();
         UpdateTreeGroupBox(STRING_UI_SIGNALER_MONITOR_DETECTOR_STATUS, detector_tree_);
         ResetButtonStatus(detector_button_);
     }
@@ -146,7 +157,10 @@ void RealtimeMonitorDlg::OnSignalerTimeTimerOutSlot()
     second_count_++;
     if (second_count_ % 3 == 0)
     {
-        UpdateScheduleInfo();
+//        if (is_cycle_end_)
+//        {
+            UpdateScheduleInfo();
+//        }
         second_count_ = 0;
     }
 }
@@ -177,10 +191,24 @@ void RealtimeMonitorDlg::OnCountDownTimerOutSlot()
     phase_time_lcd_->display(str);
 }
 
+void RealtimeMonitorDlg::OnCheckSocketTimerOutSlot()
+{
+//    int status = sync_cmd_->getConnectionStatus();
+//    if (status != 2 || status != 3)
+//    {
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DISCONNECT);
+//    }
+}
+
+void RealtimeMonitorDlg::OnHeartBeatTimerOutSlot()
+{
+    sync_cmd_->SendHeartBeat();
+}
+
 void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
 {
     cfg_array_.append(array);
-    qDebug() << "OnCmdReadSignalerConfigFile config file size:" << cfg_array_.size();
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "OnCmdReadSignalerConfigFile config file size:" << cfg_array_.size();
     if (!cfg_array_.left(4).contains("CYT4"))
     {
         cfg_array_.clear();
@@ -196,7 +224,7 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
     int ret = -1;
     if (!res)
     {
-        qDebug() << "Parse config file failed";
+        BRIEF_DEBUG(DModule_RealTimeMonitor) << "Parse config file failed";
         ret = QMessageBox::question(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CFG + STRING_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
         if (ret == 0)
         {
@@ -213,11 +241,11 @@ void RealtimeMonitorDlg::OnCmdReadSignalerConfigFile(QByteArray &array)
     }
     else
     {
-        qDebug() << "Parse config file succeeded";
+        BRIEF_DEBUG(DModule_RealTimeMonitor) << "Parse config file succeeded";
         QFile file(cfg_file_);
 retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
-            qDebug() << "Save temp config file failed";
+            BRIEF_DEBUG(DModule_RealTimeMonitor) << "Save temp config file failed";
             ret = QMessageBox::question(this, STRING_UI_SIGNALER_SAVE_TEMPFILE_FAILED + ";\n" + STRING_RETRY + "?", STRING_YES, STRING_NO);
             if (ret == 0)
             {
@@ -236,15 +264,16 @@ retry:  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
             {
                 UpdateScheduleInfo();
             }
-            qDebug() << "parse config file size:" << cfg_array_.size();
+            BRIEF_DEBUG(DModule_RealTimeMonitor) << "parse config file size:" << cfg_array_.size();
             sync_cmd_->GetLightStatus(this, SLOT(OnCmdParseParam(QByteArray&)));
+//            heartBeatHandler();
         }
     }
 }
 
 void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 {
-    qDebug() << "OnCmdParseParam content" << recv_array_.left(4);
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "OnCmdParseParam content" << recv_array_.left(4);
     recv_array_.append(array);
     if (!CheckPackage(recv_array_))
     {
@@ -256,36 +285,25 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
     }
     bool status = false;
     char cmd_id = '\0';
-//    int cnt = 1;
     while (true)
     {
         if (recv_array_.size() < 4)
         {
             break;
         }
+        int index = recv_array_.indexOf("CYT");
+        if (index != 0)
+        {
+//            QMessageBox::information(this, STRING_WARNING, STRING_UI_SIGNALER_RECVARRAY_FAULT_TIP, STRING_OK);
+            recv_array_.remove(0, index);
+        }
         if (!(recv_array_.contains("CYT") || recv_array_.contains("END")))
         {
             recv_array_.clear();
             break;
         }
-#if 0
-            ByteArrayDump dump;
-            QString dir;
-            MUtility::getTempDir(dir);
-            dump.dumpByteArray(dir + QString::number(cnt) + "test.dat", recv_array_);
-            qDebug() << "dump bytearray count:" << cnt;
-            cnt++;
-#endif
         cmd_id = recv_array_.at(3);
-        qDebug() << "OnCmdParseParam " << recv_array_.left(4);
-#if 0
-        cmd_id = QString::number(qrand() % 4).at(0).toLatin1();
-        recv_array_.clear();
-        recv_array_.append("CYTF");
-        recv_array_.append(cmd_id);
-        recv_array_.append("END");
-        cmd_id = recv_array_.at(3);
-#endif
+        BRIEF_DEBUG(DModule_RealTimeMonitor) << "OnCmdParseParam " << recv_array_.left(4);
         switch (cmd_id)
         {
         case '0':
@@ -309,6 +327,7 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             {
                 //sync_cmd_->StartMonitoring();
                 sync_cmd_->GetTscTime();
+//                heartBeatHandler();
                 if (!is_uitimer_started_)
                 {
                     ui_timer_id_ = startTimer(3600*1000);
@@ -344,12 +363,13 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             }
             else if (!is_inited_)
             {
-                if (InitTscParam())
+                if (/*is_cycle_end_ && */InitTscParam())
                 {
                     UpdateScheduleInfo();
                 }
                 signaler_timer_->start(1000);
                 sync_cmd_->StartMonitoring();
+//                heartBeatHandler();
                 is_inited_ = true;
             }
             break;
@@ -404,17 +424,29 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
             {
                 QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR, STRING_OK);
             }
-#if 0
-            recv_array_.append("CYT1");
-            char ch = 1 + '\0';
-            recv_array_.append(ch);
-            ch = 2 + '\0';
-            recv_array_.append(ch);
-            recv_array_.append("END");
-#endif
+        }
+            break;
+        case 'G':
+        {
+            status = ParseCycleEndContent(recv_array_);
+            if (!status)
+            {
+                QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_MONITOR_PARSE_CYCLEEND_ERR, STRING_OK);
+            }
+            else
+            {
+                is_cycle_end_ = true;
+//                if (InitTscParam())
+//                {
+//                    UpdateScheduleInfo();
+//                }
+            }
         }
             break;
         default:
+        {
+            status = DefaultParser(recv_array_);
+        }
             break;
         }
     }
@@ -423,8 +455,8 @@ void RealtimeMonitorDlg::OnCmdParseParam(QByteArray &array)
 void RealtimeMonitorDlg::exitOnClose()
 {
     StopMonitoring();
-//    signaler_timer_->stop();
     count_down_timer_->stop();
+    // left to stop heart_beat_timer
     is_inited_ = false;
 
     if (ui_timer_id_ != 0)
@@ -443,6 +475,7 @@ void RealtimeMonitorDlg::exitOnClose()
 void RealtimeMonitorDlg::closeEvent(QCloseEvent *)
 {
     exitOnClose();
+    is_cycle_end_ = false;
 }
 
 void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
@@ -450,6 +483,7 @@ void RealtimeMonitorDlg::timerEvent(QTimerEvent *)
     if (ui_timer_id_ != 0)
     {
         sync_cmd_->GetTscTime();
+//        heartBeatHandler();
     }
 }
 
@@ -634,6 +668,7 @@ void RealtimeMonitorDlg::InitSignalSlots()
 
     connect(signaler_timer_, SIGNAL(timeout()), this, SLOT(OnSignalerTimeTimerOutSlot()));
     connect(count_down_timer_, SIGNAL(timeout()), this, SLOT(OnCountDownTimerOutSlot()));
+    connect(heart_beat_timer_, SIGNAL(timeout()), this, SLOT(OnHeartBeatTimerOutSlot()));
     connect(this, SIGNAL(readyReadConfigSignal()), this, SLOT(updateUISlot()));
 }
 
@@ -751,7 +786,7 @@ void RealtimeMonitorDlg::InitTree(QTreeWidget *tree, const QStringList &header)
 
 void RealtimeMonitorDlg::updateUISlot()
 {
-    if (InitTscParam())
+    if (/*is_cycle_end_ && */InitTscParam())
     {
         UpdateScheduleInfo();
     }
@@ -993,7 +1028,14 @@ void RealtimeMonitorDlg::UpdateLightTreeStatus(const LightFaultInfo &light_fault
     }
     QString str;
     QTreeWidgetItem *item = light_item_list_.at(light_fault.channel_id-1);
-    str = light_fault_desc_map_.value(light_fault.fault_id) + light_flag_desc_map_.value(light_fault.flag);
+    if (light_fault.flag == 0)
+    {
+        str = "-";
+    }
+    else
+    {
+        str = light_fault_desc_map_.value(light_fault.fault_id) + light_flag_desc_map_.value(light_fault.flag);
+    }
     item->setText(2, str);
     item->setTextAlignment(2, Qt::AlignCenter);
 }
@@ -1120,12 +1162,13 @@ void RealtimeMonitorDlg::InitCtrlModeDesc()
     ctrl_mode_desc_map_.insert(28, STRING_CTRL_TRAFFIC_CTRL);
     ctrl_mode_desc_map_.insert(29, STRING_CTRL_MANUAL_CTRL);
     ctrl_mode_desc_map_.insert(30, STRING_CTRL_SYS_FAULT_YELLOW);
+    ctrl_mode_desc_map_.insert(31, STRING_CTRL_SEPERATE_YELLOW);
 }
 
 bool RealtimeMonitorDlg::InitTscParam()
 {
     FileReaderWriter reader;
-    bool res = reader.ReadFile(cfg_file_.toStdString().c_str(), tsc_param_);
+    bool res = reader.ReadFile(cfg_file_, tsc_param_);
     if (!res)
     {
         QMessageBox::warning(this, STRING_WARNING, STRING_UI_SIGNALER_MONITOR_TEMP_CFG_OPEN + STRING_FAILED, STRING_OK);
@@ -1138,7 +1181,7 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
 {
     if (array.contains("DETECTDATAER"))
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_EMPTY, STRING_OK);
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_EMPTY, STRING_OK);
         int index = array.indexOf("DETECTDATAER");
         array.remove(index, QString("DETECTDATAER").size()+1);
         return false;
@@ -1153,6 +1196,15 @@ bool RealtimeMonitorDlg::CheckPackage(QByteArray &array)
     return true;
 }
 
+void RealtimeMonitorDlg::heartBeatHandler()
+{
+    if (heart_beat_timer_->isActive())
+    {
+        heart_beat_timer_->stop();
+    }
+    heart_beat_timer_->start(HEARTBEAT_MS);
+}
+
 void RealtimeMonitorDlg::test()
 {
     QString str("CYTF");
@@ -1160,7 +1212,7 @@ void RealtimeMonitorDlg::test()
     char ch = tmp + '\0';
     str.append(ch);
     str.append("END");
-    qDebug() << str;
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << str;
     QByteArray array;
     array.append(str);
     OnCmdParseParam(array);
@@ -1234,7 +1286,7 @@ void RealtimeMonitorDlg::ReadSignalerConfigFile()
 
 bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
 {
-    qDebug() << "config file size:" << array.size();
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "config file size:" << array.size();
     if (array.isEmpty())
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SOCKET_ERROR, STRING_OK);
@@ -1268,7 +1320,7 @@ bool RealtimeMonitorDlg::ParseConfigContent(QByteArray &array)
 // CYT1+通道号+信号灯状态+END
 bool RealtimeMonitorDlg::ParseBeginMonitorContent(QByteArray &array)
 {
-    qDebug() << "Parse begine MonitorContent size";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "Parse begine MonitorContent size";
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
@@ -1377,7 +1429,7 @@ bool RealtimeMonitorDlg::ParseTSCTimeContent(QByteArray &array)
 // CYT9+数据总长度(4字节)+车辆检测器数据字节流+END
 bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
 {
-    qDebug() << "CYT9--Parse detector flow content";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYT9--Parse detector flow content";
     array.remove(0, 4);
     int index = array.indexOf("END");
     array.remove(index, 3);
@@ -1405,7 +1457,6 @@ bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
     // TODO: update ui
     QMap<unsigned char, unsigned char> flow_map;
     QList<DetectorFlowInfo> flow_list = handler_->get_detector_flow_list();
-    int flow_count = 0;
     for (int i = 0; i < flow_list.size(); i++)
     {
         unsigned char id = flow_list.at(i).detector_id;
@@ -1432,7 +1483,7 @@ bool RealtimeMonitorDlg::ParseDetectorFlowContent(QByteArray &array)
 // CYT3+04+01+红灯组1+黄灯组1+绿灯组1+02+红灯组2+黄灯组2+绿灯组2+03+红灯组3+黄灯组3+绿灯组3+04+红灯组4+黄灯组4+绿灯组4+工作模式(1字节)+方案号(1字节)+相位编码(4字节)+END
 bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 {
-    qDebug() << "CYT3--Parse Light status";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYT3--Parse Light status";
     array.remove(0, 4);
     char array_size = 0;
     char num_1 = 0;
@@ -1525,7 +1576,7 @@ bool RealtimeMonitorDlg::ParseLightStatusContent(QByteArray &array)
 // CYTA+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 {
-    qDebug() << "CYTA--Parse detector fault";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTA--Parse detector fault";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 1)
@@ -1544,7 +1595,7 @@ bool RealtimeMonitorDlg::ParseDetectorFaultContent(QByteArray &array)
 // CYTC+数据总长度（4字节）+驱动板状态数据字节流+END
 bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 {
-    qDebug() << "CYTC--Parse driver status";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTC--Parse driver status";
     array.remove(0, 4);
     unsigned int len = 0;
     memcpy(&len, array.data(), 4);
@@ -1574,7 +1625,7 @@ bool RealtimeMonitorDlg::ParseDriverStatusContent(QByteArray &array)
 // CYTD+驱动板编号(1字节)+状态(1字节)+END
 bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 {
-    qDebug() << "CYTD--Parse realtime driver info";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTD--Parse realtime driver info";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 2)
@@ -1592,7 +1643,7 @@ bool RealtimeMonitorDlg::ParseDriverRealTimeStatusContent(QByteArray &array)
 // CYTE+通道号(1字节) + 标志(1字节) + 故障类型(1字节) + END
 bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 {
-    qDebug() << "CYTE--Parse realtime light status";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTE--Parse realtime light status";
     array.remove(0, 4);
     int index = array.indexOf("END");
     if (index != 3)
@@ -1611,7 +1662,7 @@ bool RealtimeMonitorDlg::ParseLightRealTimeStatusContent(QByteArray &array)
 // CYTF+状态(3:关，0：红，1：黄) + END
 bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
 {
-    qDebug() << "CYTF--Parse all lights turn on";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTF--Parse all lights turn on";
     array.remove(0, 4);
     unsigned char light_state = 0;
     memcpy(&light_state, array.data(), 1);
@@ -1622,27 +1673,63 @@ bool RealtimeMonitorDlg::ParseAllLightOnContent(QByteArray &array)
         array.remove(0, index+3);
         return false;
     }
-    array.remove(0, 4);
+    array.remove(0, 3);
     for (int i = 1; i < 13; i++)
     {
-        SetVehicleLight(pre_color_, i, false);
+        SetVehicleLight(Red, i, false);
+        SetVehicleLight(Yellow, i, false);
+        SetVehicleLight(Green, i, false);
+        SetVehicleLight(Off, i, false);
+
         SetVehicleLight((LightColor)light_state, i, true);
     }
     for (int j = 13; j <= 16; j++)
     {
-        SetPedestrianLight(pre_color_, j, false);
+        SetPedestrianLight(Red, j, false);
+        SetPedestrianLight(Yellow, j, false);
+        SetPedestrianLight(Green, j, false);
+        SetPedestrianLight(Off, j, false);
+
         SetPedestrianLight((LightColor)light_state, j, true);
     }
     pre_color_ = (LightColor)light_state;
     ResetChannelColor(pre_color_);
-    qDebug() << "light color:" << light_state;
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "light color:" << light_state;
+    return true;
+}
+
+// CYTG+CYCLEEND+END
+bool RealtimeMonitorDlg::ParseCycleEndContent(QByteArray &array)
+{
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTG--Parse end of cycle";
+    array.remove(0,4);
+    QString info = array.left(8);
+    int index = array.indexOf("END");
+    if (index < 0)
+    {
+        return false;
+    }
+    if (info != QString("CYCLEEND"))
+    {
+        array.remove(0, index+3);
+        return false;
+    }
+    array.remove(0, 8+3);
+    return true;
+}
+
+bool RealtimeMonitorDlg::DefaultParser(QByteArray &array)
+{
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << array.left(4) <<"--Default parser";
+    int index = array.indexOf("END");
+    array.remove(0, index+3);
     return true;
 }
 
 // CYTB+检测器编号(1字节)+END
 bool RealtimeMonitorDlg::ParseRealTimeFlowContent(QByteArray &array)
 {
-    qDebug() << "CYTB--Parse realtime detector flow";
+    BRIEF_DEBUG(DModule_RealTimeMonitor) << "CYTB--Parse realtime detector flow";
     array.remove(0, 4);
     memcpy(&detector_id_, array.data(), 1);
     array.remove(0, 1);

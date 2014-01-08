@@ -15,9 +15,11 @@ DESTDIR = $$PWD/../../../lib/
 
 DEFINES += UTILITY_LIBRARY
 
-SOURCES += mutility.cpp
+SOURCES += mutility.cpp \
+    mdebug.cpp
 
 HEADERS += utility_global.h \
+    mdebug.h
 
 unix:!symbian {
     maemo5 {

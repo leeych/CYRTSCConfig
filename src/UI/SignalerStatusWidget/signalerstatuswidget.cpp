@@ -268,13 +268,13 @@ void SignalerStatusWidget::InitTableHeader()
     signaler_table_->setColumnWidth(0, 1);
     signaler_table_->setColumnWidth(1, width / 9);
     signaler_table_->setColumnWidth(2, width / 9);
-    signaler_table_->setColumnWidth(3, width / 9);
+    signaler_table_->setColumnWidth(3, width / 9 + 30);
     signaler_table_->setColumnWidth(4, width / 9);
     signaler_table_->setColumnWidth(5, width / 9);
     signaler_table_->setColumnWidth(6, width / 9);
     signaler_table_->setColumnWidth(7, width / 9);
     signaler_table_->setColumnWidth(8, width / 9);
-    signaler_table_->setColumnWidth(9, width / 9);
+//    signaler_table_->setColumnWidth(9, width / 9);
     signaler_table_->setColumnHidden(0, true);
     QStringList headers;
     headers << "0" << STRING_UI_SIGNALER_STATUS << STRING_UI_SIGNALER_NAME << STRING_UI_SIGNALER_IP

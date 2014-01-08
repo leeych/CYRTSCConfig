@@ -5,20 +5,27 @@
 #-------------------------------------------------
 
 QT       -= gui
+QT       += xml
 
 TARGET = ConfigManager
 TEMPLATE = lib
+
+INCLUDEPATH += $$PWD/../../../include
+
+LIBS += -L$$PWD/../../../lib -lXmlHelper
 
 DESTDIR = $$PWD/../../../lib/
 
 DEFINES += CONFIGMANAGER_LIBRARY
 
 SOURCES += configmanager.cpp \
-    appsettinginfo.cpp
+    appsettinginfo.cpp \
+    logtracerinfo.cpp
 
 HEADERS += configmanager.h\
         configmanager_global.h \
-    appsettinginfo.h
+    appsettinginfo.h \
+    logtracerinfo.h
 
 unix:!symbian {
     maemo5 {

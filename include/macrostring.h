@@ -20,6 +20,8 @@
 #define STRING_SUCCEEDED                QObject::tr("succeeded")
 #define STRING_FAILED                   QObject::tr("failed")
 #define STRING_RETRY                    QObject::tr("Retry")
+#define STRING_START                    QObject::tr("Start")
+#define STRING_END                      QObject::tr("End")
 
 #define STRING_IP                       QObject::tr("IP Address")
 #define STRING_MASK                     QObject::tr("Mask")
@@ -72,6 +74,7 @@
 #define STRING_CTRL_TRAFFIC_CTRL        QObject::tr("Traffic control")
 #define STRING_CTRL_MANUAL_CTRL         QObject::tr("Manual control")
 #define STRING_CTRL_SYS_FAULT_YELLOW    QObject::tr("System fault cause to yellow flash")
+#define STRING_CTRL_SEPERATE_YELLOW     QObject::tr("Seperate fault yellow flash")
 
 #define STRING_LIGHT_RED                QObject::tr("Red")
 #define STRING_LIGHT_GREEN              QObject::tr("Green")
@@ -436,6 +439,7 @@
 #define STRING_UI_SIGNALER_SOCKET_ERROR     QObject::tr("Socket return package is null")
 #define STRING_UI_SIGNALER_CONFIG           QObject::tr("Configuration file send and set")
 #define STRING_UI_SIGNALER_CONFIG_BUSY_WAIT         QObject::tr("Signaler is busy, wait for a while and retry later")
+#define STRING_UI_SIGNALER_RECVARRAY_FAULT_TIP      QObject::tr("There is other bytes before CYT in recv array")
 
 #define STRING_UI_SIGNALER_EVENT_TITLE      QObject::tr("Signaler event log")
 #define STRING_UI_SIGNALER_NETWORK_OUTOFF   QObject::tr("Network unreachable")
@@ -450,6 +454,7 @@
 
 #define STRING_UI_SIGNALER_EVENT_READ_LOG       QObject::tr("Update eventlog")
 #define STRING_UI_SIGNALER_EVENT_REMOVE_EVENT   QObject::tr("Clear selected event")
+#define STRING_UI_SIGNALER_ALL_EVENT            QObject::tr("Clear all event log")
 #define STRING_UI_SIGNALER_EVENT_REMOVING       QObject::tr("Clearing selected event...")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_LOG     QObject::tr("Export event log")
 #define STRING_UI_SIGNALER_EVENT_EXPORT_REPORT  QObject::tr("Export report")
@@ -481,7 +486,7 @@
 #define STRING_EVENT_LOG_LOCAL_SERVER_INIT      QObject::tr("Local server initiated")
 #define STRING_EVENT_LOG_LOCAL_SERVER_RECV      QObject::tr("Local server recv data")
 #define STRING_EVENT_LOG_LOCAL_SERVER_SEND      QObject::tr("Local server send data")
-#define STRING_EVENT_LOG_LOCAL_SERVER_CONNECT   QObject::tr("Local server connect")
+#define STRING_EVENT_LOG_LOCAL_SERVER_CONNECT   QObject::tr("Remote server connect")
 #define STRING_EVENT_LOG_LOCAL_CLIENT_SEND      QObject::tr("Local client send data")
 #define STRING_EVENT_LOG_LOCAL_CLIENT_RECV      QObject::tr("Local client recv data")
 #define STRING_EVENT_LOG_READ_GPS_DATA          QObject::tr("Read GPS data")
@@ -580,6 +585,9 @@
 #define STRING_UI_SIGNALER_MONITOR_LCD_TIP          QObject::tr("Green-Yellow-Red")
 
 #define STRING_UI_SIGNALER_MONITOR_FLOW_STATISTIC   QObject::tr("Statistics")
+#define STRING_UI_SIGNALER_TIME_NETWORK_IP_ERROR    QObject::tr("Time-network parameters format error")
+#define STRING_UI_SIGNALER_TIME_NETWORK_NETMASK_ERROR       QObject::tr("Netmask format error")
+#define STRING_UI_SIGNALER_TIME_NETWORK_GATEWAY_ERROR       QObject::tr("Gateway format error")
 #define STRING_UI_SIGNALER_WRITE_IP_REQUEST_TIP     QObject::tr("This request needs to disable networking first, continue?")
 
 #define STRING_UI_SIGNALER_MONITOR_CONNECT_ERROR    QObject::tr("Signaler network disconnected")
@@ -588,6 +596,8 @@
 #define STRING_UI_SIGNALER_MONITOR_PARSE_PACK_ERR   QObject::tr("Parse socket package error")
 #define STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_DATA    QObject::tr("Require vehicle detector data")
 #define STRING_UI_SIGNALER_MONITOR_REQUIRE_DETECTOR_STATUS  QObject::tr("Require detector status info data")
+#define STRING_UI_SIGNALER_MONITOR_PARSE_CYCLEEND_ERR       QObject::tr("Parse cycle-end data error")
 
+#define STRING_UI_SIGNALER_EVENT_COUNT              QObject::tr("Event counts")
 
 #endif // MACROSTRING_H

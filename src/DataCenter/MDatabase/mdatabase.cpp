@@ -46,6 +46,7 @@ void MDatabase::set_unit_table(const Unit_t& ut)
 
 void MDatabase::set_schedule_table(const QList<ScheduleParam> &sched_list)
 {
+    memset(&sched_table_, 0x00, sizeof(sched_table_));
     sched_table_.FactScheduleNum = sched_list.size();
     for (int i = 0; i < sched_list.size(); i++)
     {
@@ -59,7 +60,7 @@ void MDatabase::set_schedule_table(const QList<ScheduleParam> &sched_list)
 
 void MDatabase::set_schedule_table(const Schedule_t &schedule)
 {
-//    memcpy(&sched_table_, &schedule, sizeof(schedule));
+    memset(&sched_table_, 0x00, sizeof(sched_table_));
     sched_table_.FactScheduleNum = schedule.FactScheduleNum;
     for (int i = 0; i < schedule.FactScheduleNum; i++)
     {
@@ -69,6 +70,7 @@ void MDatabase::set_schedule_table(const Schedule_t &schedule)
 
 void MDatabase::set_timesection_table(const QMultiMap<unsigned char, TimeSection> &time_section_map)
 {
+    memset(&timesection_table_, 0x00, sizeof(timesection_table_));
 	std::list<unsigned char> std_key_list = time_section_map.keys().toStdList();
 	std_key_list.sort();
 	std_key_list.unique();
@@ -91,7 +93,7 @@ void MDatabase::set_timesection_table(const QMultiMap<unsigned char, TimeSection
             timesection_table_.TimeSectionList[i][j].AuxFunc = map_value_list.at(j).aux_func;
             timesection_table_.TimeSectionList[i][j].SpecFunc = map_value_list.at(j).spec_func;
         }
-		max_event_count = std::max<unsigned char>(j, max_event_count);
+        max_event_count = std::max<unsigned char>(j, max_event_count);
     }
 	timesection_table_.FactTimeSectionNum = map_key_list.size();
 	timesection_table_.FactEventNum = max_event_count;
@@ -99,7 +101,7 @@ void MDatabase::set_timesection_table(const QMultiMap<unsigned char, TimeSection
 
 void MDatabase::set_timesection_table(const TimeSection_t &timesection)
 {
-//    memcpy(&timesection_table_, &timesection, sizeof(timesection));
+    memset(&timesection_table_, 0x00, sizeof(timesection_table_));
     timesection_table_.FactTimeSectionNum = timesection.FactTimeSectionNum;
     timesection_table_.FactEventNum = timesection.FactEventNum;
     for (int i = 0; i < timesection.FactTimeSectionNum; i++)
@@ -113,6 +115,7 @@ void MDatabase::set_timesection_table(const TimeSection_t &timesection)
 
 void MDatabase::set_timing_table(const QList<TimingParam> &tp_list)
 {
+    memset(&pattern_table_, 0x00, sizeof(pattern_table_));
     pattern_table_.FactPatternNum = tp_list.size();
     for (int i = 0; i < tp_list.size(); i++)
     {
@@ -127,7 +130,7 @@ void MDatabase::set_timing_table(const QList<TimingParam> &tp_list)
 
 void MDatabase::set_timing_table(const Pattern_t &plan)
 {
-//    memcpy(&pattern_table_, &plan, sizeof(plan));
+    memset(&pattern_table_, 0x00, sizeof(pattern_table_));
     pattern_table_.FactPatternNum = plan.FactPatternNum;
     for (int i = 0; i < plan.FactPatternNum; i++)
     {
@@ -137,6 +140,7 @@ void MDatabase::set_timing_table(const Pattern_t &plan)
 
 void MDatabase::set_phasetiming_table(const QMultiMap<unsigned char, PhaseTiming> &stage_timing_plan)
 {
+    memset(&timeconfig_table_, 0x00, sizeof(timeconfig_table_));
     QList<unsigned char> map_key_list = stage_timing_plan.keys();
 	std::list<unsigned char> std_key_list = map_key_list.toStdList();
 	std_key_list.sort();
@@ -157,7 +161,7 @@ void MDatabase::set_phasetiming_table(const QMultiMap<unsigned char, PhaseTiming
         {
             timeconfig_table_.TimeConfigList[i][j].TimeConfigId = map_value_list.at(j).phase_timing_id;
             timeconfig_table_.TimeConfigList[i][j].StageId = map_value_list.at(j).stage_id;
-			timeconfig_table_.TimeConfigList[i][j].PhaseId = (map_value_list.at(j).phase_id > 0) ? (0x01 << (map_value_list.at(j).phase_id - 1)) : 0;     // single phase
+            timeconfig_table_.TimeConfigList[i][j].PhaseId = (map_value_list.at(j).phase_id > 0) ? (0x01 << (map_value_list.at(j).phase_id - 1)) : 0;     // single phase
             timeconfig_table_.TimeConfigList[i][j].GreenTime = map_value_list.at(j).green_time;
             timeconfig_table_.TimeConfigList[i][j].RedTime = map_value_list.at(j).red_time;
             timeconfig_table_.TimeConfigList[i][j].YellowTime = map_value_list.at(j).yellow_time;
@@ -176,7 +180,7 @@ void MDatabase::set_phasetiming_table(const QMultiMap<unsigned char, PhaseTiming
 
 void MDatabase::set_phasetiming_table(const TimeConfig_t &timeconfig)
 {
-//    memcpy(&timeconfig_table_, &timeconfig, sizeof(timeconfig));
+    memset(&timeconfig_table_, 0x00, sizeof(timeconfig));
     timeconfig_table_.FactTimeConfigNum = timeconfig.FactTimeConfigNum;
     timeconfig_table_.FactStageNum = timeconfig.FactStageNum;
     for (int i = 0; i < timeconfig.FactTimeConfigNum; i++)
@@ -190,9 +194,10 @@ void MDatabase::set_phasetiming_table(const TimeConfig_t &timeconfig)
 
 void MDatabase::set_phase_table(const QList<PhaseParam> &phase_list)
 {
+    memset(&phase_table_, 0x00, sizeof(phase_table_));
     phase_table_.FactPhaseNum = phase_list.size();
     QList<unsigned char> channel_id_list;
-	channel_phase_map_.clear();
+    channel_phase_map_.clear();
     for (int i = 0; i < phase_list.size(); i++)
     {
         phase_table_.PhaseList[i].PhaseId = phase_list.at(i).phase_id;
@@ -218,7 +223,7 @@ void MDatabase::set_phase_table(const QList<PhaseParam> &phase_list)
 
 void MDatabase::set_phase_table(const Phase_t &phase)
 {
-//    memcpy(&phase_table_, &phase, sizeof(phase));
+    memset(&phase_table_, 0x00, sizeof(phase));
     phase_table_.FactPhaseNum = phase.FactPhaseNum;
     for (int i = 0; i < phase.FactPhaseNum; i++)
     {
@@ -228,6 +233,8 @@ void MDatabase::set_phase_table(const Phase_t &phase)
 
 void MDatabase::set_channel_table(const QList<ChannelParam> &channel_list)
 {
+    memset(&channel_table_, 0x00, sizeof(channel_table_));
+    memset(&channel_hint_table_, 0x00, sizeof(channel_hint_table_));
     int index = 0, i = 0;
     QList<unsigned char> phase_id_list;
     for (i = 0; i < channel_list.size(); i++)
@@ -263,7 +270,7 @@ void MDatabase::set_channel_table(const QList<ChannelParam> &channel_list)
 
 void MDatabase::set_channel_table(const Channel_t &channel)
 {
-//    memcpy(&channel_table_, &channel, sizeof(channel));
+    memset(&channel_table_, 0x00, sizeof(channel));
     channel_table_.FactChannelNum = channel.FactChannelNum;
     for (int i = 0; i < channel.FactChannelNum; i++)
     {
@@ -273,7 +280,7 @@ void MDatabase::set_channel_table(const Channel_t &channel)
 
 void MDatabase::set_channel_hint_table(const ChannelHint_t &channel_hint)
 {
-//    memcpy(&channel_hint_table_, &channel_hint, sizeof(channel_hint));
+    memset(&channel_hint_table_, 0x00, sizeof(channel_hint));
     channel_hint_table_.FactChannelHintNum = channel_hint.FactChannelHintNum;
     for (int i = 0; i < channel_hint.FactChannelHintNum; i++)
     {
@@ -283,6 +290,7 @@ void MDatabase::set_channel_hint_table(const ChannelHint_t &channel_hint)
 
 void MDatabase::set_phase_conflict_table(const QList<PhaseConflictParam> &conflict_list)
 {
+    memset(&phase_conflict_table_, 0x00, sizeof(phase_conflict_table_));
     phase_conflict_table_.FactPhaseErrorNum = conflict_list.size();
     for (int i = 0; i < conflict_list.size(); i++)
     {
@@ -293,7 +301,7 @@ void MDatabase::set_phase_conflict_table(const QList<PhaseConflictParam> &confli
 
 void MDatabase::set_phase_conflict_table(const PhaseError_t &phase_err)
 {
-//    memcpy(&phase_conflict_table_, &phase_err, sizeof(phase_err));
+    memset(&phase_conflict_table_, 0x00, sizeof(phase_err));
     phase_conflict_table_.FactPhaseErrorNum = phase_err.FactPhaseErrorNum;
     for (int i = 0; i < phase_err.FactPhaseErrorNum; i++)
     {
@@ -303,6 +311,7 @@ void MDatabase::set_phase_conflict_table(const PhaseError_t &phase_err)
 
 void MDatabase::set_detector_table(const QList<DetectorParam> &detector_list)
 {
+    memset(&detector_table_, 0x00, sizeof(detector_table_));
     QList<unsigned char> phase_id_list;
     int index = 0;
     for (int i = 0; i < detector_list.size(); i++)
@@ -343,7 +352,7 @@ void MDatabase::set_detector_table(const QList<DetectorParam> &detector_list)
 
 void MDatabase::set_detector_table(const Detector_t &detector)
 {
-//    memcpy(&detector_table_, &detector, sizeof(detector));
+    memset(&detector_table_, 0x00, sizeof(detector));
     detector_table_.FactDetectorNum = detector.FactDetectorNum;
     for (int i = 0; i < detector.FactDetectorNum; i++)
     {

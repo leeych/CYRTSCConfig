@@ -40,15 +40,16 @@ bool LogParam::operator ==(const LogParam &rhs) const
 
 bool LogParam::operator <(const LogParam &rhs) const
 {
-    if (this->event_type_id < rhs.event_type_id)
-    {
-        return true;
-    }
-    if (this->log_id < rhs.log_id)
-    {
-        return true;
-    }
-    return false;
+//    if (this->event_type_id < rhs.event_type_id)
+//    {
+//        return true;
+//    }
+//    if (this->log_id < rhs.log_id)
+//    {
+//        return true;
+//    }
+//    return false;
+    return (this->log_time < rhs.log_time);
 }
 
 LogParam::~LogParam()

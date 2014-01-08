@@ -102,6 +102,8 @@ public slots:
     void OnConnectError(QString);
     void OnSignalerTimeTimerOutSlot();
     void OnCountDownTimerOutSlot();
+    void OnCheckSocketTimerOutSlot();
+    void OnHeartBeatTimerOutSlot();
 
     // on cmd
     void OnCmdReadSignalerConfigFile(QByteArray &array);
@@ -142,6 +144,8 @@ private:
     void InitCtrlModeDesc();
     bool InitTscParam();
     bool CheckPackage(QByteArray &array);
+
+    void heartBeatHandler();
 
     void test();
 
@@ -191,6 +195,8 @@ private:
     bool ParseDriverRealTimeStatusContent(QByteArray &array);
     bool ParseLightRealTimeStatusContent(QByteArray &array);
     bool ParseAllLightOnContent(QByteArray &array);
+    bool ParseCycleEndContent(QByteArray &array);
+    bool DefaultParser(QByteArray &array);
 
 private:
     SyncCommand *sync_cmd_;
@@ -209,7 +215,7 @@ private:
     QByteArray recv_array_;
 
     unsigned char total_stage_count_;	// used for stage id disp
-	unsigned char curr_stage_id_;		// used for stage id disp
+    unsigned char curr_stage_id_;		// used for stage id disp
     unsigned char count_down_seconds_;  // used for count_down disp
     unsigned char count_down_light_;
 
@@ -218,6 +224,7 @@ private:
     bool is_first_light_;       // used for update light status
     bool is_uitimer_started_;
     int ui_timer_id_;
+    bool is_cycle_end_;
 
     // used for signaler time display
     bool is_inited_;
@@ -225,6 +232,9 @@ private:
     QDateTime date_time_;
     QTimer *signaler_timer_;
     QTimer *count_down_timer_;
+//    QTimer *check_socket_timer_;
+    QTimer *heart_beat_timer_;
+    int milliseconds_;
 
     DetectorData_t *detector_array_;    // used for get detectorinfo
     driboardstatus_t driver_info_;      // used for driver board

@@ -13,6 +13,9 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 
+#define MDEBUG_BRIEF_ENABLE
+#include "mdebug.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -43,6 +46,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+//    initializer.initLogParams();
+
     QString dir;
     MUtility::getLanguageDir(dir);
     dir += "CYTSC.qm";
@@ -50,9 +55,9 @@ int main(int argc, char *argv[])
     translator.load(dir);
     a.installTranslator(&translator);
 
-	MUtility::getImageDir(dir);
+    MUtility::getImageDir(dir);
     Login *log_dlg = new Login;
-	log_dlg->setWindowIcon(QIcon(dir + "login_icon.png"));
+    log_dlg->setWindowIcon(QIcon(dir + "login_icon.png"));
     int ret = log_dlg->Initialize();
     if (ret != 1)
     {
@@ -77,7 +82,7 @@ int main(int argc, char *argv[])
     dir += "icon.png";
     window.setWindowIcon(QIcon(dir));
 
-	window.setMinimumSize(800, 500);
+    window.setMinimumSize(800, 500);
     QDesktopWidget *desktop = QApplication::desktop();
     window.move((desktop->width() - window.width())/2,(desktop->height() - window.height())/2);
     window.show();

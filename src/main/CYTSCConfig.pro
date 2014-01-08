@@ -21,6 +21,7 @@ INCLUDEPATH += $$PWD/../../include \
                $$PWD/../UI/BottomButtonsWidget \
                $$PWD/../Common/SignalerManager \
                $$PWD/../Common/SystemIniter \
+               $$PWD/../Common/Utility \
                $$PWD/../Common/Communication \
                $$PWD/../UI/SignalerOnlineSettingDlg \
                $$PWD/../UI/SignalerStatusWidget \

@@ -16,6 +16,7 @@ std::string Command::ClearEventInfo = "ClearEventInfo";
 
 std::string Command::SetConfigure = "SetConfigure";
 std::string Command::ClearDetectInfo = "ClearDetectInfo";
+std::string Command::HearBeat = "IAMALIVE";
 
 Command::Command()
 {

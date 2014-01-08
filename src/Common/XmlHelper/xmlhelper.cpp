@@ -15,6 +15,11 @@ XmlHelper *XmlHelper::GetInstance()
     return helper_;
 }
 
+void XmlHelper::releaseInstance()
+{
+    helper_->~XmlHelper();
+}
+
 bool XmlHelper::LoadXmlFile(const QString &file_name)
 {
     if (!QFile::exists(file_name))
@@ -503,6 +508,12 @@ bool XmlHelper::AddRootNode(const QString &root_node)
     file.close();
 
     return true;
+}
+
+XmlHelper::~XmlHelper()
+{
+    delete helper_;
+    helper_ = NULL;
 }
 
 bool XmlHelper::LoadXmlFile()

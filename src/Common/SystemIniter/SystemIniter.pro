@@ -10,9 +10,10 @@ TARGET = SystemIniter
 TEMPLATE = lib
 
 INCLUDEPATH += $$PWD/../../../include/ \
-               $$PWD/../../Utility/
+               $$PWD/../Utility/ \
+               $$PWD/../ConfigManager
 
-LIBS += -L$$PWD/../../../lib/ -lUtility
+LIBS += -L$$PWD/../../../lib/ -lUtility -lConfigManager
 
 DESTDIR = $$PWD/../../../lib/
 

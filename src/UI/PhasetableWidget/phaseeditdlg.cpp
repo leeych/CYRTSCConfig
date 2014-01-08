@@ -84,12 +84,12 @@ void PhaseeditDlg::OnCancelButtonClicked()
 
 void PhaseeditDlg::InitPage()
 {
-	setWindowTitle(STRING_UI_PHASE_TABLE + "-" + STRING_UI_EDIT);
+    setWindowTitle(STRING_UI_PHASE_TABLE + "-" + STRING_UI_EDIT);
     QLabel* phase_id_label = new QLabel(STRING_UI_PHASE_ID);
     phase_id_cmb_ = new QComboBox;
     enable_phase_chk_ = new QCheckBox(STRING_UI_PHASE_ENABLE);
-	enable_phase_chk_->setChecked(true);
-	enable_phase_chk_->setEnabled(false);
+    enable_phase_chk_->setChecked(true);
+    enable_phase_chk_->setEnabled(false);
 
     QLabel* man_green_time_label = new QLabel(STRING_UI_PHASE_MAN_GREEN);
     QLabel* man_clear_time_label = new QLabel(STRING_UI_PHASE_MAN_CLEAR);
@@ -360,27 +360,40 @@ void PhaseeditDlg::UpdatePhaseTypeInfo(unsigned char phase_type, unsigned char d
     else if ((phase_type & 0x010) == 0x010)
     {
         phase_mode_cmb_->setCurrentIndex(3);
+        demote_chk_->setEnabled(true);
+        demote_chk_->setChecked(true);
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x08) == 0x08)
     {
         phase_mode_cmb_->setCurrentIndex(4);
+        demote_chk_->setEnabled(true);
+        demote_chk_->setChecked(true);
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x04) == 0x04)
     {
         phase_mode_cmb_->setCurrentIndex(5);
+        demote_chk_->setEnabled(true);
+        demote_chk_->setChecked(true);
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x02) == 0x02)
     {
         phase_mode_cmb_->setCurrentIndex(6);
+        demote_chk_->setEnabled(true);
+        demote_chk_->setChecked(true);
+        detector_num_spinbox_->setEnabled(true);
+        detector_num_spinbox_->setValue(detector_num);
     }
     else if ((phase_type & 0x01) == 0x01)
     {
         phase_mode_cmb_->setCurrentIndex(7);
         demote_chk_->setEnabled(true);
-//        if (detector_num != 0)
-//        {
-            demote_chk_->setChecked(true);
-//        }
+        demote_chk_->setChecked(true);
         detector_num_spinbox_->setEnabled(true);
         detector_num_spinbox_->setValue(detector_num);
     }
@@ -530,7 +543,9 @@ bool PhaseeditDlg::greenConflictAvoidCheck(const PhaseParam &phase_param)
 void PhaseeditDlg::OnPhaseTypeSelected( const QString& text )
 {
     if (text == STRING_UI_PHASE_ELASTICITY || text == STRING_UI_PHASE_DETERMINED
-            || text == STRING_UI_PHASE_MOTOR)
+            || text == STRING_UI_PHASE_MOTOR || text == STRING_UI_PHASE_CRUTIAL
+            || text == STRING_UI_PHASE_BIKE || text == STRING_UI_PHASE_WALKMAN
+            || text == STRING_UI_PHASE_DELAY)
     {
         demote_chk_->setEnabled(true);
         demote_chk_->setChecked(true);

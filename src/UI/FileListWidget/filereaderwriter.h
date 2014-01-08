@@ -3,6 +3,7 @@
 
 #include "tscparam.h"
 #include "mdatabase.h"
+#include <QString>
 #include <stdio.h>
 #include <fstream>
 #include <string>
@@ -18,10 +19,10 @@ public:
     void InitDatabase(MDatabase *db_ptr);
     MDatabase *defaultDatabase();
 
-    bool ReadFile(MDatabase *db, const char* file_path);
-    bool ReadFile(const char *file_path, TSCParam &param);
-    bool WriteFile(const char* file_path);
-    bool WriteFile(const TSCParam &param, const char *file_path);
+    bool ReadFile(MDatabase *db, const QString &file_path);
+    bool ReadFile(const QString &file_path, TSCParam &param);
+    bool WriteFile(const QString &file_path);
+    bool WriteFile(const TSCParam &param, const QString &file_path);
     void SetTSCParam(const TSCParam &param);
 
 private:
@@ -31,9 +32,9 @@ private:
     MDatabase *db_;
     TSCParam tsc_param_;
 
-    std::string open_file_path_;
-    std::string new_file_path_;
-    std::string write_file_path_;
+    QString open_file_path_;
+    QString new_file_path_;
+    QString write_file_path_;
 };
 
 #endif // FILEREADERWRITER_H
