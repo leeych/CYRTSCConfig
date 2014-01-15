@@ -1,6 +1,7 @@
 #include "filereaderwriter.h"
 #include <memory.h>
 #include <QDebug>
+#include <QFile>
 
 FileReaderWriter::FileReaderWriter()
 {
@@ -22,28 +23,29 @@ MDatabase* FileReaderWriter::defaultDatabase()
     return db_;
 }
 
-bool FileReaderWriter::ReadFile(MDatabase *db, const char* file_path)
+bool FileReaderWriter::ReadFile(MDatabase *db, const QString& file_path)
 {
-	open_file_path_ = std::string(file_path);
-	FILE *fp = fopen(file_path, "rb");
-	if (fp == NULL)
-	{
-		return false;
-	}
+    open_file_path_ = file_path;
+    QString open_mode("rb");
+    FILE *fp = _wfopen(file_path.toStdWString().data(), open_mode.toStdWString().data());
+    if (fp == NULL)
+    {
+        return false;
+    }
     db_ = db;
 	ResetParam();
-	fseek(fp, 0, SEEK_SET);
-	fread(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
-	fread(&tsc_param_.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
-	fread(&tsc_param_.sched_table_, sizeof(tsc_param_.sched_table_), 1, fp);
-	fread(&tsc_param_.time_section_table_, sizeof(tsc_param_.time_section_table_), 1, fp);
-	fread(&tsc_param_.timing_plan_table_, sizeof(tsc_param_.timing_plan_table_), 1, fp);
-	fread(&tsc_param_.stage_timing_table_, sizeof(tsc_param_.stage_timing_table_), 1, fp);
-	fread(&tsc_param_.phase_table_, sizeof(tsc_param_.phase_table_), 1, fp);
-	fread(&tsc_param_.phase_conflict_table_, sizeof(tsc_param_.phase_conflict_table_), 1, fp);
-	fread(&tsc_param_.channel_table_, sizeof(tsc_param_.channel_table_), 1, fp);
-	fread(&tsc_param_.channel_hint_table_, sizeof(tsc_param_.channel_hint_table_), 1, fp);
-	fread(&tsc_param_.detector_table_, sizeof(tsc_param_.detector_table_), 1, fp);
+    fseek(fp, 0, SEEK_SET);
+    fread(&tsc_param_.tsc_header_, sizeof(tsc_param_.tsc_header_), 1, fp);
+    fread(&tsc_param_.unit_param_, sizeof(tsc_param_.unit_param_), 1, fp);
+    fread(&tsc_param_.sched_table_, sizeof(tsc_param_.sched_table_), 1, fp);
+    fread(&tsc_param_.time_section_table_, sizeof(tsc_param_.time_section_table_), 1, fp);
+    fread(&tsc_param_.timing_plan_table_, sizeof(tsc_param_.timing_plan_table_), 1, fp);
+    fread(&tsc_param_.stage_timing_table_, sizeof(tsc_param_.stage_timing_table_), 1, fp);
+    fread(&tsc_param_.phase_table_, sizeof(tsc_param_.phase_table_), 1, fp);
+    fread(&tsc_param_.phase_conflict_table_, sizeof(tsc_param_.phase_conflict_table_), 1, fp);
+    fread(&tsc_param_.channel_table_, sizeof(tsc_param_.channel_table_), 1, fp);
+    fread(&tsc_param_.channel_hint_table_, sizeof(tsc_param_.channel_hint_table_), 1, fp);
+    fread(&tsc_param_.detector_table_, sizeof(tsc_param_.detector_table_), 1, fp);
 	db_->set_tsc_header(tsc_param_.tsc_header_);
 	db_->set_unit_table(tsc_param_.unit_param_);
 	db_->set_schedule_table(tsc_param_.sched_table_);
@@ -56,14 +58,15 @@ bool FileReaderWriter::ReadFile(MDatabase *db, const char* file_path)
 	db_->set_channel_hint_table(tsc_param_.channel_hint_table_);
 	db_->set_detector_table(tsc_param_.detector_table_);
 
-	fclose(fp);
+    fclose(fp);
     return true;
 }
 
-bool FileReaderWriter::ReadFile(const char *file_path, TSCParam &param)
+bool FileReaderWriter::ReadFile(const QString &file_path, TSCParam &param)
 {
-    open_file_path_ = std::string(file_path);
-    FILE *fp = fopen(file_path, "rb");
+    open_file_path_ = file_path;
+    QString open_mode("rb");
+    FILE *fp = _wfopen(file_path.toStdWString().data(), open_mode.toStdWString().data());
     if (fp == NULL)
     {
         qDebug() << file_path << " file pointer is null";
@@ -87,9 +90,10 @@ bool FileReaderWriter::ReadFile(const char *file_path, TSCParam &param)
     return true;
 }
 
-bool FileReaderWriter::WriteFile(const char* file_path)
+bool FileReaderWriter::WriteFile(const QString &file_path)
 {
-    FILE *fp = fopen(file_path, "wb+");
+    QString open_mode("wb+");
+    FILE *fp = _wfopen(file_path.toStdWString().data(), open_mode.toStdWString().data());
     fseek(fp, 0, SEEK_SET);
     memcpy(&tsc_param_.tsc_header_, &db_->get_tsc_header(), sizeof(tsc_param_.tsc_header_));
     memcpy(&tsc_param_.unit_param_, &db_->get_unit_table(), sizeof(tsc_param_.unit_param_));
@@ -125,9 +129,10 @@ bool FileReaderWriter::WriteFile(const char* file_path)
     return true;
 }
 
-bool FileReaderWriter::WriteFile(const TSCParam &param, const char *file_path)
+bool FileReaderWriter::WriteFile(const TSCParam &param, const QString &file_path)
 {
-    FILE *fp = fopen(file_path, "wb+");
+    QString open_mode("wb+");
+    FILE *fp = _wfopen(file_path.toStdWString().data(), open_mode.toStdWString().data());
     fseek(fp, 0, SEEK_SET);
     size_t header = fwrite(&param.tsc_header_, sizeof(param.tsc_header_), 1, fp);
     size_t unit = fwrite(&param.unit_param_, sizeof(param.unit_param_), 1, fp);
@@ -175,5 +180,21 @@ void FileReaderWriter::ResetParam()
 	memset(&tsc_param_.phase_conflict_table_, 0x00, sizeof(tsc_param_.phase_conflict_table_));
 	memset(&tsc_param_.channel_table_, 0x00, sizeof(tsc_param_.channel_table_));
 	memset(&tsc_param_.channel_hint_table_, 0x00, sizeof(tsc_param_.channel_hint_table_));
-	memset(&tsc_param_.detector_table_, 0x00, sizeof(tsc_param_.detector_table_));
+    memset(&tsc_param_.detector_table_, 0x00, sizeof(tsc_param_.detector_table_));
+}
+
+void FileReaderWriter::setTscParam(const QString &filename, TSCParam &param)
+{
+    if (filename.isEmpty())
+    {
+        return;
+    }
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return;
+    }
+    QByteArray array(file.readAll());
+    int sz = array.size();
+    memcpy(&param, array.data(), sz);
 }

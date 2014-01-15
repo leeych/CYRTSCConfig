@@ -31,6 +31,7 @@
 #include <QDesktopWidget>
 
 #define CMD_WAIT_TIME   31000
+#define HEART_BEAT_TIME (8000)
 
 
 SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
@@ -45,6 +46,8 @@ SignalerOnlineSettingDlg::SignalerOnlineSettingDlg(QWidget *parent)
 
     cmd_timer_ = new QTimer(this);
     conn_timer_ = new QTimer(this);
+    heart_beat_timer_ = new QTimer(this);
+
     curr_cmd_ = NoneCmd;
     is_edit_ip_ = false;
 
@@ -105,6 +108,7 @@ void SignalerOnlineSettingDlg::Initialize(const QString &ip, unsigned int port)
     ip_ = ip;
     port_ = port;
 
+    setWindowTitle(ip_ + "-" + STRING_UI_SIGNALER_ADVANCED_SETUP);
     exec();
 }
 
@@ -126,7 +130,6 @@ void SignalerOnlineSettingDlg::OnConnectButtonClicked()
     {
 //        conn_button_->setEnabled(false);
 //        sync_cmd_->syncConnectToHost(ip_, port_);
-
 //        EnableNetworkErrorTip(false);
         sync_cmd_->connectToHost(ip_, port_);
         conn_timer_->start(SOCKET_WAIT_MS);
@@ -141,6 +144,7 @@ void SignalerOnlineSettingDlg::OnReadButtonClicked()
     config_byte_array_.clear();
     conn_tip_label_->setText(STRING_UI_SIGNALER_READING_CONFIG);
     sync_cmd_->ReadSignalerConfigFile(this, SLOT(OnCmdReadConfig(QByteArray&)));
+//    heartBeatHandler();
     UpdateButtonStatus(false);
     curr_cmd_ = ReadConfig;
     cmd_timer_->start(CMD_WAIT_TIME);
@@ -227,7 +231,7 @@ void SignalerOnlineSettingDlg::OnSaveAsbuttonClicked()
     }
     FileReaderWriter writer;
     writer.InitDatabase(db_ptr_);
-    bool status = writer.WriteFile(file_name.toStdString().c_str());
+    bool status = writer.WriteFile(file_name);
     if (!status)
     {
         QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED, STRING_OK);
@@ -251,6 +255,7 @@ void SignalerOnlineSettingDlg::OnNetworkSettingSlot(bool flag)
 void SignalerOnlineSettingDlg::OnConnectedSlot()
 {
     conn_timer_->stop();
+//    heartBeatHandler();
 
     EnableNetworkErrorTip(true);
     UpdateConnectStatus(true);
@@ -280,8 +285,10 @@ void SignalerOnlineSettingDlg::OnCmdGetVerId(QByteArray &content)
     UpdateButtonStatus(true);
     UpdateConnectStatus(true);
     conn_tip_label_->setText(STRING_UI_SIGNALER_TIP_CONNECT);
-	more_button_->setChecked(true);
+    more_button_->setChecked(true);
     sync_cmd_->ReleaseSignalSlots();
+    heartBeatHandler();
+
     if (is_edit_ip_)
     {
         emit versionCheckedSignal();
@@ -293,21 +300,34 @@ void SignalerOnlineSettingDlg::OnDisconnectedSlot()
 {
     UpdateConnectStatus(false);
     more_button_->setChecked(false);
+    if (heart_beat_timer_->isActive())
+    {
+        heart_beat_timer_->stop();
+    }
 }
 
 void SignalerOnlineSettingDlg::OnConnectErrorSlot(QString err)
 {
-//    QMessageBox::information(this, STRING_TIP, err, STRING_OK);
+    conn_timer_->stop();
+    if (ver_check_id_ != 0)
+    {
+        killTimer(ver_check_id_);
+        ver_check_id_ = 0;
+    }
     conn_tip_label_->setText(err);
     conn_button_->setEnabled(true);
+    conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
     // disable other dialog
     EnableDialogs(false);
+    if (heart_beat_timer_->isActive())
+    {
+        heart_beat_timer_->stop();
+    }
 }
 
 void SignalerOnlineSettingDlg::OnConnTimerTimeoutSlot()
 {
     conn_timer_->stop();
-//    EnableNetworkErrorTip(true);
     if (sync_cmd_->isConnectionValid())
     {
         sync_cmd_->closeConnection();
@@ -342,6 +362,11 @@ void SignalerOnlineSettingDlg::OnCmdTimerTimeoutSlot()
     cmd_timer_->stop();
 }
 
+void SignalerOnlineSettingDlg::OnHeartbeatTimeoutSlot()
+{
+    sync_cmd_->SendHeartBeat();
+}
+
 void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
 {
     curr_cmd_ = NoneCmd;
@@ -365,7 +390,7 @@ void SignalerOnlineSettingDlg::OnCmdReadConfig(QByteArray &content)
     if (status)
     {
         QFile file(cfg_file_);
-		if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
             QMessageBox::warning(this, STRING_WARNING, STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED, STRING_OK);
             conn_tip_label_->setText(STRING_UI_TEMP_FILE + STRING_UI_OPEN_FILE + STRING_FAILED);
@@ -507,11 +532,25 @@ void SignalerOnlineSettingDlg::clearTimerResource()
         killTimer(ui_lock_id_);
         ui_lock_id_ = 0;
     }
+    if (heart_beat_timer_->isActive())
+    {
+        heart_beat_timer_->stop();
+    }
+}
+
+void SignalerOnlineSettingDlg::heartBeatHandler()
+{
+    if (heart_beat_timer_->isActive())
+    {
+        heart_beat_timer_->stop();
+    }
+    heart_beat_timer_->start(HEART_BEAT_TIME);
 }
 
 void SignalerOnlineSettingDlg::closeEvent(QCloseEvent *)
 {
     clearTimerResource();
+    conn_button_->setEnabled(true);
 }
 
 void SignalerOnlineSettingDlg::timerEvent(QTimerEvent *)
@@ -623,6 +662,7 @@ void SignalerOnlineSettingDlg::InitSignalSlots()
 //    connect(SyncCommand::GetInstance(), SIGNAL(connectErrorStrSignal(QString)), this, SLOT(OnConnectErrorSlot(QString)));
     connect(cmd_timer_, SIGNAL(timeout()), this, SLOT(OnCmdTimerTimeoutSlot()));
     connect(conn_timer_, SIGNAL(timeout()), this, SLOT(OnConnTimerTimeoutSlot()));
+    connect(heart_beat_timer_, SIGNAL(timeout()), this, SLOT(OnHeartbeatTimeoutSlot()));
 
     // tab page slots
     connect(this, SIGNAL(updateTabPageSignal(void *)), unitparam_widget_, SLOT(OnInitDatabase(void*)));
@@ -689,7 +729,6 @@ void SignalerOnlineSettingDlg::EnableNetworkErrorTip(bool enable)
 
 void SignalerOnlineSettingDlg::UpdateUI()
 {
-    setWindowTitle(STRING_UI_SIGNALER_ADVANCED_SETUP);
     UpdateButtonStatus(false);
     update_button_->setEnabled(is_cfg_read_);
     conn_button_->setText(STRING_UI_SIGNALER_CONNECT);
@@ -745,7 +784,7 @@ void SignalerOnlineSettingDlg::UpdateTabPage()
 {
     FileReaderWriter param_reader;
 //    param_reader.InitDatabase(db_ptr_);
-    if (!param_reader.ReadFile(db_ptr_, cfg_file_.toStdString().c_str()))
+    if (!param_reader.ReadFile(db_ptr_, cfg_file_))
     {
         return;
     }
@@ -835,7 +874,7 @@ bool SignalerOnlineSettingDlg::SaveTempConfigFile()
     }
     FileReaderWriter writer;
     writer.InitDatabase(db_ptr_);
-    bool status = writer.WriteFile(cfg_file_.toStdString().c_str());
+    bool status = writer.WriteFile(cfg_file_);
     if (!status)
     {
 //        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_SAVE_FAILED, STRING_OK);

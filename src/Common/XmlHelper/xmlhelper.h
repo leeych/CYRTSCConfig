@@ -9,6 +9,7 @@ class /*XMLHELPERSHARED_EXPORT*/ XmlHelper
 {
 public:
     static XmlHelper* GetInstance();
+    void releaseInstance();
 
     bool LoadXmlFile(const QString& file_name);
     bool CreateXmlDocument(const QString& file_name, const QString& root_node);
@@ -42,6 +43,7 @@ public:
 
 private:
     XmlHelper() {}
+    ~XmlHelper();
     bool LoadXmlFile();
 
 private:

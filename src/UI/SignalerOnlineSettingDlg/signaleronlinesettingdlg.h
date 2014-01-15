@@ -73,6 +73,8 @@ public slots:
 
     void OnConnTimerTimeoutSlot();
     void OnCmdTimerTimeoutSlot();
+    void OnHeartbeatTimeoutSlot();
+
     // cmd call back
     void OnCmdGetVerId(QByteArray &content);
     void OnCmdReadConfig(QByteArray &content);
@@ -104,6 +106,8 @@ private:
 
     void clearTimerResource();
 
+    void heartBeatHandler();
+
 private:
     MDatabase *db_ptr_;
     SyncCommand *sync_cmd_;
@@ -111,6 +115,7 @@ private:
     EventLogHandler *handler_;
     QTimer *cmd_timer_;
     QTimer *conn_timer_;        // used for connection timeout
+    QTimer *heart_beat_timer_;
 
     SockCmd curr_cmd_;
 
@@ -134,7 +139,6 @@ private:
 private:
     QWidget *more_widget_;
     MTabWidget *dialog_tab_;
-
     QDesktopWidget *desktop_;
 
     UnitparamtableWidget *unitparam_widget_;

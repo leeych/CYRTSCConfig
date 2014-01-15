@@ -9,6 +9,9 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QFileDialog>
+#include <QCalendarWidget>
+
+#include "bytearraydump.h"
 
 EventLogDlg::EventLogDlg(QWidget *parent) :
     QDialog(parent)
@@ -30,8 +33,8 @@ void EventLogDlg::Initialize(const QString &ip, EventLogHandler *handler)
     handler_ = handler;
     tip_label_->clear();
     UpdateUI();
-    QTreeWidgetItem *item = event_tree_->itemAt(0, 1);
-    event_tree_->setCurrentItem(item);
+//    QTreeWidgetItem *item = event_tree_->itemAt(0, 1);
+//    event_tree_->setCurrentItem(item);
     OnReadLogButtonClicked();
     exec();
 }
@@ -43,20 +46,20 @@ void EventLogDlg::OnReadLogButtonClicked()
 
 void EventLogDlg::OnDeleteEventButtonClicked()
 {
-    tip_label_->clear();
-    QTreeWidgetItem *item = event_tree_->currentItem();
-    if (item == NULL)
-    {
-        return;
-    }
-    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
-    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
-    {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_TYPE_ERR, STRING_OK);
-        return;
-    }
-    QString str = QString::number(curr_event_type_id_);
-    SyncCommand::GetInstance()->ClearEventLog(str.toStdString());
+//    tip_label_->clear();
+//    QTreeWidgetItem *item = event_tree_->currentItem();
+//    if (item == NULL)
+//    {
+//        return;
+//    }
+//    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
+//    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
+//    {
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_EVENT_TYPE_ERR, STRING_OK);
+//        return;
+//    }
+//    QString str = QString::number(curr_event_type_id_);
+    SyncCommand::GetInstance()->ClearEventLogs();
     this->setEnabled(false);
     QTime t;
     t.start();
@@ -144,6 +147,19 @@ void EventLogDlg::OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *item,int col
     UpdateEventDetailTree(log_param_list);
 }
 
+void EventLogDlg::OnOKButtonClicked()
+{
+    tip_label_->clear();
+    QDateTime start_time = start_datetime_->dateTime();
+    QDateTime end_time = end_datetime_->dateTime();
+    QDateTime utc_time = QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
+    unsigned int start_secs = utc_time.secsTo(start_time);
+    unsigned int end_secs = utc_time.secsTo(end_time);
+    QList<LogParam> log_list = handler_->get_event_log_list(start_secs, end_secs);
+    UpdateEventDetailTree(log_list);
+    count_tip_label_->setText(QString::number(log_list.size()));
+}
+
 void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
 {
     if (array.isEmpty())
@@ -164,7 +180,14 @@ void EventLogDlg::OnCmdReadEventLog(QByteArray &array)
 
     if (event_log_array_.endsWith("END"))
     {
+#if 0
+        ByteArrayDump dump;
+        QString dir;
+        MUtility::getTempDir(dir);
+        dump.dumpByteArray(dir + "event_log.dat", event_log_array_);
+#endif
         ParseEventLogArray(event_log_array_);
+//        SyncCommand::GetInstance()->ReleaseSignalSlots();
         UpdateUI();
         event_log_array_.clear();
         tip_label_->setText("<font color=\"Green\">" + STRING_UI_SIGNALER_EVENT_READ_LOG + STRING_SUCCEEDED + "</font>");
@@ -186,33 +209,63 @@ void EventLogDlg::OnCmdClearEventLog(QByteArray &array)
 void EventLogDlg::InitPage()
 {
     setWindowTitle(STRING_UI_SIGNALER_EVENT_TITLE);
-    event_tree_ = new QTreeWidget;
-    QStringList event_header;
-    event_header << STRING_UI_SIGNALER_EVENT_TYPE << STRING_UI_SIGNALER_EVENT_CLEARTIME;
-    InitTree(event_tree_, event_header);
-    event_tree_->setMaximumWidth(270);
-    event_tree_->setColumnWidth(0, event_tree_->width()*1/3);
-    event_tree_->setColumnWidth(1, event_tree_->width()*2/3);
+//    event_tree_ = new QTreeWidget;
+//    QStringList event_header;
+//    event_header << STRING_UI_SIGNALER_EVENT_TYPE << STRING_UI_SIGNALER_EVENT_CLEARTIME;
+//    InitTree(event_tree_, event_header);
+//    event_tree_->setMaximumWidth(270);
+//    event_tree_->setColumnWidth(0, event_tree_->width()*1/3);
+//    event_tree_->setColumnWidth(1, event_tree_->width()*2/3);
 
     event_detail_tree_ = new QTreeWidget;
     QStringList detail_header;
-    detail_header << STRING_UI_SIGNALER_EVENT_TYPE_ID << STRING_UI_SIGNALER_EVENT_FLOW_ID
+    detail_header /*<< STRING_UI_SIGNALER_EVENT_TYPE_ID << STRING_UI_SIGNALER_EVENT_FLOW_ID*/
                      << STRING_UI_SIGNALER_EVENT_DATETIME << STRING_UI_SIGNALER_EVENT_DESC;
     InitTree(event_detail_tree_, detail_header);
     int width = event_detail_tree_->width();
-    event_detail_tree_->setColumnWidth(0, width * 1/6);
-    event_detail_tree_->setColumnWidth(1, width * 1/6);
-    event_detail_tree_->setColumnWidth(2, width * 1/3);
-    event_detail_tree_->setColumnWidth(3, width * 1/3);
+//    event_detail_tree_->setColumnWidth(0, width * 1/6);
+//    event_detail_tree_->setColumnWidth(1, width * 1/6);
+    event_detail_tree_->setColumnWidth(0, width * 1/3);
+    event_detail_tree_->setColumnWidth(1, width * 2/3);
 
+    count_tip_label_ = new QLabel(this);
+    count_tip_label_->setVisible(false);
     QHBoxLayout *tree_hlayout = new QHBoxLayout;
-    tree_hlayout->addWidget(event_tree_);
+//    tree_hlayout->addWidget(event_tree_);
     tree_hlayout->addWidget(event_detail_tree_);
-    tree_hlayout->setStretch(0, 1);
-    tree_hlayout->setStretch(1, 3);
+//    tree_hlayout->addWidget(count_tip_label_);
+//    tree_hlayout->setStretch(0, 1);
+//    tree_hlayout->setStretch(1, 3);
+
+    start_datetime_ = new QDateTimeEdit;
+    setDateTimeEdit(start_datetime_);
+    start_datetime_->setDateTime(QDateTime::fromString("1970-01-01 00:00:01", "yyyy-MM-dd hh:mm:ss"));
+    end_datetime_ = new QDateTimeEdit;
+    setDateTimeEdit(end_datetime_);
+    end_datetime_->setDateTime(QDateTime::currentDateTime());
+
+    QLabel *start_tip_label = new QLabel(STRING_START);
+    QLabel *end_tip_label = new QLabel("----");
+    ok_button_ = new QPushButton(STRING_OK);
+    QLabel *count_label = new QLabel(STRING_UI_SIGNALER_EVENT_COUNT + ":");
+    count_label->setVisible(false);
+
+    QHBoxLayout *time_hlayout = new QHBoxLayout;
+    time_hlayout->addWidget(start_tip_label);
+    time_hlayout->addWidget(start_datetime_);
+    time_hlayout->addWidget(end_tip_label);
+    time_hlayout->addWidget(end_datetime_);
+    time_hlayout->addStretch(1);
+    time_hlayout->addWidget(ok_button_);
+    time_hlayout->addStretch(1);
+
+    QHBoxLayout *count_hlayout = new QHBoxLayout;
+    count_hlayout->addWidget(count_label);
+    count_hlayout->addWidget(count_tip_label_);
+    time_hlayout->addLayout(count_hlayout);
 
     read_log_button_ = new QPushButton(STRING_UI_SIGNALER_EVENT_READ_LOG);
-    remove_event_button_ = new QPushButton(STRING_UI_SIGNALER_EVENT_REMOVE_EVENT);
+    remove_event_button_ = new QPushButton(STRING_UI_SIGNALER_ALL_EVENT);
     export_log_button_ = new QPushButton(STRING_UI_SIGNALER_EVENT_EXPORT_LOG);
     export_report_button_ = new QPushButton(STRING_UI_SIGNALER_EVENT_EXPORT_REPORT);
 
@@ -231,6 +284,7 @@ void EventLogDlg::InitPage()
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->addLayout(tree_hlayout);
+    vlayout->addLayout(time_hlayout);
     vlayout->addLayout(button_hlayout);
     vlayout->addWidget(tip_label_);
     setLayout(vlayout);
@@ -238,12 +292,13 @@ void EventLogDlg::InitPage()
 
 void EventLogDlg::InitSignalSlots()
 {
+    connect(ok_button_, SIGNAL(clicked()), this, SLOT(OnOKButtonClicked()));
     connect(read_log_button_, SIGNAL(clicked()), this, SLOT(OnReadLogButtonClicked()));
     connect(remove_event_button_, SIGNAL(clicked()), this, SLOT(OnDeleteEventButtonClicked()));
     connect(export_log_button_, SIGNAL(clicked()), this, SLOT(OnExportLogButtonClicked()));
     connect(export_report_button_, SIGNAL(clicked()), this, SLOT(OnExportReportButtonClicked()));
-    connect(event_tree_, SIGNAL(itemPressed(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemSelected(QTreeWidgetItem*,int)));
-    connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
+//    connect(event_tree_, SIGNAL(itemPressed(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemSelected(QTreeWidgetItem*,int)));
+//    connect(event_tree_, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem*,int)));
 
 //    connect(read_log_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
 //    connect(remove_event_button_, SIGNAL(clicked()), tip_label_, SLOT(clear()));
@@ -283,14 +338,14 @@ void EventLogDlg::UpdateEventDetailTree(const QList<LogParam> &log_param_list)
     for (int i = 0; i < log_param_list.size(); i++)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(event_detail_tree_);
-        desc.sprintf("%d", log_param_list.at(i).event_type_id);
-        item->setText(0, desc);
-        desc.sprintf("%04d", log_param_list.at(i).log_id);
-        item->setText(1, desc);
+//        desc.sprintf("%d", log_param_list.at(i).event_type_id);
+//        item->setText(0, desc);
+//        desc.sprintf("%04d", log_param_list.at(i).log_id);
+//        item->setText(1, desc);
         desc = handler_->get_datetime_desc(log_param_list.at(i).log_time);
-        item->setText(2, desc);
+        item->setText(0, desc);
         desc = handler_->get_log_desc(log_param_list.at(i).event_type_id, log_param_list.at(i).log_value);
-        item->setText(3, desc);
+        item->setText(1, desc);
         item_list.append(item);
     }
     event_detail_tree_->addTopLevelItems(item_list);
@@ -299,20 +354,21 @@ void EventLogDlg::UpdateEventDetailTree(const QList<LogParam> &log_param_list)
 void EventLogDlg::UpdateUI()
 {
     handler_->init_from_file(file_name_);
-    UpdateEventTypeTree();
+//    UpdateEventTypeTree();
     QList<LogParam> log_param_list = handler_->get_event_log_list(0);
     UpdateEventDetailTree(log_param_list);
-    QTreeWidgetItem *item = event_tree_->currentItem();
-    if (item == NULL)
-    {
-        remove_event_button_->setEnabled(false);
-        return;
-    }
-    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
-    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
-    {
-        remove_event_button_->setEnabled(false);
-    }
+    count_tip_label_->setText(QString::number(log_param_list.size()));
+//    QTreeWidgetItem *item = event_tree_->currentItem();
+//    if (item == NULL)
+//    {
+//        remove_event_button_->setEnabled(false);
+//        return;
+//    }
+//    curr_event_type_id_ = handler_->get_event_type_id_by_desc(item->text(0).trimmed());
+//    if (curr_event_type_id_ == 0 || curr_event_type_id_ > 20)
+//    {
+//        remove_event_button_->setEnabled(false);
+//    }
 }
 
 void EventLogDlg::UpdateEventTypeTree()
@@ -357,6 +413,39 @@ void EventLogDlg::InitTree(QTreeWidget *tree, const QStringList &header)
     tree->setStyleSheet("QHeaderView::section{background-color: rgb(184, 219, 255); text-align:center;}");
     QHeaderView *header_view = tree->header();
     header_view->setDefaultAlignment(Qt::AlignCenter);
+}
+
+void EventLogDlg::setDateTimeEdit(QDateTimeEdit *edit)
+{
+    QString dir;
+    MUtility::getImageDir(dir);
+    edit->setFixedHeight(25);
+    edit->setDisplayFormat(QString("yyyy-MM-dd hh:mm:ss"));
+    edit->setCalendarPopup(true);
+    edit->setStyleSheet("QDateTimeEdit::drop-down {"
+                        "subcontrol-position: right center;"
+                        "width: 15px;"
+                        "border-left-style: solid; "
+                        "border-top-right-radius: 3px; "
+                        "border-bottom-right-radius: 3px;}"
+                        "QDateTimeEdit::down-arrow {image: url(" + dir + "arrow.png);}"
+                        "border-width: 3px;");
+    QCalendarWidget *calendar = new QCalendarWidget;
+    QLocale local = QLocale(QLocale::Chinese, QLocale::China);
+    calendar->setLocale(local);
+    QString qsstyle =
+            "QAbstractItemView {background:rgb(255,255,255);selection-background-color: rgb(0, 153, 204);}";
+    calendar->setStyleSheet(qsstyle);
+    QWidget *calendarNavBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
+    if (calendarNavBar)
+    {
+        calendarNavBar->setStyleSheet("background-color:rgb(0, 153, 204);");
+    }
+    calendar->setHorizontalHeaderFormat(QCalendarWidget::NoHorizontalHeader);
+    calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    calendar->setFixedSize(210,150);
+    edit->setCalendarWidget(calendar);
+    edit->setAutoFillBackground(true);
 }
 
 void EventLogDlg::ParseEventLogArray(QByteArray &byte_arr)

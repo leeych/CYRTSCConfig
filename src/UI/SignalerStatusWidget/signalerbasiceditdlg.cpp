@@ -1,9 +1,11 @@
 #include "signalerbasiceditdlg.h"
 #include "macrostring.h"
+#include "mutility.h"
 #include <QLabel>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 SignalerbasiceditDlg::SignalerbasiceditDlg(QWidget *parent) :
     QDialog(parent)
@@ -39,6 +41,8 @@ void SignalerbasiceditDlg::InitPage()
     ip_lineedit_ = new QLineEdit;
 	ip_lineedit_->setInputMask("000.000.000.000");
     port_lineedit_ = new QLineEdit;
+    QIntValidator *validator = new QIntValidator(0, 65535, this);
+    port_lineedit_->setValidator(validator);
     pos_lineedit_ = new QLineEdit;
     branch_lineedit_ = new QLineEdit;
     mode_lineedit_ = new QLineEdit;
@@ -155,6 +159,12 @@ bool SignalerbasiceditDlg::SaveData()
 	{
 		signaler.signaler_id = id_label_->text().toUInt();
 	}
+    QString str = ip_lineedit_->text().trimmed();
+    if (!MUtility::checkIPString(str))
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_TIME_NETWORK_IP_ERROR, STRING_OK);
+        return false;
+    }
 	signaler.signaler_port = pos_lineedit_->text().trimmed().toUInt();
 	signaler.signaler_ip = ip_lineedit_->text().trimmed();
 	signaler.signaler_port = port_lineedit_->text().toUInt();

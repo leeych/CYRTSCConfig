@@ -24,6 +24,8 @@ public:
     static std::string SetConfigure;
     static std::string ClearDetectInfo;
 
+    static std::string HearBeat;
+
 
 private:
     Command();

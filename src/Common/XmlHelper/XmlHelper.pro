@@ -10,6 +10,7 @@ QT       -= gui
 
 TARGET = XmlHelper
 TEMPLATE = lib
+CONFIG += c++11
 
 DESTDIR = $$PWD/../../../lib/
 

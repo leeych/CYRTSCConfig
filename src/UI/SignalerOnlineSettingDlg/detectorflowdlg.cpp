@@ -54,7 +54,7 @@ void DetectorFlowDlg::OnReadFlowButtonClicked()
 void DetectorFlowDlg::OnClearFowButtonClicked()
 {
     tip_label_->clear();
-    sync_cmd_->ClearDetectorFlowInfo();
+    sync_cmd_->ClearDetectorFlowInfo(this, SLOT(OnCmdParseParam(QByteArray&)));
     this->setEnabled(false);
     QTime t;
     t.start();
@@ -135,6 +135,16 @@ void DetectorFlowDlg::OnDateTimeChanged(const QDateTime &datetime)
 
 void DetectorFlowDlg::OnCmdParseParam(QByteArray &array)
 {
+    if (array == "ClearOK")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW + STRING_SUCCEEDED, STRING_OK);
+        return;
+    }
+    else if (array == "ClearER")
+    {
+        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_CLEAR_FLOW + STRING_FAILED, STRING_OK);
+        return;
+    }
     recv_array_.append(array);
     if (!CheckPackage(recv_array_))
     {
@@ -425,8 +435,9 @@ bool DetectorFlowDlg::CheckPackage(QByteArray &array)
 {
     if (array.contains("DETECTDATAER"))
     {
-        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_EMPTY, STRING_OK);
+//        QMessageBox::information(this, STRING_TIP, STRING_UI_SIGNALER_DETECTOR_EMPTY, STRING_OK);
         int index = array.indexOf("DETECTDATAER");
+        tip_label_->setText("<font color=\"Green\">" + STRING_UI_SGINALER_DETECTOR_READ_FLOW + STRING_SUCCEEDED + "</font>");
         array.remove(index, QString("DETECTDATAER").size()+1);
         return false;
     }

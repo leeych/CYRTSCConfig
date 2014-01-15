@@ -21,6 +21,7 @@ INCLUDEPATH += $$PWD/../../include \
                $$PWD/../UI/BottomButtonsWidget \
                $$PWD/../Common/SignalerManager \
                $$PWD/../Common/SystemIniter \
+               $$PWD/../Common/Utility \
                $$PWD/../Common/Communication \
                $$PWD/../UI/SignalerOnlineSettingDlg \
                $$PWD/../UI/SignalerStatusWidget \
@@ -43,6 +44,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     ../../include/macrostring.h
 
+CONFIG += c++11
 
 LIBS += -L$$PWD/../../lib/ -lUIBase -lTscAboutDlg -lUtility -lSystemIniter -lCommunication -lMDatabase \
         -lFileListWidget -lTSCLogin -lBottomButtonsWidget -lConfigoptWidget \

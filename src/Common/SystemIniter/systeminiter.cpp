@@ -1,6 +1,11 @@
 #include "systeminiter.h"
 #include "mutility.h"
 
+#define MDEBUG_BRIEF_ENABLE
+
+#include "mdebug.h"
+#include "configmanager.h"
+
 #include <QString>
 #include <QDir>
 
@@ -64,4 +69,40 @@ SystemIniter::DirError SystemIniter::InitDataDir()
         }
     }
     return res;
+}
+
+bool SystemIniter::initLogParams()
+{
+    ConfigManager *manager = ConfigManager::getInstance();
+    LogTracerInfo &loginfo = manager->getLogTracerInfo("logconfig.xml");
+    MDebugConfig *config = MDebugConfig::GetInstance();
+    config->Init("");
+    if (!loginfo.get_debug_enable())
+    {
+        return false;
+    }
+    config->set_enable(loginfo.get_debug_enable());
+    if (loginfo.get_debug_file_enable())
+    {
+        config->AddType(DType_File);
+    }
+    if (loginfo.get_debug_terminal_enable())
+    {
+        config->AddType(DType_Terminal);
+    }
+
+    QList<QString> module_list = loginfo.get_module_name_list();
+    for (int i = 0; i < module_list.size(); i++)
+    {
+        config->AddModel(module_list.at(i).toLatin1().data());
+    }
+
+    QList<int> level_list = loginfo.get_level_list();
+    for (int i = 0; i < level_list.size(); i++)
+    {
+        config->AddLevel(level_list.at(i));
+    }
+    BRIEF_DEBUG(DModule_Main) << "debug start";
+
+    return true;
 }

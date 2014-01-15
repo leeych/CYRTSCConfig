@@ -144,7 +144,7 @@ void TimesectioneditDlg::InitPage()
 
     ctrl_mode_cmb_ = new QComboBox;
 //    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_INVALID);
-    ctrl_mode_cmb_->addItem(STRING_UI_UNIT_AUTO_CONTORL);
+    ctrl_mode_cmb_->addItem(STRING_CTRL_GIVEN_CYCLE);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_CLOSE_LIGHTS);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_FLASH);
     ctrl_mode_cmb_->addItem(STRING_UI_UNIT_ALLRED);
@@ -641,7 +641,7 @@ unsigned char TimesectioneditDlg::get_start_minute(const QString &str)
 
 unsigned char TimesectioneditDlg::get_ctrl_mode(const QString &str)
 {
-    if (str == STRING_UI_UNIT_AUTO_CONTORL)
+    if (str == STRING_CTRL_GIVEN_CYCLE)
     {
         return 0;
     }
@@ -769,7 +769,7 @@ int TimesectioneditDlg::index_of_tmp_timesection_list(const TimeSection &section
 
 void TimesectioneditDlg::OnSaveButtonClicked()
 {
-	SaveData();
+    SaveData();
     accept();
     emit updateTreeSignal(curr_section_id_);
 }

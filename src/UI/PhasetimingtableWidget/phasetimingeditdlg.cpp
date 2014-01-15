@@ -132,7 +132,7 @@ void PhasetimingeditDlg::OnCustomContextMenuRequested(QPoint)
 
 void PhasetimingeditDlg::InitPage()
 {
-	setWindowTitle(STRING_UI_PHASE_TIMING + "-" + STRING_UI_EDIT);
+    setWindowTitle(STRING_UI_PHASE_TIMING + "-" + STRING_UI_EDIT);
     InitTree();
     InitContextMenu();
 
@@ -189,6 +189,11 @@ void PhasetimingeditDlg::InitPage()
     red_time_spinbox_ = new QSpinBox;
     delay_time_spinbox_ = new QSpinBox;
 
+    green_time_spinbox_->setMinimumWidth(60);
+    yellow_time_spinbox_->setMinimumWidth(60);
+    red_time_spinbox_->setMinimumWidth(60);
+    delay_time_spinbox_->setMinimumWidth(60);
+
     green_time_spinbox_->setRange(3, 255);
     red_time_spinbox_->setRange(0, 255);
     yellow_time_spinbox_->setRange(3, 255);
@@ -197,27 +202,11 @@ void PhasetimingeditDlg::InitPage()
     QHBoxLayout* phase_hlayout = new QHBoxLayout;
     phase_hlayout->addWidget(phase_id_label);
     phase_hlayout->addWidget(phase_id_cmb_);
-    //phase_hlayout->addStretch(1);
-    //phase_hlayout->addWidget(opt_param_label);
-    //phase_hlayout->addWidget(induction_id_chk_);
     phase_hlayout->addStretch(1);
     phase_hlayout->addWidget(ok_button_);
     phase_hlayout->addWidget(cancel_button_);
 
     QGroupBox* release_grp = new QGroupBox(/*STRING_UI_PHASE_TIMING_RELEASE*/);
- /*   QGridLayout* glayout = new QGridLayout;
-    int cnt = 0;
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (cnt < release_phase_id_list_.size())
-            {
-                glayout->addWidget(release_phase_id_list_.at(cnt), i, j, 1, 1);
-                cnt++;
-            }
-        }
-    }*/
 	release_phase_id_cmb_ = new QComboBox;
 	for (unsigned char i = 1; i <= 32; i++)
 	{
@@ -437,10 +426,6 @@ void PhasetimingeditDlg::UpdateSettingUI(unsigned char stage_id)
     {
         str.sprintf("%d", stage_id_list.at(i));
         phase_id_cmb_->addItem(str);
-//        if (stage_id == stage_id_list.at(i))
-//        {
-//            phase_id_cmb_->setCurrentIndex(i);
-//        }
     }
     for (int i = 0; i < phase_id_cmb_->count(); i++)
     {
@@ -463,15 +448,6 @@ void PhasetimingeditDlg::UpdateSettingUI(unsigned char stage_id)
 	}
 
 	induction_id_chk_->setChecked((plan.spec_func & 0x01) == 0x01);
-    /*unsigned char release_phase = plan.phase_id;
-    for (int i = 0; i < release_phase_id_list_.size(); i++)
-    {
-		release_phase_id_list_.at(i)->setChecked(false);
-        if (release_phase == (i + 1))
-        {
-            release_phase_id_list_.at(i)->setChecked(true);
-        }
-    }*/
 	//release_phase_id_cmb_->setCurrentIndex(32);
 	for (int i = 0; i < release_phase_id_cmb_->count(); i++)
 	{
@@ -501,11 +477,6 @@ void PhasetimingeditDlg::EnableSettingUI(bool enable)
     red_time_spinbox_->setEnabled(enable);
     delay_time_spinbox_->setEnabled(enable);
 	release_phase_id_cmb_->setEnabled(enable);
-
-    //for (int i = 0; i < release_phase_id_list_.size(); i++)
-    //{
-    //    release_phase_id_list_.at(i)->setEnabled(enable);
-    //}
 }
 
 PhasetimingeditDlg::TimingErr PhasetimingeditDlg::ValidateUI()
@@ -598,11 +569,11 @@ int PhasetimingeditDlg::index_of_phasetiming_tmp_list(const PhaseTiming &plan)
 
     for (int i = 0; i < phase_timing_tmp_list_.size(); i++)
     {
-        if (plan.phase_timing_id == phase_timing_tmp_list_.at(i).phase_timing_id
-                && plan.stage_id == phase_timing_tmp_list_.at(i).stage_id)
+        if ((plan.phase_timing_id == phase_timing_tmp_list_.at(i).phase_timing_id)
+                && (plan.stage_id == phase_timing_tmp_list_.at(i).stage_id))
         {
             index = i;
-            return index;
+            break;
         }
     }
     return index;

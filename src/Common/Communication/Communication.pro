@@ -5,13 +5,15 @@
 #-------------------------------------------------
 
 QT       += network
-
 QT       -= gui
 
 TARGET = Communication
 TEMPLATE = lib
 
-INCLUDEPATH += $$PWD/../../../include/
+INCLUDEPATH += $$PWD/../../../include/ \
+               $$PWD/../Utility/
+
+LIBS += -L$$PWD/../../../lib -lUtility
 
 DESTDIR = $$PWD/../../../lib/
 

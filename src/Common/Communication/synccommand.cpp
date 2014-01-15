@@ -3,6 +3,9 @@
 #include "command.h"
 #include "macrostring.h"
 
+#define MDEBUG_BRIEF_ENABLE
+#include "mdebug.h"
+
 SyncCommand *SyncCommand::instance_ = NULL;
 
 SyncCommand *SyncCommand::GetInstance()
@@ -40,8 +43,14 @@ unsigned int SyncCommand::getSocketPort() const
     return port_;
 }
 
+//int SyncCommand::getConnectionStatus() const
+//{
+//    return conn_status_;
+//}
+
 void SyncCommand::connectToHost(const QString &ip, unsigned int port)
 {
+//    conn_status_ = QAbstractSocket::UnconnectedState;
     ip_ = ip;
     port_ = port;
     socket_->connectToHost(ip, port);
@@ -49,6 +58,7 @@ void SyncCommand::connectToHost(const QString &ip, unsigned int port)
 
 bool SyncCommand::syncConnectToHost(const QString &ip, unsigned port)
 {
+//    conn_status_ = QAbstractSocket::UnconnectedState;
     ip_ = ip;
     port_ = port;
     socket_->connectToHost(ip, port);
@@ -64,6 +74,7 @@ void SyncCommand::closeConnection()
 {
 //    socket_->close();
     socket_->abort();
+//    conn_status_ = QAbstractSocket::UnconnectedState;
 }
 
 bool SyncCommand::isConnectionValid() const
@@ -74,50 +85,60 @@ bool SyncCommand::isConnectionValid() const
 void SyncCommand::disconnectFromHost()
 {
     socket_->disconnectFromHost();
+//    conn_status_ = QAbstractSocket::UnconnectedState;
 }
 
 void SyncCommand::ReadSignalerConfigFile(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetConfigure.c_str());
-    qDebug() << Command::GetConfigure.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetConfigure.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ReadSignalerTime(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetTSCtime.c_str());
-    qDebug() << Command::GetTSCtime.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetTSCtime.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ReadSignalerNetworkInfo(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetNetAddress.c_str());
-    qDebug() << Command::GetNetAddress.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetNetAddress.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ReadEventLogFile(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetEventInfo.c_str());
-    qDebug() << Command::GetEventInfo.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetEventInfo.c_str() << " bytes:" << sz;
 }
 
 // const std::string &param: represent for log_id and log_time string
-void SyncCommand::ClearEventLog(const std::string &param, QObject *target, const std::string &slot)
+void SyncCommand::ClearEventLogs(const std::string &param, QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write((Command::ClearEventInfo + param).c_str());
-    qDebug() << (Command::ClearEventInfo + param).c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << (Command::ClearEventInfo + param).c_str() << " bytes:" << sz;
 }
 
-void SyncCommand::ClearEventLog(const std::string &param)
+void SyncCommand::ClearEventLogs(const std::string &param)
 {
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write((Command::ClearEventInfo + param).c_str());
-        qDebug() << (Command::ClearEventInfo + param).c_str() << "bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << (Command::ClearEventInfo + param).c_str() << "bytes:" << sz;
+    }
+}
+
+void SyncCommand::ClearEventLogs()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        qint64 sz = socket_->write(Command::ClearEventInfo.c_str());
+        BRIEF_DEBUG(DModule_Communication) << (Command::ClearEventInfo).c_str() << "bytes:" << sz;
     }
 }
 
@@ -125,7 +146,7 @@ void SyncCommand::StartMonitoring(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::BeginMonitor.c_str());
-    qDebug() << Command::BeginMonitor.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::BeginMonitor.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::StartMonitoring()
@@ -133,7 +154,7 @@ void SyncCommand::StartMonitoring()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::BeginMonitor.c_str());
-        qDebug() << Command::BeginMonitor.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::BeginMonitor.c_str() << " bytes:" << sz;
     }
 }
 
@@ -141,21 +162,21 @@ void SyncCommand::StopMonitoring(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::EndMonitor.c_str());
-    qDebug() << Command::EndMonitor.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::EndMonitor.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::StopMonitoring()
 {
     UnRegParseHandler();
     qint64 sz = socket_->write(Command::EndMonitor.c_str());
-    qDebug() << Command::EndMonitor.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::EndMonitor.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::GetLightStatus(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetLampStatus.c_str());
-    qDebug() << Command::GetLampStatus.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetLampStatus.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::GetLightStatus()
@@ -163,7 +184,7 @@ void SyncCommand::GetLightStatus()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::GetLampStatus.c_str());
-        qDebug() << Command::GetLampStatus.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::GetLampStatus.c_str() << " bytes:" << sz;
     }
 }
 
@@ -172,7 +193,7 @@ void SyncCommand::GetTscTime()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::GetTSCtime.c_str());
-        qDebug() << Command::GetTSCtime.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::GetTSCtime.c_str() << " bytes:" << sz;
     }
 }
 
@@ -180,7 +201,7 @@ void SyncCommand::GetDetectorFlowData(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetDetectInfo.c_str());
-    qDebug() << Command::GetDetectInfo.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetDetectInfo.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::GetDetectorFlowData()
@@ -188,7 +209,7 @@ void SyncCommand::GetDetectorFlowData()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::GetDetectInfo.c_str());
-        qDebug() << Command::GetDetectInfo.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::GetDetectInfo.c_str() << " bytes:" << sz;
     }
 }
 
@@ -196,7 +217,7 @@ void SyncCommand::ClearDetectorFlowInfo(QObject *target, const std::string &slot
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::ClearDetectInfo.c_str());
-    qDebug() << Command::ClearDetectInfo.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::ClearDetectInfo.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::ClearDetectorFlowInfo()
@@ -204,7 +225,7 @@ void SyncCommand::ClearDetectorFlowInfo()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::ClearDetectInfo.c_str());
-        qDebug() << Command::ClearDetectInfo.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::ClearDetectInfo.c_str() << " bytes:" << sz;
     }
 }
 
@@ -212,7 +233,7 @@ void SyncCommand::GetDriverBoardInfo(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetDriverInfo.c_str());
-    qDebug() << Command::GetDriverInfo.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetDriverInfo.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::GetDriverBoardInfo()
@@ -220,7 +241,23 @@ void SyncCommand::GetDriverBoardInfo()
     if (target_obj_ != NULL && !slot_.empty())
     {
         qint64 sz = socket_->write(Command::GetDriverInfo.c_str());
-        qDebug() << Command::GetDriverInfo.c_str() << " bytes:" << sz;
+        BRIEF_DEBUG(DModule_Communication) << Command::GetDriverInfo.c_str() << " bytes:" << sz;
+    }
+}
+
+void SyncCommand::SendHeartBeat(QObject *target, const std::string &slot)
+{
+    InitParseHandler(target, slot);
+    qint64 sz = socket_->write(Command::HearBeat.c_str());
+    BRIEF_DEBUG(DModule_Communication) << Command::HearBeat.c_str() << " bytes:" << sz;
+}
+
+void SyncCommand::SendHeartBeat()
+{
+    if (target_obj_ != NULL && !slot_.empty())
+    {
+        qint64 sz = socket_->write(Command::HearBeat.c_str());
+        BRIEF_DEBUG(DModule_Communication) << Command::HearBeat.c_str() << " bytes:" << sz;
     }
 }
 
@@ -235,7 +272,7 @@ void SyncCommand::SyncSignalerTime(unsigned int seconds, QObject *target, const 
     char temp[11] = {'C','Y','T','7','\0','\0','\0','\0','E','N','D'};
     memcpy(temp+4, &seconds, sizeof(seconds));
     qint64 sz = socket_->write(temp);
-    qDebug() << temp << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << temp << " bytes:" << sz;
 }
 
 void SyncCommand::ConfigNetwork(const QStringList &net_info, QObject *target, const std::string &slot)
@@ -244,7 +281,7 @@ void SyncCommand::ConfigNetwork(const QStringList &net_info, QObject *target, co
     QString cmd_str("CYT8,DHCP=\"%1\",DefaultGateway=\"%2\",IPAddress=\"%3\",SubnetMask=\"%4\",END");
     cmd_str = cmd_str.arg(net_info.at(0)).arg(net_info.at(1)).arg(net_info.at(2)).arg(net_info.at(3));
     qint64 sz = socket_->write(cmd_str.toStdString().c_str());
-    qDebug() << cmd_str << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << cmd_str << " bytes:" << sz;
 }
 
 void SyncCommand::ConnectConfigNetworkHandler(QObject *target, const std::string &slot)
@@ -256,21 +293,21 @@ void SyncCommand::SetConfiguration(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::SetConfigure.c_str());
-    qDebug() << Command::SetConfigure.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::SetConfigure.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(byte_array);
-    qDebug() << "Send signaler config file bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << "Send signaler config file bytes:" << sz;
 }
 
 void SyncCommand::ReadTscVersion(QObject *target, const std::string &slot)
 {
     InitParseHandler(target, slot);
     qint64 sz = socket_->write(Command::GetVerId.c_str());
-    qDebug() << Command::GetVerId.c_str() << " bytes:" << sz;
+    BRIEF_DEBUG(DModule_Communication) << Command::GetVerId.c_str() << " bytes:" << sz;
 }
 
 void SyncCommand::OnConnectEstablished()
@@ -337,6 +374,8 @@ SyncCommand::SyncCommand(QObject *parent) :
 {
     socket_ = new QTcpSocket(this);
     target_obj_ = NULL;
+//    conn_status_ = QAbstractSocket::UnconnectedState;
+
 //    connect(socket_, SIGNAL(readyRead()), this, SLOT(parseReply()));
     connect(socket_, SIGNAL(connected()), this, SLOT(OnConnectEstablished()));
     connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnConnectError(QAbstractSocket::SocketError)));

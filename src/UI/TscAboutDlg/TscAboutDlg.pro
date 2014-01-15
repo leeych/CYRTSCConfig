@@ -9,9 +9,10 @@ TEMPLATE = lib
 
 DEFINES += TSCABOUTDLG_LIBRARY
 
-INCLUDEPATH += $$PWD/../../../include/
+INCLUDEPATH += $$PWD/../../../include/ \
+               $$PWD/../../Common/ConfigManager
 
-LIBS += -L$$PWD/../../../lib/ -lUtility
+LIBS += -L$$PWD/../../../lib/ -lUtility -lConfigManager
 
 DESTDIR = $$PWD/../../../lib/
 

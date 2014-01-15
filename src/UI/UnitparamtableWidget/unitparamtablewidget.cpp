@@ -69,7 +69,7 @@ void UnitparamtableWidget::OnInitDatabase(void *ptr)
 void UnitparamtableWidget::InitPage()
 {
     // QLabel* signaler_ip_label = new QLabel(STRING_UI_UNIT_SIGNAL_IP + ":");
-    QLabel* server_ip_label = new QLabel(STRING_UI_UNIT_SERVER_IP + ":");
+//    QLabel* server_ip_label = new QLabel(STRING_UI_UNIT_SERVER_IP + ":");
 //    QLabel* server_port_label = new QLabel(STRING_UI_UNIT_SERVER_PORT + ":");
     QLabel* flash_time_label = new QLabel(STRING_UI_UNIT_FLASH_TIME + ":");
     QLabel* allred_time_label = new QLabel(STRING_UI_UNIT_ALL_RED + ":");
@@ -84,13 +84,13 @@ void UnitparamtableWidget::InitPage()
 	curr_status_label->setFont(font);
 */
     // signal_ip_lineedit_ = new QLineEdit;
-    server_ip_lineedit_ = new QLineEdit(this);
+//    server_ip_lineedit_ = new QLineEdit(this);
     QRegExp ipreg("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-4]|[01]?\\d\\d?)");
-    QRegExpValidator *pIpValidator = new QRegExpValidator(ipreg);
+//    QRegExpValidator *pIpValidator = new QRegExpValidator(ipreg);
     //signal_ip_lineedit_->setValidator(pIpValidator);
-    server_ip_lineedit_->setValidator(pIpValidator);
-    server_ip_lineedit_->setInputMask("000.000.000.000");
-    server_ip_lineedit_->setAlignment(Qt::AlignCenter);
+//    server_ip_lineedit_->setValidator(pIpValidator);
+//    server_ip_lineedit_->setInputMask("000.000.000.000");
+//    server_ip_lineedit_->setAlignment(Qt::AlignCenter);
 
 //    server_port_lineedit_ = new QLineEdit(this);
 //    QIntValidator *int_validator = new QIntValidator(1025, 100000);
@@ -112,8 +112,8 @@ void UnitparamtableWidget::InitPage()
     QGridLayout* gllayout = new QGridLayout;
     //gllayout->addWidget(signaler_ip_label, 0, 0, 1, 1);
     //gllayout->addWidget(signal_ip_lineedit_, 0, 1, 1, 1);
-    gllayout->addWidget(server_ip_label, 1, 0, 1, 1, Qt::AlignCenter);
-    gllayout->addWidget(server_ip_lineedit_, 1, 2, 1, 1, Qt::AlignCenter);
+//    gllayout->addWidget(server_ip_label, 1, 0, 1, 1, Qt::AlignCenter);
+//    gllayout->addWidget(server_ip_lineedit_, 1, 2, 1, 1, Qt::AlignCenter);
 //    gllayout->addWidget(server_port_label, 2, 0, 1, 1, Qt::AlignCenter);
 //    gllayout->addWidget(server_port_lineedit_, 2, 2, 1, 1, Qt::AlignCenter);
     gllayout->addWidget(flash_time_label, 3, 0, 1, 1, Qt::AlignCenter);
@@ -222,7 +222,7 @@ void UnitparamtableWidget::InitPage()
 	font_setting_list_.append(induction_signal_rbt_);
 	font_setting_list_.append(other_signal_rbt_);
 
-	font_setting_list_.append(server_ip_label);
+//	font_setting_list_.append(server_ip_label);
 //	font_setting_list_.append(server_port_label);
 	font_setting_list_.append(flash_time_label);
 	font_setting_list_.append(allred_time_label);
@@ -266,12 +266,20 @@ void UnitparamtableWidget::UpdateUI()
     Unit_t param;
     memset(&param, 0x00, sizeof(param));
     handler_->get_unitparam(param);
-    server_ip_lineedit_->setEnabled(false);
+//    server_ip_lineedit_->setEnabled(false);
 //    server_port_lineedit_->setEnabled(false);
-    QHostInfo host_info = QHostInfo::fromName(QHostInfo::localHostName());
-    QHostAddress address = host_info.addresses().first();
-    QString str = address.toString();
-    server_ip_lineedit_->setText(str);
+//    QHostInfo host_info = QHostInfo::fromName(QHostInfo::localHostName());
+/*    for (int i = 0; i < host_info.addresses().size(); i++)
+    {
+        QHostAddress address(host_info.addresses().at(i).toIPv4Address());
+        QString str = address.toString();
+        qDebug() << str;
+    }
+*/
+//    QHostAddress address(host_info.addresses().first().toIPv4Address());
+//    QString str = address.toString();
+//    QString str = address.toString();
+//    server_ip_lineedit_->setText(str);
 //    server_port_lineedit_->setText("12810");
     flash_time_spinbox_->setValue(param.StartUpFlash);
     all_red_time_spinbox_->setValue(param.StartUpRed);

@@ -3,16 +3,22 @@
 #include <QTextStream>
 #include <QDebug>
 
-XmlHelper* XmlHelper::helper_ = NULL;
+XmlHelper* XmlHelper::helper_ = nullptr;
 
 XmlHelper *XmlHelper::GetInstance()
 {
-    if (helper_ == NULL)
+    if (helper_ == nullptr)
     {
         helper_ = new XmlHelper;
     }
 
     return helper_;
+}
+
+void XmlHelper::releaseInstance()
+{
+    delete helper_;
+    helper_ = nullptr;
 }
 
 bool XmlHelper::LoadXmlFile(const QString &file_name)
@@ -503,6 +509,12 @@ bool XmlHelper::AddRootNode(const QString &root_node)
     file.close();
 
     return true;
+}
+
+XmlHelper::~XmlHelper()
+{
+    delete helper_;
+    helper_ = nullptr;
 }
 
 bool XmlHelper::LoadXmlFile()

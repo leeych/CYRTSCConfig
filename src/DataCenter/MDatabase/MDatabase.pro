@@ -8,6 +8,7 @@ QT       -= gui
 
 TARGET = MDatabase
 TEMPLATE = lib
+CONFIG += c++11
 
 DEFINES += MDATABASE_LIBRARY
 

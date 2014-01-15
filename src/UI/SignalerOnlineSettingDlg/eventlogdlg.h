@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QTreeWidget>
 #include <QLabel>
+#include <QDateTimeEdit>
 
 #include "tsc.h"
 #include "eventloghandler.h"
@@ -28,6 +29,7 @@ public slots:
     void OnExportReportButtonClicked();
     void OnEventTypeTreeItemSelected(QTreeWidgetItem *, int);
     void OnEventTypeTreeItemDoubleClicked(QTreeWidgetItem *, int);
+    void OnOKButtonClicked();
 
     // cmd return caller
     void OnCmdReadEventLog(QByteArray &array);
@@ -40,8 +42,9 @@ private:
     void UpdateEventTypeTree();
     void UpdateEventDetailTree();
     void UpdateEventDetailTree(const QList<LogParam> &log_param_list);
-
     void InitTree(QTreeWidget *tree, const QStringList &header);
+
+    void setDateTimeEdit(QDateTimeEdit *edit);
 
 private:
     void ParseEventLogArray(QByteArray &byte_arr);
@@ -57,8 +60,11 @@ private:
     QPushButton *read_log_button_, *remove_event_button_, *export_log_button_, *export_report_button_;
     QPushButton *ok_button_, *cancel_button_;
     QLabel *tip_label_;
+    QLabel *count_tip_label_;
 
     QTreeWidget *event_tree_, *event_detail_tree_;
+
+    QDateTimeEdit *start_datetime_, *end_datetime_;
 };
 
 #endif // EVENTLOGDLG_H

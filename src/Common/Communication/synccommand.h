@@ -25,6 +25,8 @@ public:
     QString getSocketIp() const;
     unsigned int getSocketPort() const;
 
+//    int getConnectionStatus() const;
+
     void connectToHost(const QString &ip, unsigned int port);
     bool syncConnectToHost(const QString &ip, unsigned port);
     void closeConnection();
@@ -45,8 +47,9 @@ public:
     void SendConfigData(const QByteArray &byte_array, QObject *target, const std::string &slot);
 
     void ReadEventLogFile(QObject *target, const std::string &slot);
-    void ClearEventLog(const std::string &param, QObject *target, const std::string &slot);
-    void ClearEventLog(const std::string &param);
+    void ClearEventLogs(const std::string &param, QObject *target, const std::string &slot);
+    void ClearEventLogs(const std::string &param);
+    void ClearEventLogs();
 
     void StartMonitoring(QObject *target, const std::string &slot);
     void StartMonitoring();
@@ -62,6 +65,9 @@ public:
     void ClearDetectorFlowInfo();
     void GetDriverBoardInfo(QObject *target, const std::string &slot);
     void GetDriverBoardInfo();
+
+    void SendHeartBeat(QObject *target, const std::string &slot);
+    void SendHeartBeat();
 
 signals:
     void connectedSignal();
@@ -102,6 +108,7 @@ private:
     std::string slot_;
 
     QMap<QAbstractSocket::SocketError, QString> socket_err_desc_;
+//    int conn_status_;
 };
 
 #endif // SYNCCOMMAND_H

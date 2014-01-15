@@ -176,7 +176,7 @@ void TimesectiontableWidget::OnUpdateTreeSlot(unsigned char time_section_id)
     {
         return;
     }
-	UpdateTree();
+    UpdateTree();
 }
 
 void TimesectiontableWidget::OnCustomContextMenuRequested(QPoint)
@@ -321,7 +321,7 @@ QString TimesectiontableWidget::get_ctrl_mode_desc(unsigned char ctrl_mode)
     switch (ctrl_mode)
     {
     case 0:
-        str = STRING_UI_UNIT_AUTO_CONTORL;
+        str = STRING_CTRL_GIVEN_CYCLE;
         break;
     case 1:
         str = STRING_UI_UNIT_CLOSE_LIGHTS;

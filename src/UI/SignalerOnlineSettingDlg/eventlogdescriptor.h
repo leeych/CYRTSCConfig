@@ -1,6 +1,8 @@
 #ifndef EVENTLOGDESC_H
 #define EVENTLOGDESC_H
 
+#include <map>
+#include <string>
 #include <QMap>
 #include <QString>
 
@@ -15,13 +17,20 @@ public:
     unsigned char get_event_type_id(const QString &desc);
     void DisposeDescriptor();
 
-private:
+    std::string get_log_desc_std(unsigned char event_type_id, unsigned int log_value);
+    std::string get_event_type_log_desc_std(unsigned char event_type_id);
+    std::string get_ctrl_mode_desc_std(unsigned char ctrl_mode);
+
     EventLogDescriptor();
     ~EventLogDescriptor();
+
+private:
     static EventLogDescriptor *instance_;
 
     void GenSoftwareDesc();
     void GenLogCaptionDesc();
+
+//    void tranform();
 
 private:
     class EventLogTag
@@ -77,8 +86,13 @@ private:
         unsigned int log_value;
     };
 
-    QMap<EventLogTag, QString> log_desc_map_;
+//    QMap<EventLogTag, QString> log_desc_map_;
+    QMap<QString, QString> log_desc_map_;
+
+    QMap<unsigned int, QString> log_desc_map_ex_;
     QMap<unsigned char, QString> export_caption_map_;
+    std::map<EventLogTag, std::string> log_desc_stdmap_;
+    std::map<unsigned char, std::string> export_caption_stdmap_;
 };
 
 #endif // EVENTLOGDESC_H
