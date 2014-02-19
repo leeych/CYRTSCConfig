@@ -17,8 +17,12 @@ XmlHelper *XmlHelper::GetInstance()
 
 void XmlHelper::releaseInstance()
 {
+<<<<<<< HEAD
     delete helper_;
     helper_ = nullptr;
+=======
+    helper_->~XmlHelper();
+>>>>>>> 3cc308a5ff6d48800306e40edc2667b6787bc7d0
 }
 
 bool XmlHelper::LoadXmlFile(const QString &file_name)
@@ -514,7 +518,11 @@ bool XmlHelper::AddRootNode(const QString &root_node)
 XmlHelper::~XmlHelper()
 {
     delete helper_;
+<<<<<<< HEAD
     helper_ = nullptr;
+=======
+    helper_ = NULL;
+>>>>>>> 3cc308a5ff6d48800306e40edc2667b6787bc7d0
 }
 
 bool XmlHelper::LoadXmlFile()

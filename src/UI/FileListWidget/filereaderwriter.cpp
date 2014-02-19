@@ -28,10 +28,17 @@ bool FileReaderWriter::ReadFile(MDatabase *db, const QString& file_path)
     open_file_path_ = file_path;
     QString open_mode("rb");
     FILE *fp = _wfopen(file_path.toStdWString().data(), open_mode.toStdWString().data());
+<<<<<<< HEAD
     if (fp == NULL)
     {
         return false;
     }
+=======
+	if (fp == NULL)
+	{
+		return false;
+	}
+>>>>>>> 3cc308a5ff6d48800306e40edc2667b6787bc7d0
     db_ = db;
 	ResetParam();
     fseek(fp, 0, SEEK_SET);
