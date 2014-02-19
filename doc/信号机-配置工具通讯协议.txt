@@ -83,7 +83,9 @@ CYT: ChaoYuan Traffic
    配置数据发送完,若收到"CONFIGOK"则设置成功,若收到"CONFIGER"则设置失败
 
    (2) 日志数据清除
-   配置软件发送的日志清除命令: ClearEventInfo+日志类型(取值范围:1-20)
+   配置软件发送的日志清除命令: ClearEventInfo
+   清除成功返回：ClearEventOK,失败返回：ClearEventER
+
 
    (3) 系统时间设置
    配置软件发送的系统时间数据: CYT7+时间秒数(4字节)+END
@@ -99,7 +101,7 @@ CYT: ChaoYuan Traffic
    配置数据发送完,若收到"ClearOK"则设置成功,若收到"ClearER"则设置失败
 
 
-3. 心跳通信
+3. 心跳确认
 配置工具每隔8秒向信号机发送”IAMALIVE”
 
 4. 日志代码描述
